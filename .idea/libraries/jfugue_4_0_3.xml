@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jfugue-4.0.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jfugue-4.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
