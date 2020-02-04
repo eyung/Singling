@@ -43,6 +43,8 @@ import org.jfugue.Player;
  */
 public class TextSound {
 
+	//static String inputFile;
+
 	static String instrument = "PIANO";
 
 	static List<String> orderings = new ArrayList<String>();
@@ -167,7 +169,7 @@ public class TextSound {
 		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
 		// Default for testing purposes
 		String inFilename = "/Users/eyung/Downloads/dlc/TextSound/README.txt";
-		//String inFilename = "C:\\Users\\eyung\\Downloads\\dlc\\TextSound\\textSound.txt";
+		//String inFilename = inputFile;
         if (args.length > 0) {
 			inFilename = args[0];
 		}
@@ -215,6 +217,7 @@ public class TextSound {
 		// "Effective content marketing holds peopleÕs attention. It gives you a distinctive brand, loyal fans and increased sales. You donÕt need a big budget to succeed, which is why good content marketing is the single best way to beat bigger competitors online";
 		// input =
 		// "The municipality was created on 14 March 1997, succeeding the sub-provincial city administration that was part of Sichuan Province";
+        //input = "t!e@s#t$i%n^g&*()-_=+,./;'[]?";
 		if (!follow) {
 			String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 			System.out.println(ss);
@@ -224,6 +227,82 @@ public class TextSound {
 			player.saveMidi(ss, file);
 			player.play(ss);
 		}
+	}
+
+	public static String runStuff(String inputFile) throws Exception{
+
+		resetSettings();
+
+		// Each ordering gives a different character
+		// Alphabetic
+		orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		// Increasing order of scrabble scores
+		//orderings.add("AEILNORSTUDGBCMPFHVWYKJXQZ");
+		// Decreasing frequency of use in English
+		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
+		// Default for testing purposes
+		//String inFilename = "/Users/eyung/Downloads/dlc/TextSound/README.txt";
+		String inFilename = "";
+		if (inputFile.length() > 0) {
+			inFilename = inputFile;
+		}
+		String outFilename = inFilename + ".mid";
+
+		List<String> lines = Files.readAllLines(FileSystems.getDefault().getPath(inFilename),
+				StandardCharsets.UTF_8);
+		StringBuilder inBuilder = new StringBuilder();
+		Player player = new Player();
+		player.play("T" + (int) tempo + " I[" + instrument + "] ");
+		String paraSoundString = "";
+		String para = "";
+		int lineCount = 0;
+		for (String line : lines) {
+			lineCount++;
+			String theLine = line.replace("\r", "\n") + "\n";
+			inBuilder.append(theLine);
+			if (follow) {
+				paraSoundString += processString(theLine);
+				para += theLine;
+				if (theLine.length() < 2) {
+					System.out.println(para);
+					player.play("T" + (int) tempo + " " + paraSoundString);
+					paraSoundString = "";
+					para = "";
+				}
+			}
+		}
+		System.out.println();
+		String input = inBuilder.toString();
+		// input = "It was the best of times, it was the worst of times";
+		// input =
+		// "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to heaven, we were all going direct the other way - in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only.";
+		// input =
+		// "The quality of implementation specifications concern two properties, accuracy of the returned result and monotonicity of the method";
+		// input =
+		// "In certain service environments, particularly those where the business environment is dynamic and where clients interact with the organisation on a regular basis, we have found a grasp of Systems Thinking is invaluable.";
+		// input =
+		// "The Sixth Crusade started in 1228 as an attempt to regain Jerusalem";
+		// input =
+		// "Although Baden-WŸrttemberg is lacking natural resources,[2] the state is among the most prosperous states in Germany";
+		// input =
+		// "If you want to print this guide, it is recommended that you print in Landscape mode";
+		// input =
+		// "Effective content marketing holds peopleÕs attention. It gives you a distinctive brand, loyal fans and increased sales. You donÕt need a big budget to succeed, which is why good content marketing is the single best way to beat bigger competitors online";
+		// input =
+		// "The municipality was created on 14 March 1997, succeeding the sub-provincial city administration that was part of Sichuan Province";
+		//input = "t!e@s#t$i%n^g&*()-_=+,./;'[]?";
+		if (!follow) {
+			String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
+			System.out.println(ss);
+			System.out.println(input);
+			player = new Player();
+			File file = new File(outFilename);
+			player.saveMidi(ss, file);
+			//player.play(ss);
+			player.close();
+		}
+
+		return input;
 	}
 
 	/**
@@ -243,7 +322,7 @@ public class TextSound {
 			// A = 1, B = 2, ...
 			int charNum = orderings.get(ordering).indexOf(upperCh) + 1;
 			// int charNum = Character.getNumericValue(upperCh) - 9;
-			//System.out.println(charNum);
+			System.out.println(charNum);
 			//System.out.println("last word: " + lastWord.toString()); // testing
 
 			if ((Character.isWhitespace(ch)) || (charNum < 1)) {
@@ -376,6 +455,55 @@ public class TextSound {
 				setting = testSetting;
 			}
 		}
+	}
+
+	private static void resetSettings() {
+		instrument = "PIANO";
+
+		orderings = new ArrayList<String>();
+
+		// Starting settings
+		// NB: If any values are set to exactly zero, they will be unable to
+		// change throughout the generation
+		//
+		// How long to hold each note for
+		noteLength = 1; // /1 = whole note (semibreve). /0.25 =
+		// crotchet
+
+		// How long to wait before playing the next note
+		noteGap = 0.0001; // 1 / 32d; // 1/32 = good default, 0 = no
+
+		// gap (chords)
+		// How long to pause when a rest (space etc.) is encountered
+		restLength = 1 / 8d; // 1/8 = good default
+
+		// Lowest note that can be played
+		baseFrequency = 128; // 128 Hz = Octave below middle C
+
+		// Octave range in which to place notes
+		octaves = 2;
+
+		// Tempo in beats per second
+		tempo = 100;
+
+		// Which letter ordering (defined above) to use, zero indexed
+		ordering = 1;
+
+		// Initial setting type
+		Setting setting = Setting.TEMPO;
+
+		EnumSet<Setting> allSettings = EnumSet.allOf(Setting.class);
+
+		// Characters which prompt a change of setting type
+		String settingChangers = ".";
+
+		// Even characters increase setting values, odd characters decrease.
+		// This swaps that behaviour
+		tempoDirection = false;
+
+		// TODO: could use these to change and revert - opening bracket changes,
+		// closing changes the same setting in the opposite direction
+		String containers = "(){}[]<>\"\"";
 	}
 
 }
