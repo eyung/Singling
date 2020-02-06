@@ -1,5 +1,10 @@
 package com.gtwm.sound;
 
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
+import org.w3c.dom.Text;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,49 +12,96 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 public class MainForm extends JFrame {
-    private JButton button1;
+    private JButton btnLoad;
     private JPanel panel1;
     private JTextArea textArea1;
+    private JButton btnProcess;
+    private JComboBox setInstrument;
+    private JComboBox setDuration;
+    private JSlider setOctaves;
+    private JComboBox setTempo;
 
-    JFileChooser fc = new JFileChooser();
+    String inputText = "";
+    String outFilename = "";
 
     public MainForm() {
-        button1.addActionListener(new ActionListener() {
+
+        JFileChooser fc = new JFileChooser();
+
+        btnLoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                textArea1.setText("");
-                String inputText = "";
 
-                //Handle open button action.
-                if (e.getSource() == button1) {
+                // Handle open button action
+                if (e.getSource() == btnLoad) {
                     File workingDirectory = new File(System.getProperty("user.dir"));
                     fc.setCurrentDirectory(workingDirectory);
-                    //fc.showOpenDialog(panel1);
 
                     int returnVal = fc.showOpenDialog(panel1);
 
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         File file = fc.getSelectedFile();
                         //This is where a real application would open the file.
-                        //TextSound.inputFile = file.getAbsolutePath();
                         try {
-                            inputText = TextSound.runStuff(file.getAbsolutePath());
+                            inputText = TextSound.loadFile(file.getAbsolutePath());
+                            outFilename = file.getAbsoluteFile() + ".mid";
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                        //System.out.println("Opening: " + file.getAbsoluteFile() + ".");
-                        textArea1.append(inputText);
+                        textArea1.setText(inputText);
                     } else {
-                        //System.out.println("Open command cancelled by user.");
+                        System.out.println("Open command cancelled by user.");
                     }
+                }
+            }
+        });
 
+        btnProcess.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                // Handle open button action
+                if (e.getSource() == btnProcess) {
+                    if (textArea1.getLineCount() > 1) {
+                        try {
+                            // Get settings from the form
+                            TextSound.instrument = String.valueOf(setInstrument.getSelectedItem());
+                            System.out.println("Instrument: " + TextSound.instrument);
+
+                            TextSound.noteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
+                            System.out.println("Note Length: " + TextSound.noteLength);
+
+                            TextSound.octaves = Double.valueOf(setOctaves.getValue());
+                            System.out.println("Octaves: " + TextSound.octaves);
+
+                            String tempTempo = String.valueOf(setTempo.getSelectedItem());
+                            switch (tempTempo) {
+                                case "GRAVE":
+                                    TextSound.tempo = 40d;
+                                case "LARGO":
+                                    TextSound.tempo = 45d;
+                                case "LARGHETTO":
+                                    TextSound.tempo = 50d;
+                                case "ALLEGRO":
+                                    TextSound.tempo = 120;
+                                case "PRETISSIMO":
+                                    TextSound.tempo = 220;
+                            }
+                            System.out.println("Tempo: " + TextSound.tempo);
+
+                            // Process text
+                            TextSound.runStuff(inputText, outFilename);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
             }
         });
     }
 
     public static void createAndShowGUI() {
-        JFrame frame = new JFrame("MainForm");
+        JFrame frame = new JFrame("TextSound");
         frame.setContentPane(new MainForm().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
@@ -59,7 +111,11 @@ public class MainForm extends JFrame {
     public static void main(String[] args) throws Exception {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                UIManager.put("swing.boldMetal", Boolean.FALSE);
+                try {
+                    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel"); //Windows Look and feel
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+                    ex.printStackTrace();
+                }
                 createAndShowGUI();
             }
         });
@@ -82,20 +138,86 @@ public class MainForm extends JFrame {
      */
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
-        panel1.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 2, new Insets(10, 10, 10, 10), -1, -1));
+        panel1.setLayout(new GridLayoutManager(3, 2, new Insets(20, 20, 20, 20), -1, -1));
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel1.add(panel2, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(500, 500), null, null, 0, false));
-        button1 = new JButton();
-        button1.setText("Button");
-        panel2.add(button1, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 0, false));
+        panel2.setLayout(new GridLayoutManager(4, 2, new Insets(0, 50, 0, 50), -1, -1));
+        panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(500, 500), null, null, 0, false));
+        setInstrument = new JComboBox();
+        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
+        defaultComboBoxModel1.addElement("PIANO");
+        defaultComboBoxModel1.addElement("GUITAR");
+        defaultComboBoxModel1.addElement("TINKLE_BELL");
+        setInstrument.setModel(defaultComboBoxModel1);
+        panel2.add(setInstrument, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setText("Instrument:");
+        panel2.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        label2.setText("Note duration:");
+        panel2.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setDuration = new JComboBox();
+        final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
+        defaultComboBoxModel2.addElement("1.00");
+        defaultComboBoxModel2.addElement("0.50");
+        defaultComboBoxModel2.addElement("0.25");
+        defaultComboBoxModel2.addElement("0.125");
+        defaultComboBoxModel2.addElement("0.0625");
+        defaultComboBoxModel2.addElement("0.03125");
+        defaultComboBoxModel2.addElement("0.015625");
+        setDuration.setModel(defaultComboBoxModel2);
+        panel2.add(setDuration, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setOctaves = new JSlider();
+        setOctaves.setMaximum(10);
+        setOctaves.setOrientation(0);
+        setOctaves.setPaintLabels(true);
+        setOctaves.setPaintTicks(true);
+        setOctaves.setPaintTrack(true);
+        setOctaves.setSnapToTicks(false);
+        setOctaves.setValue(5);
+        setOctaves.setValueIsAdjusting(true);
+        panel2.add(setOctaves, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("Octaves:");
+        panel2.add(label3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setTempo = new JComboBox();
+        final DefaultComboBoxModel defaultComboBoxModel3 = new DefaultComboBoxModel();
+        defaultComboBoxModel3.addElement("GRAVE");
+        defaultComboBoxModel3.addElement("LARGO");
+        defaultComboBoxModel3.addElement("LARGHETTO");
+        defaultComboBoxModel3.addElement("ALLEGRO");
+        defaultComboBoxModel3.addElement("PRETISSIMO");
+        setTempo.setModel(defaultComboBoxModel3);
+        panel2.add(setTempo, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label4 = new JLabel();
+        label4.setText("Tempo:");
+        panel2.add(label4, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
-        panel1.add(scrollPane1, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(500, 500), null, null, 0, false));
+        panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(500, 500), null, null, 0, false));
         textArea1 = new JTextArea();
         textArea1.setEditable(false);
         textArea1.setLineWrap(true);
         textArea1.setWrapStyleWord(true);
         scrollPane1.setViewportView(textArea1);
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panel3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        btnLoad = new JButton();
+        btnLoad.setText("Load");
+        panel3.add(btnLoad, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        panel3.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panel4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        btnProcess = new JButton();
+        btnProcess.setText("Start");
+        panel4.add(btnProcess, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label5 = new JLabel();
+        label5.setText("Settings");
+        panel1.add(label5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        label1.setLabelFor(setInstrument);
+        label2.setLabelFor(setDuration);
+        label4.setLabelFor(setTempo);
     }
 
     /**

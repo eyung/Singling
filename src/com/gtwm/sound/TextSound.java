@@ -45,7 +45,7 @@ public class TextSound {
 
 	//static String inputFile;
 
-	static String instrument = "PIANO";
+	static String instrument;
 
 	static List<String> orderings = new ArrayList<String>();
 
@@ -54,7 +54,7 @@ public class TextSound {
 	// change throughout the generation
 	//
 	// How long to hold each note for
-	static double noteLength = 1; // /1 = whole note (semibreve). /0.25 =
+	static double noteLength; // /1 = whole note (semibreve). /0.25 =
 									// crotchet
 
 	// How long to wait before playing the next note
@@ -68,10 +68,10 @@ public class TextSound {
 	static double baseFrequency = 128; // 128 Hz = Octave below middle C
 
 	// Octave range in which to place notes
-	static double octaves = 2;
+	static double octaves;
 
 	// Tempo in beats per second
-	static double tempo = 100;
+	static double tempo;
 
 	// Which letter ordering (defined above) to use, zero indexed
 	static int ordering = 1;
@@ -88,12 +88,12 @@ public class TextSound {
 	// This swaps that behaviour
 	static boolean tempoDirection = false;
 
-	// TODO: could use these to change and revert - opening bracket changes,
+	// could use these to change and revert - opening bracket changes,
 	// closing changes the same setting in the opposite direction
 	static String containers = "(){}[]<>\"\"";
 
 	// Print out each paragraph as we play (causes a pause each time)
-	static boolean follow = false;
+	//static boolean follow = false;
 	
 	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
 
@@ -158,78 +158,34 @@ public class TextSound {
 		
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static String loadFile(String inFilename) throws Exception{
 
-		// Each ordering gives a different character
-		// Alphabetic
-		orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		// Increasing order of scrabble scores
-		//orderings.add("AEILNORSTUDGBCMPFHVWYKJXQZ");
-		// Decreasing frequency of use in English
-		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
 		// Default for testing purposes
-		String inFilename = "/Users/eyung/Downloads/dlc/TextSound/README.txt";
-		//String inFilename = inputFile;
-        if (args.length > 0) {
-			inFilename = args[0];
-		}
-		String outFilename = inFilename + ".mid";
+		//String inFilename = "/Users/eyung/Downloads/dlc/TextSound/README.txt";
+		//String inFilename = "";
+		//if (inFilename.length() > 0) {
+			//inFilename = inputFile;
+
+		//}
 
 		List<String> lines = Files.readAllLines(FileSystems.getDefault().getPath(inFilename),
 				StandardCharsets.UTF_8);
 		StringBuilder inBuilder = new StringBuilder();
-		Player player = new Player();
-		player.play("T" + (int) tempo + " I[" + instrument + "] ");
-		String paraSoundString = "";
-		String para = "";
+		//Player player = new Player();
+		//player.play("T" + (int) tempo + " I[" + instrument + "] ");
+		//String paraSoundString = "";
+		//String para = "";
 		int lineCount = 0;
 		for (String line : lines) {
 			lineCount++;
 			String theLine = line.replace("\r", "\n") + "\n";
 			inBuilder.append(theLine);
-			if (follow) {
-				paraSoundString += processString(theLine);
-				para += theLine;
-				if (theLine.length() < 2) {
-					System.out.println(para);
-					player.play("T" + (int) tempo + " " + paraSoundString);
-					paraSoundString = "";
-					para = "";
-				}
-			}
 		}
-		System.out.println();
-		String input = inBuilder.toString();
-		// input = "It was the best of times, it was the worst of times";
-		// input =
-		// "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to heaven, we were all going direct the other way - in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only.";
-		// input =
-		// "The quality of implementation specifications concern two properties, accuracy of the returned result and monotonicity of the method";
-		// input =
-		// "In certain service environments, particularly those where the business environment is dynamic and where clients interact with the organisation on a regular basis, we have found a grasp of Systems Thinking is invaluable.";
-		// input =
-		// "The Sixth Crusade started in 1228 as an attempt to regain Jerusalem";
-		// input =
-		// "Although Baden-WŸrttemberg is lacking natural resources,[2] the state is among the most prosperous states in Germany";
-		// input =
-		// "If you want to print this guide, it is recommended that you print in Landscape mode";
-		// input =
-		// "Effective content marketing holds peopleÕs attention. It gives you a distinctive brand, loyal fans and increased sales. You donÕt need a big budget to succeed, which is why good content marketing is the single best way to beat bigger competitors online";
-		// input =
-		// "The municipality was created on 14 March 1997, succeeding the sub-provincial city administration that was part of Sichuan Province";
-        //input = "t!e@s#t$i%n^g&*()-_=+,./;'[]?";
-		if (!follow) {
-			String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
-			System.out.println(ss);
-			System.out.println(input);
-			player = new Player();
-			File file = new File(outFilename);
-			player.saveMidi(ss, file);
-			player.play(ss);
-		}
+
+		return inBuilder.toString();
 	}
 
-	public static String runStuff(String inputFile) throws Exception{
+	public static void runStuff(String input, String output) throws Exception{
 
 		resetSettings();
 
@@ -240,69 +196,17 @@ public class TextSound {
 		//orderings.add("AEILNORSTUDGBCMPFHVWYKJXQZ");
 		// Decreasing frequency of use in English
 		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
-		// Default for testing purposes
-		//String inFilename = "/Users/eyung/Downloads/dlc/TextSound/README.txt";
-		String inFilename = "";
-		if (inputFile.length() > 0) {
-			inFilename = inputFile;
-		}
-		String outFilename = inFilename + ".mid";
 
-		List<String> lines = Files.readAllLines(FileSystems.getDefault().getPath(inFilename),
-				StandardCharsets.UTF_8);
-		StringBuilder inBuilder = new StringBuilder();
-		Player player = new Player();
-		player.play("T" + (int) tempo + " I[" + instrument + "] ");
-		String paraSoundString = "";
-		String para = "";
-		int lineCount = 0;
-		for (String line : lines) {
-			lineCount++;
-			String theLine = line.replace("\r", "\n") + "\n";
-			inBuilder.append(theLine);
-			if (follow) {
-				paraSoundString += processString(theLine);
-				para += theLine;
-				if (theLine.length() < 2) {
-					System.out.println(para);
-					player.play("T" + (int) tempo + " " + paraSoundString);
-					paraSoundString = "";
-					para = "";
-				}
-			}
-		}
-		System.out.println();
-		String input = inBuilder.toString();
-		// input = "It was the best of times, it was the worst of times";
-		// input =
-		// "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to heaven, we were all going direct the other way - in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only.";
-		// input =
-		// "The quality of implementation specifications concern two properties, accuracy of the returned result and monotonicity of the method";
-		// input =
-		// "In certain service environments, particularly those where the business environment is dynamic and where clients interact with the organisation on a regular basis, we have found a grasp of Systems Thinking is invaluable.";
-		// input =
-		// "The Sixth Crusade started in 1228 as an attempt to regain Jerusalem";
-		// input =
-		// "Although Baden-WŸrttemberg is lacking natural resources,[2] the state is among the most prosperous states in Germany";
-		// input =
-		// "If you want to print this guide, it is recommended that you print in Landscape mode";
-		// input =
-		// "Effective content marketing holds peopleÕs attention. It gives you a distinctive brand, loyal fans and increased sales. You donÕt need a big budget to succeed, which is why good content marketing is the single best way to beat bigger competitors online";
-		// input =
-		// "The municipality was created on 14 March 1997, succeeding the sub-provincial city administration that was part of Sichuan Province";
-		//input = "t!e@s#t$i%n^g&*()-_=+,./;'[]?";
-		if (!follow) {
+		//if (!follow) {
 			String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 			System.out.println(ss);
 			System.out.println(input);
-			player = new Player();
-			File file = new File(outFilename);
+			Player player = new Player();
+			File file = new File(output);
 			player.saveMidi(ss, file);
 			//player.play(ss);
 			player.close();
-		}
-
-		return input;
+		//}
 	}
 
 	/**
@@ -458,7 +362,7 @@ public class TextSound {
 	}
 
 	private static void resetSettings() {
-		instrument = "PIANO";
+		//instrument = "PIANO";
 
 		orderings = new ArrayList<String>();
 
@@ -467,7 +371,8 @@ public class TextSound {
 		// change throughout the generation
 		//
 		// How long to hold each note for
-		noteLength = 1; // /1 = whole note (semibreve). /0.25 =
+		//noteLength = 1; // /1 = whole note (
+		// semibreve). /0.25 =
 		// crotchet
 
 		// How long to wait before playing the next note
@@ -481,10 +386,10 @@ public class TextSound {
 		baseFrequency = 128; // 128 Hz = Octave below middle C
 
 		// Octave range in which to place notes
-		octaves = 2;
+		//octaves = 2;
 
 		// Tempo in beats per second
-		tempo = 100;
+		//tempo = 100;
 
 		// Which letter ordering (defined above) to use, zero indexed
 		ordering = 1;
@@ -501,7 +406,7 @@ public class TextSound {
 		// This swaps that behaviour
 		tempoDirection = false;
 
-		// TODO: could use these to change and revert - opening bracket changes,
+		// could use these to change and revert - opening bracket changes,
 		// closing changes the same setting in the opposite direction
 		String containers = "(){}[]<>\"\"";
 	}
