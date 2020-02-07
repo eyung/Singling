@@ -18,15 +18,14 @@
 package com.gtwm.sound;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
@@ -48,6 +47,8 @@ public class TextSound {
 	static String instrument;
 
 	static List<String> orderings = new ArrayList<String>();
+
+	static Map<String, Double> sensemap;
 
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
@@ -90,7 +91,7 @@ public class TextSound {
 
 	// could use these to change and revert - opening bracket changes,
 	// closing changes the same setting in the opposite direction
-	static String containers = "(){}[]<>\"\"";
+	//static String containers = "(){}[]<>\"\"";
 
 	// Print out each paragraph as we play (causes a pause each time)
 	//static boolean follow = false;
@@ -234,9 +235,16 @@ public class TextSound {
 				//System.out.println(""); //testing
 				double theRestLength = restLength;
 
-				if (passingWords.contains(lastWord.toString())) {
+				// Do something if word from database is found
+				if (sensemap.containsKey(lastWord.toString().toLowerCase())) {
+					System.out.println("Key found");
+					sensemap.get(lastWord.toString().toLowerCase());
+				}
+
+				if (passingWords.contains(lastWord)) {
 					theRestLength = restLength * (2d/3d);
 				}
+
 				lastWord.setLength(0);
 				soundString.append("R/" + String.format("%f", theRestLength) + " ");
 				if (charString.equals("\n")) {
@@ -364,7 +372,7 @@ public class TextSound {
 	private static void resetSettings() {
 		//instrument = "PIANO";
 
-		orderings = new ArrayList<String>();
+		//orderings = new ArrayList<String>();
 
 		// Starting settings
 		// NB: If any values are set to exactly zero, they will be unable to
@@ -395,12 +403,12 @@ public class TextSound {
 		ordering = 1;
 
 		// Initial setting type
-		Setting setting = Setting.TEMPO;
+		setting = Setting.TEMPO;
 
-		EnumSet<Setting> allSettings = EnumSet.allOf(Setting.class);
+		allSettings = EnumSet.allOf(Setting.class);
 
 		// Characters which prompt a change of setting type
-		String settingChangers = ".";
+		settingChangers = ".";
 
 		// Even characters increase setting values, odd characters decrease.
 		// This swaps that behaviour
@@ -408,7 +416,20 @@ public class TextSound {
 
 		// could use these to change and revert - opening bracket changes,
 		// closing changes the same setting in the opposite direction
-		String containers = "(){}[]<>\"\"";
+		//containers = "(){}[]<>\"\"";
 	}
 
+	public static Map<String, Double> getMapFromCSV(final String filePath) throws IOException {
+
+		Stream<String> lines = Files.lines(Paths.get(filePath));
+
+		sensemap =
+				lines.map(line -> line.split(";"))
+				//		.collect(Collectors.toMap(line -> line[0], line -> line[1]));
+						.collect(Collectors.toMap(line -> line[0], line -> Double.parseDouble(String.valueOf(line[1]))));
+
+		lines.close();
+
+		return sensemap;
+	}
 }
