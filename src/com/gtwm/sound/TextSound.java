@@ -48,7 +48,7 @@ public class TextSound {
 
 	static List<String> orderings = new ArrayList<String>();
 
-	static Map<String, Double> sensemap;
+	static Map<String, Double> sensemap = new HashMap<String, Double>();
 
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
@@ -236,9 +236,11 @@ public class TextSound {
 				double theRestLength = restLength;
 
 				// Do something if word from database is found
-				if (sensemap.containsKey(lastWord.toString().toLowerCase())) {
-					System.out.println("Key found");
-					sensemap.get(lastWord.toString().toLowerCase());
+				if (!sensemap.isEmpty()) {
+					if (sensemap.containsKey(lastWord.toString().toLowerCase())) {
+						System.out.println("Key found");
+						sensemap.get(lastWord.toString().toLowerCase());
+					}
 				}
 
 				if (passingWords.contains(lastWord)) {

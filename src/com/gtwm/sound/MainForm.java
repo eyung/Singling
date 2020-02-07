@@ -24,13 +24,15 @@ public class MainForm extends JFrame {
 
     String inputText = "";
 
-    String outFilename = "";
+    File workingDirectory = new File(System.getProperty("user.dir"));
+    // Set default
+    String outFilename = "output.mid";
+
+    JFileChooser fc = new JFileChooser();
 
     Map<String, Double> thisMap;
 
     public MainForm() {
-
-        JFileChooser fc = new JFileChooser();
 
         btnLoadText.addActionListener(new ActionListener() {
             @Override
@@ -38,7 +40,7 @@ public class MainForm extends JFrame {
 
                 // Handle open button action
                 if (e.getSource() == btnLoadText) {
-                    File workingDirectory = new File(System.getProperty("user.dir"));
+                    //File workingDirectory = new File(System.getProperty("user.dir"));
                     fc.setCurrentDirectory(workingDirectory);
 
                     int returnVal = fc.showOpenDialog(panel1);
@@ -66,7 +68,7 @@ public class MainForm extends JFrame {
 
                 // Handle open button action
                 if (e.getSource() == btnProcess) {
-                    if (textArea1.getLineCount() > 1) {
+                    if (textArea1.getLineCount() > 0) {
                         try {
                             // Get settings from the form
                             TextSound.instrument = String.valueOf(setInstrument.getSelectedItem());
@@ -94,7 +96,7 @@ public class MainForm extends JFrame {
                             System.out.println("Tempo: " + TextSound.tempo);
 
                             // Process text
-                            TextSound.runStuff(inputText, outFilename);
+                            TextSound.runStuff(textArea1.getText(), outFilename);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -232,7 +234,7 @@ public class MainForm extends JFrame {
         final JScrollPane scrollPane1 = new JScrollPane();
         panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(500, 500), null, null, 0, false));
         textArea1 = new JTextArea();
-        textArea1.setEditable(false);
+        textArea1.setEditable(true);
         textArea1.setLineWrap(true);
         textArea1.setWrapStyleWord(true);
         scrollPane1.setViewportView(textArea1);

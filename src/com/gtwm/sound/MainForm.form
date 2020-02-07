@@ -125,7 +125,7 @@
           <component id="53318" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
             <constraints/>
             <properties>
-              <editable value="false"/>
+              <editable value="true"/>
               <lineWrap value="true"/>
               <wrapStyleWord value="true"/>
             </properties>
