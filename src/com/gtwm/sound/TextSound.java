@@ -17,15 +17,11 @@
 
 package com.gtwm.sound;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
@@ -49,6 +45,7 @@ public class TextSound {
 	static List<String> orderings = new ArrayList<String>();
 
 	static Map<String, Double> sensemap = new HashMap<String, Double>();
+
 
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
@@ -419,19 +416,5 @@ public class TextSound {
 		// could use these to change and revert - opening bracket changes,
 		// closing changes the same setting in the opposite direction
 		//containers = "(){}[]<>\"\"";
-	}
-
-	public static Map<String, Double> getMapFromCSV(final String filePath) throws IOException {
-
-		Stream<String> lines = Files.lines(Paths.get(filePath));
-
-		sensemap =
-				lines.map(line -> line.split(";"))
-				//		.collect(Collectors.toMap(line -> line[0], line -> line[1]));
-						.collect(Collectors.toMap(line -> line[0], line -> Double.parseDouble(String.valueOf(line[1]))));
-
-		lines.close();
-
-		return sensemap;
 	}
 }

@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.io.*;
 import java.util.Map;
 
 public class MainForm extends JFrame {
@@ -121,11 +121,14 @@ public class MainForm extends JFrame {
                         //This is where a real application would open the file.
                         try {
 
-                            thisMap = TextSound.getMapFromCSV(file.getAbsolutePath());
+                            //thisMap = TextSound.getMapFromCSV(file.getAbsolutePath());
 
-                            thisMap.entrySet().forEach(entry -> {
-                                System.out.println(entry.getKey() + " " + entry.getValue());
-                            });
+                            //thisMap.entrySet().forEach(entry -> {
+                            //    System.out.println(entry.getKey() + " " + entry.getValue());
+                            //});
+
+                            csvparser myParser = new csvparser();
+                            boolean testing = myParser.csvtoSenseMap(file.getPath());
 
                         } catch (Exception ex) {
                             ex.printStackTrace();

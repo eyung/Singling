@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="textsound">
+  <library name="opencsv-5.1">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/textsound.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/opencsv-5.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
