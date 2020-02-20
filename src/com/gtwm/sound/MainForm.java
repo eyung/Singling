@@ -162,7 +162,7 @@ public class MainForm extends JFrame {
 
                 // Handle open button action
                 if (e.getSource() == btnWordClass) {
-                   
+
                 }
             }
         });
