@@ -25,6 +25,7 @@ import java.util.*;
 
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 /**
  * Turn a stream of text into sound, using the overtone series Letter A = root
@@ -75,7 +76,8 @@ public class TextSound {
 	static int ordering = 1;
 
 	// Initial setting type
-	static Setting setting = Setting.TEMPO;
+	//static Setting setting = Setting.TEMPO;
+    static Setting setting = Setting.NOTE_LENGTH;
 
 	static EnumSet<Setting> allSettings = EnumSet.allOf(Setting.class);
 
@@ -94,6 +96,8 @@ public class TextSound {
 	//static boolean follow = false;
 	
 	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
+
+	static Set<String> wordTypes = new HashSet<String>();
 
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
@@ -198,7 +202,7 @@ public class TextSound {
 		//if (!follow) {
 			String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 			System.out.println(ss);
-			System.out.println(input);
+			//System.out.println(input);
 			Player player = new Player();
 			File file = new File(output);
 			player.saveMidi(ss, file);
@@ -233,15 +237,23 @@ public class TextSound {
 				double theRestLength = restLength;
 
 				// Do something if word from database is found
-				if (!sensemap.isEmpty()) {
-					if (sensemap.containsKey(lastWord.toString().toLowerCase())) {
-						System.out.println("Key found");
-						sensemap.get(lastWord.toString().toLowerCase());
-					}
-				}
+				//if (!sensemap.isEmpty()) {
+				//	if (sensemap.containsKey(lastWord.toString().toLowerCase())) {
+				//		System.out.println("Key found");
+				//		sensemap.get(lastWord.toString().toLowerCase());
+				//	}
+				//}
 
 				if (passingWords.contains(lastWord)) {
 					theRestLength = restLength * (2d/3d);
+				}
+
+				// nouns cause tempo to slow down
+				if	(wordTypes.stream().anyMatch(lastWord.toString()::equalsIgnoreCase)) {
+					tempo = 220d;
+					//tempo = setting.keepInRange(tempo);
+					soundString.append("T" + (int) tempo + " ");
+					//octaves = 2.0d;
 				}
 
 				lastWord.setLength(0);

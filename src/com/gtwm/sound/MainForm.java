@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.Map;
+import java.util.List;
 
 public class MainForm extends JFrame {
     private JButton btnLoadText;
@@ -22,7 +23,7 @@ public class MainForm extends JFrame {
     private JComboBox setTempo;
     private JButton btnGetDB;
     private JButton button1;
-    private JButton button2;
+    private JButton btnWordClass;
 
     String inputText = "";
 
@@ -82,19 +83,20 @@ public class MainForm extends JFrame {
                             TextSound.octaves = Double.valueOf(setOctaves.getValue());
                             System.out.println("Octaves: " + TextSound.octaves);
 
-                            String tempTempo = String.valueOf(setTempo.getSelectedItem());
-                            switch (tempTempo) {
-                                case "GRAVE":
+                            /*switch (String.valueOf(setTempo.getSelectedItem())) {
+                                case "40":
                                     TextSound.tempo = 40d;
-                                case "LARGO":
+                                case "45":
                                     TextSound.tempo = 45d;
-                                case "LARGHETTO":
+                                case "50":
                                     TextSound.tempo = 50d;
-                                case "ALLEGRO":
-                                    TextSound.tempo = 120;
-                                case "PRETISSIMO":
-                                    TextSound.tempo = 220;
-                            }
+                                case "120":
+                                    TextSound.tempo = 120d;
+                                case "220":
+                                    TextSound.tempo = 220d;
+                            }*/
+
+                            TextSound.tempo = Double.parseDouble((String.valueOf(setTempo.getSelectedItem())));
                             System.out.println("Tempo: " + TextSound.tempo);
 
                             // Process text
@@ -110,6 +112,8 @@ public class MainForm extends JFrame {
         btnGetDB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                List<SenseMap.Mapping> items;
 
                 // Handle open button action
                 if (e.getSource() == btnGetDB) {
@@ -130,7 +134,16 @@ public class MainForm extends JFrame {
                             //});
 
                             csvparser myParser = new csvparser();
-                            boolean testing = myParser.csvtoSenseMap(file.getPath());
+                            items = myParser.csvtoSenseMap(file.getPath());
+
+                            for (SenseMap.Mapping item : items) {
+                                //System.out.println(item.getWordKey() + ", " + item.getWordClass() + ", " + item.getWordValue());
+
+                                if (item.getWordClass() == SenseMap.Classification.n) {
+                                    //System.out.println("Noun: " + item.getWordKey());
+                                    TextSound.wordTypes.add(item.getWordKey());
+                                }
+                            }
 
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -143,24 +156,13 @@ public class MainForm extends JFrame {
             }
         });
 
-        button2.addActionListener(new ActionListener() {
+        btnWordClass.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 // Handle open button action
-                if (e.getSource() == button2) {
-                    button1.setVisible(true);
-                }
-            }
-        });
-
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                // Handle open button action
-                if (e.getSource() == button1) {
-                    button1.setVisible(false);
+                if (e.getSource() == btnWordClass) {
+                   
                 }
             }
         });
@@ -239,13 +241,13 @@ public class MainForm extends JFrame {
         panel2.add(setOctaves, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 10, false));
         setTempo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel3 = new DefaultComboBoxModel();
-        defaultComboBoxModel3.addElement("GRAVE");
-        defaultComboBoxModel3.addElement("LARGO");
-        defaultComboBoxModel3.addElement("LARGHETTO");
-        defaultComboBoxModel3.addElement("ALLEGRO");
-        defaultComboBoxModel3.addElement("PRETISSIMO");
+        defaultComboBoxModel3.addElement("40");
+        defaultComboBoxModel3.addElement("45");
+        defaultComboBoxModel3.addElement("50");
+        defaultComboBoxModel3.addElement("120");
+        defaultComboBoxModel3.addElement("220");
         setTempo.setModel(defaultComboBoxModel3);
-        setTempo.setSelectedIndex(3);
+        setTempo.setSelectedIndex(0);
         panel2.add(setTempo, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 10, false));
         final JLabel label1 = new JLabel();
         label1.setText("Octave range:");
@@ -259,13 +261,9 @@ public class MainForm extends JFrame {
         final JLabel label4 = new JLabel();
         label4.setText("Instrument:");
         panel2.add(label4, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        button1 = new JButton();
-        button1.setText("Button");
-        button1.setVisible(false);
-        panel2.add(button1, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        button2 = new JButton();
-        button2.setText("Button");
-        panel2.add(button2, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btnWordClass = new JButton();
+        btnWordClass.setText("Word Type");
+        panel2.add(btnWordClass, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(500, 500), null, null, 0, false));
         textArea1 = new JTextArea();

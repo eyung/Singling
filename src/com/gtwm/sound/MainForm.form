@@ -67,13 +67,13 @@
             </constraints>
             <properties>
               <model>
-                <item value="GRAVE"/>
-                <item value="LARGO"/>
-                <item value="LARGHETTO"/>
-                <item value="ALLEGRO"/>
-                <item value="PRETISSIMO"/>
+                <item value="40"/>
+                <item value="45"/>
+                <item value="50"/>
+                <item value="120"/>
+                <item value="220"/>
               </model>
-              <selectedIndex value="3"/>
+              <selectedIndex value="0"/>
             </properties>
           </component>
           <component id="876cf" class="javax.swing.JLabel">
@@ -111,21 +111,12 @@
               <text value="Instrument:"/>
             </properties>
           </component>
-          <component id="ac26c" class="javax.swing.JButton" binding="button1" default-binding="true">
-            <constraints>
-              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Button"/>
-              <visible value="false"/>
-            </properties>
-          </component>
-          <component id="63b09" class="javax.swing.JButton" binding="button2" default-binding="true">
+          <component id="63b09" class="javax.swing.JButton" binding="btnWordClass">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Button"/>
+              <text value="Word Type"/>
             </properties>
           </component>
         </children>
