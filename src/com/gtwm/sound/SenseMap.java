@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SenseMap {
 
-    enum Classification {
+    enum Type {
         n, v, a
     }
 
@@ -19,7 +19,7 @@ public class SenseMap {
         String wordKey;
 
         @Parsed(index = 1)
-        Classification wordClass;
+        Type wordType;
 
         @Parsed(index = 2)
         double wordValue;
@@ -28,9 +28,9 @@ public class SenseMap {
 
         }
 
-        public Mapping(String x, Classification y, double z) {
+        public Mapping(String x, Type y, double z) {
             this.wordKey = x;
-            this.wordClass = y;
+            this.wordType = y;
             this.wordValue = z;
         }
 
@@ -38,30 +38,30 @@ public class SenseMap {
             wordKey = thisKey;
         }
 
-        public String getWordKey() {
+        public String getKey() {
             return wordKey;
         }
 
-        public void setClass(Classification thisClass) {
-            wordClass = thisClass;
+        public void setType(Type thisClass) {
+            wordType = thisClass;
         }
 
-        public Classification getWordClass() {
-            return wordClass;
+        public Type getType() {
+            return wordType;
         }
 
         public void setValue(double thisValue) {
             wordValue = thisValue;
         }
 
-        public double getWordValue() {
+        public double getValue() {
             return wordValue;
         }
 
         public String toString() {
             return "Word{" +
                     "key=" + wordKey +
-                    "class=" + wordClass +
+                    "type=" + wordType +
                     "value=" + wordValue +
                     '}';
         }

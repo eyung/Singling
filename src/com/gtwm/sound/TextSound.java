@@ -97,7 +97,7 @@ public class TextSound {
 	
 	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
 
-	static Set<String> wordTypes = new HashSet<String>();
+	static List<Set<String>> wordSets = new ArrayList<Set<String>>();
 
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
@@ -236,25 +236,22 @@ public class TextSound {
 				//System.out.println(""); //testing
 				double theRestLength = restLength;
 
-				// Do something if word from database is found
-				//if (!sensemap.isEmpty()) {
-				//	if (sensemap.containsKey(lastWord.toString().toLowerCase())) {
-				//		System.out.println("Key found");
-				//		sensemap.get(lastWord.toString().toLowerCase());
-				//	}
-				//}
-
 				if (passingWords.contains(lastWord)) {
 					theRestLength = restLength * (2d/3d);
 				}
 
-				// nouns cause tempo to slow down
-				if	(wordTypes.stream().anyMatch(lastWord.toString()::equalsIgnoreCase)) {
-					tempo = 220d;
-					//tempo = setting.keepInRange(tempo);
-					soundString.append("T" + (int) tempo + " ");
-					//octaves = 2.0d;
-				}
+				// Make changes to the staccato based on user input
+				wordSets.forEach((i) -> {
+
+					System.out.println(i.stream().findFirst());
+
+					if (i.stream().anyMatch(lastWord.toString()::equalsIgnoreCase)) {
+						tempo = 220d;
+						//tempo = setting.keepInRange(tempo);
+						soundString.append("T" + (int) tempo + " ");
+					}
+
+				});
 
 				lastWord.setLength(0);
 				soundString.append("R/" + String.format("%f", theRestLength) + " ");

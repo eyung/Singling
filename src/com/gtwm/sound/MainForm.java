@@ -3,14 +3,17 @@ package com.gtwm.sound;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.omg.CORBA.WStringSeqHelper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class MainForm extends JFrame {
     private JButton btnLoadText;
@@ -23,7 +26,7 @@ public class MainForm extends JFrame {
     private JComboBox setTempo;
     private JButton btnGetDB;
     private JButton button1;
-    private JButton btnWordClass;
+    private JButton btnType;
 
     String inputText = "";
 
@@ -33,7 +36,7 @@ public class MainForm extends JFrame {
 
     JFileChooser fc = new JFileChooser();
 
-    Map<String, Double> thisMap;
+    static List<SenseMap.Mapping> items;
 
     public MainForm() {
 
@@ -99,6 +102,22 @@ public class MainForm extends JFrame {
                             TextSound.tempo = Double.parseDouble((String.valueOf(setTempo.getSelectedItem())));
                             System.out.println("Tempo: " + TextSound.tempo);
 
+
+                            Set<String> typesSet = new HashSet<>();
+                            TextSound.wordSets.add(typesSet);
+
+                            for (SenseMap.Mapping item : items) {
+                                if (item.getType() == SenseMap.Type.n) {
+                                    typesSet.add(item.getKey());
+                                }
+                            }
+
+                            Set<String> typesSet2 = new HashSet<>();
+                            TextSound.wordSets.add(typesSet2);
+
+                            typesSet2.add("type");
+                            typesSet2.add("tempo");
+
                             // Process text
                             TextSound.runStuff(textArea1.getText(), outFilename);
                         } catch (Exception ex) {
@@ -113,8 +132,6 @@ public class MainForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                List<SenseMap.Mapping> items;
-
                 // Handle open button action
                 if (e.getSource() == btnGetDB) {
                     File workingDirectory = new File(System.getProperty("user.dir"));
@@ -127,23 +144,8 @@ public class MainForm extends JFrame {
                         //This is where a real application would open the file.
                         try {
 
-                            //thisMap = TextSound.getMapFromCSV(file.getAbsolutePath());
-
-                            //thisMap.entrySet().forEach(entry -> {
-                            //    System.out.println(entry.getKey() + " " + entry.getValue());
-                            //});
-
                             csvparser myParser = new csvparser();
                             items = myParser.csvtoSenseMap(file.getPath());
-
-                            for (SenseMap.Mapping item : items) {
-                                //System.out.println(item.getWordKey() + ", " + item.getWordClass() + ", " + item.getWordValue());
-
-                                if (item.getWordClass() == SenseMap.Classification.n) {
-                                    //System.out.println("Noun: " + item.getWordKey());
-                                    TextSound.wordTypes.add(item.getWordKey());
-                                }
-                            }
 
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -156,13 +158,14 @@ public class MainForm extends JFrame {
             }
         });
 
-        btnWordClass.addActionListener(new ActionListener() {
+        btnType.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 // Handle open button action
-                if (e.getSource() == btnWordClass) {
-
+                if (e.getSource() == btnType) {
+                    DialogType thisDialog = new DialogType();
+                    thisDialog.setVisible(true);
                 }
             }
         });
@@ -261,9 +264,9 @@ public class MainForm extends JFrame {
         final JLabel label4 = new JLabel();
         label4.setText("Instrument:");
         panel2.add(label4, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        btnWordClass = new JButton();
-        btnWordClass.setText("Word Type");
-        panel2.add(btnWordClass, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btnType = new JButton();
+        btnType.setText("Word Type");
+        panel2.add(btnType, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(500, 500), null, null, 0, false));
         textArea1 = new JTextArea();
