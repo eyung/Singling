@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
@@ -46,7 +47,6 @@ public class TextSound {
 	static List<String> orderings = new ArrayList<String>();
 
 	static Map<String, Double> sensemap = new HashMap<String, Double>();
-
 
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
@@ -240,15 +240,31 @@ public class TextSound {
 					theRestLength = restLength * (2d/3d);
 				}
 
-				// Make changes to the staccato based on user input
+				// Make changes based on user input
 				wordSets.forEach((i) -> {
 
-					System.out.println(i.stream().findFirst());
+					long count = i.stream().count();
+
+					//String wordset = i.stream().skip(count-1).findFirst().get();
+					//String wordmodtype = i.stream().skip(count-2).findFirst().get();
+					//String soundmodvalue = i.stream().skip(count-3).findFirst().get();
+					//String soundmodtype = i.stream().skip(count-4).findFirst().get();
+
+					String wordmodtype = i.stream().filter(x -> x.startsWith("WMT:")).findAny().get().split(":")[1];
+                    String soundmodtype = i.stream().filter(x -> x.startsWith("SMT:")).findAny().get().split(":")[1];
+                    String soundmodvalue = i.stream().filter(x -> x.startsWith("SMV:")).findAny().get().split(":")[1];
 
 					if (i.stream().anyMatch(lastWord.toString()::equalsIgnoreCase)) {
-						tempo = 220d;
-						//tempo = setting.keepInRange(tempo);
-						soundString.append("T" + (int) tempo + " ");
+
+						switch (wordmodtype) {
+							case "wordtype":
+
+								switch (soundmodtype) {
+									case "tempo":
+										soundString.append("T" + Integer.parseInt(soundmodvalue) + " ");
+								}
+						}
+
 					}
 
 				});

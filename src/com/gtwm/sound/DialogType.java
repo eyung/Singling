@@ -7,14 +7,19 @@ import com.intellij.uiDesigner.core.Spacer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class DialogType extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JComboBox setType;
-    private JComboBox setChange;
+    private JComboBox setSoundMod;
     private JComboBox setTempo;
+    private JComboBox setDuration;
+    private JComboBox setInstrument;
 
     public DialogType() {
         setContentPane(contentPane);
@@ -23,8 +28,31 @@ public class DialogType extends JDialog {
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
+                String wordset = String.valueOf(setType.getSelectedItem());
+                String soundmodtype = String.valueOf(setSoundMod.getSelectedItem());
+                String soundmodvalue = String.valueOf(setTempo.getSelectedItem());
+
+                //System.out.println("wordset: " + wordset
+                //        + " soundmod: " + soundmodtype
+                //        + " to " + soundmodvalue);
+
+                Set<String> typesSet = new HashSet<>();
+                TextSound.wordSets.add(typesSet);
+
+                typesSet.add("WMT:wordtype");
+                typesSet.add("SMT:" + soundmodtype);
+                typesSet.add("SMV:" + soundmodvalue);
+
+                for (SenseMap.Mapping item : MainForm.items) {
+                    if (item.getType() == SenseMap.Type.valueOf(wordset)) {
+                        typesSet.add(item.getKey());
+                    }
+                }
+
                 onOK();
             }
+
         });
 
         buttonCancel.addActionListener(new ActionListener() {
@@ -83,6 +111,8 @@ public class DialogType extends JDialog {
     private void $$$setupUI$$$() {
         contentPane = new JPanel();
         contentPane.setLayout(new GridLayoutManager(2, 1, new Insets(10, 10, 10, 10), -1, -1));
+        contentPane.setEnabled(true);
+        contentPane.setMinimumSize(new Dimension(461, 101));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, 1, null, null, null, 0, false));
@@ -99,7 +129,7 @@ public class DialogType extends JDialog {
         panel2.add(buttonCancel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
-        contentPane.add(panel3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(300, 100), null, null, 0, false));
+        contentPane.add(panel3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         setType = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("n");
@@ -107,13 +137,13 @@ public class DialogType extends JDialog {
         defaultComboBoxModel1.addElement("a");
         setType.setModel(defaultComboBoxModel1);
         panel3.add(setType, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        setChange = new JComboBox();
+        setSoundMod = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
         defaultComboBoxModel2.addElement("tempo");
         defaultComboBoxModel2.addElement("octave");
         defaultComboBoxModel2.addElement("instrument");
-        setChange.setModel(defaultComboBoxModel2);
-        panel3.add(setChange, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setSoundMod.setModel(defaultComboBoxModel2);
+        panel3.add(setSoundMod, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setTempo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel3 = new DefaultComboBoxModel();
         defaultComboBoxModel3.addElement("40");

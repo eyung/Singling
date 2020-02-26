@@ -28,17 +28,29 @@ public class MainForm extends JFrame {
     private JButton button1;
     private JButton btnType;
 
+    static List<SenseMap.Mapping> items;
+
     String inputText = "";
 
     File workingDirectory = new File(System.getProperty("user.dir"));
-    // Set default
+
+    // Set default output file name
     String outFilename = "output.mid";
 
-    JFileChooser fc = new JFileChooser();
-
-    static List<SenseMap.Mapping> items;
+    // Set default db path
+    String dbFile = "C:/Users/eyung/Downloads/dlc/TextSound/database.csv";
 
     public MainForm() {
+
+        JFileChooser fc = new JFileChooser();
+
+        csvparser myParser = new csvparser();
+
+        try {
+            items = myParser.csvtoSenseMap(dbFile);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         btnLoadText.addActionListener(new ActionListener() {
             @Override
@@ -86,37 +98,8 @@ public class MainForm extends JFrame {
                             TextSound.octaves = Double.valueOf(setOctaves.getValue());
                             System.out.println("Octaves: " + TextSound.octaves);
 
-                            /*switch (String.valueOf(setTempo.getSelectedItem())) {
-                                case "40":
-                                    TextSound.tempo = 40d;
-                                case "45":
-                                    TextSound.tempo = 45d;
-                                case "50":
-                                    TextSound.tempo = 50d;
-                                case "120":
-                                    TextSound.tempo = 120d;
-                                case "220":
-                                    TextSound.tempo = 220d;
-                            }*/
-
-                            TextSound.tempo = Double.parseDouble((String.valueOf(setTempo.getSelectedItem())));
+                            TextSound.tempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
                             System.out.println("Tempo: " + TextSound.tempo);
-
-
-                            Set<String> typesSet = new HashSet<>();
-                            TextSound.wordSets.add(typesSet);
-
-                            for (SenseMap.Mapping item : items) {
-                                if (item.getType() == SenseMap.Type.n) {
-                                    typesSet.add(item.getKey());
-                                }
-                            }
-
-                            Set<String> typesSet2 = new HashSet<>();
-                            TextSound.wordSets.add(typesSet2);
-
-                            typesSet2.add("type");
-                            typesSet2.add("tempo");
 
                             // Process text
                             TextSound.runStuff(textArea1.getText(), outFilename);
@@ -144,7 +127,7 @@ public class MainForm extends JFrame {
                         //This is where a real application would open the file.
                         try {
 
-                            csvparser myParser = new csvparser();
+                            //csvparser myParser = new csvparser();
                             items = myParser.csvtoSenseMap(file.getPath());
 
                         } catch (Exception ex) {
@@ -164,8 +147,9 @@ public class MainForm extends JFrame {
 
                 // Handle open button action
                 if (e.getSource() == btnType) {
-                    DialogType thisDialog = new DialogType();
-                    thisDialog.setVisible(true);
+                    DialogType dialog = new DialogType();
+                    dialog.pack();
+                    dialog.setVisible(true);
                 }
             }
         });
@@ -210,9 +194,9 @@ public class MainForm extends JFrame {
      */
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(3, 2, new Insets(20, 20, 20, 20), -1, -1));
+        panel1.setLayout(new GridLayoutManager(3, 3, new Insets(20, 20, 20, 20), -1, -1));
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(5, 3, new Insets(0, 50, 0, 50), -1, -1));
+        panel2.setLayout(new GridLayoutManager(5, 2, new Insets(0, 50, 0, 50), -1, -1));
         panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(500, 500), null, null, 0, false));
         setInstrument = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
@@ -264,9 +248,6 @@ public class MainForm extends JFrame {
         final JLabel label4 = new JLabel();
         label4.setText("Instrument:");
         panel2.add(label4, new GridConstraints(0, 0, 2, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        btnType = new JButton();
-        btnType.setText("Word Type");
-        panel2.add(btnType, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(500, 500), null, null, 0, false));
         textArea1 = new JTextArea();
@@ -275,16 +256,13 @@ public class MainForm extends JFrame {
         textArea1.setWrapStyleWord(true);
         scrollPane1.setViewportView(textArea1);
         final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         btnLoadText = new JButton();
         btnLoadText.setText("Load");
         panel3.add(btnLoadText, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 0, false));
         final Spacer spacer1 = new Spacer();
         panel3.add(spacer1, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        btnGetDB = new JButton();
-        btnGetDB.setText("Button");
-        panel3.add(btnGetDB, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel4 = new JPanel();
         panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -294,6 +272,17 @@ public class MainForm extends JFrame {
         final JLabel label5 = new JLabel();
         label5.setText("Settings");
         panel1.add(label5, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JPanel panel5 = new JPanel();
+        panel5.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panel5, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        btnType = new JButton();
+        btnType.setText("Word Type");
+        panel5.add(btnType, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        panel5.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        btnGetDB = new JButton();
+        btnGetDB.setText("DB");
+        panel1.add(btnGetDB, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label2.setLabelFor(setTempo);
         label3.setLabelFor(setDuration);
         label4.setLabelFor(setInstrument);
