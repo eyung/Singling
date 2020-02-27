@@ -1,5 +1,4 @@
 word,class,value
-test,n,0.3
-bat,n,0
-travel,v,-0.2
-null,,
+test,n,1
+bat,n,2
+travel,v,3

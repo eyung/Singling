@@ -24,9 +24,12 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.sun.xml.internal.ws.util.StringUtils;
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+
+import javax.sql.rowset.Predicate;
 
 /**
  * Turn a stream of text into sound, using the overtone series Letter A = root
@@ -233,11 +236,54 @@ public class TextSound {
 
 			if ((Character.isWhitespace(ch)) || (charNum < 1)) {
 				// space at the end
-				//System.out.println(""); //testing
+
 				double theRestLength = restLength;
 
 				if (passingWords.contains(lastWord)) {
 					theRestLength = restLength * (2d/3d);
+				}
+
+				// Lookup database
+  				for (SenseMap.Mapping item : MainForm.items) {
+
+					//System.out.println(("Key: " + item.getKey().toUpperCase()));
+					//System.out.println("lastword: " + lastWord); //testing
+
+					if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
+//					if (MainForm.items.contains(lastWord)) {
+						//typesSet.add(item.getKey());
+
+						System.out.println("Found: " + item.getKey());
+
+
+						double targetOctave = Math.ceil((item.getValue() / 26d) * octaves);
+						double frequency = item.getValue() * baseFrequency;
+						// Normalise to fit in the range
+						double topFrequency = baseFrequency;
+						for (int j = 0; j < targetOctave; j++) {
+							topFrequency = topFrequency * 2;
+						}
+						while (frequency > topFrequency) {
+							frequency = frequency / 2;
+						}
+
+						System.out.println("Frequency for " + lastWord + "=" + item.getValue() +
+								" normalized to octave "
+								+ octaves + ", top frequency " + topFrequency + ": " +
+								frequency);
+
+						soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength);
+						System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
+
+						double theNoteGap = noteGap;
+						if (theNoteGap > 0.2) {
+							theNoteGap  = theNoteGap / lastWord.length();
+						} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
+							theNoteGap = theNoteGap * 0.5;
+						}
+
+						soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap
+					}
 				}
 
 				// Make changes based on user input
@@ -245,24 +291,39 @@ public class TextSound {
 
 					long count = i.stream().count();
 
-					//String wordset = i.stream().skip(count-1).findFirst().get();
-					//String wordmodtype = i.stream().skip(count-2).findFirst().get();
-					//String soundmodvalue = i.stream().skip(count-3).findFirst().get();
 					//String soundmodtype = i.stream().skip(count-4).findFirst().get();
 
 					String wordmodtype = i.stream().filter(x -> x.startsWith("WMT:")).findAny().get().split(":")[1];
-                    String soundmodtype = i.stream().filter(x -> x.startsWith("SMT:")).findAny().get().split(":")[1];
-                    String soundmodvalue = i.stream().filter(x -> x.startsWith("SMV:")).findAny().get().split(":")[1];
+                    //String soundmodtype = i.stream().filter(x -> x.startsWith("SMT:")).findAny().get().split(":")[1];
+                    //String soundmodvalue = i.stream().filter(x -> x.startsWith("SMV:")).findAny().get().split(":")[1];
+
+                    String modtempo = i.stream().filter(x -> x.startsWith("MTEMPO:")).findAny().get().split(":")[1];
+
+					String modduration = i.stream()
+							.filter(Objects::nonNull)
+							.filter(x -> x.startsWith("MDURATION:")).findAny().get().split(":")[1];
+					String modinstrument = i.stream().filter(x -> x.startsWith("MINSTRUMENT:")).findAny().get().split(":")[1];
 
 					if (i.stream().anyMatch(lastWord.toString()::equalsIgnoreCase)) {
 
 						switch (wordmodtype) {
 							case "wordtype":
 
-								switch (soundmodtype) {
-									case "tempo":
-										soundString.append("T" + Integer.parseInt(soundmodvalue) + " ");
+								//switch (soundmodtype) {
+								//	case "tempo":
+								//		soundString.append("T" + Integer.parseInt(soundmodvalue) + " ");
+								//}
+
+								if (!modtempo.isEmpty()) {
+									soundString.append("T" + Integer.parseInt(modtempo) + " ");
 								}
+								if (!modduration.isEmpty()) {
+									noteLength = Double.parseDouble(modduration);
+								}
+								if (!modinstrument.isEmpty()) {
+									soundString.append("I" + modinstrument + " ");
+								}
+
 						}
 
 					}
@@ -271,13 +332,17 @@ public class TextSound {
 
 				lastWord.setLength(0);
 				soundString.append("R/" + String.format("%f", theRestLength) + " ");
+
 				if (charString.equals("\n")) {
 					// An extra rest on newlines
 					soundString.append("R/" + String.format("%f", restLength) + " ");
 				}
-				if (settingChangers.contains(charString)) {
-					changeSetting();
-				} else if (!Character.isWhitespace(ch)) {
+
+				//if (settingChangers.contains(charString)) {
+				//	changeSetting();
+				//}
+
+				else if (!Character.isWhitespace(ch)) {
 					// punctuation
 					//System.out.println(""); //testing
 					int ascii = (int) ch;
@@ -340,26 +405,9 @@ public class TextSound {
 					}
 				}
 			} else {
-				// The core of it: turn letters into frequencies
+
 				lastWord.append(upperCh);
-				//System.out.println("lastword: " + lastWord); //testing
-				double targetOctave = Math.ceil((charNum / 26d) * octaves);
-				double frequency = charNum * baseFrequency;
-				// Normalise to fit in the range
-				double topFrequency = baseFrequency;
-				for (int j = 0; j < targetOctave; j++) {
-					topFrequency = topFrequency * 2;
-				}
-				while (frequency > topFrequency) {
-					frequency = frequency / 2;
-				}
-
-				 System.out.println("Frequency for " + ch + "=" + charNum +
-				 " normalized to octave "
-				 + octaves + ", top frequency " + topFrequency + ": " +
-				 frequency);
-
-				soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
+				/*soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
 				System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 				if (Character.isUpperCase(ch)) {
 					//System.out.println("notelength: " + noteLength);
@@ -374,7 +422,7 @@ public class TextSound {
 				} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
 					theNoteGap = theNoteGap * 0.5;
 				}
-				soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap
+				soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap*/
 			}
 		}
 		System.out.println(soundString.toString());
@@ -408,7 +456,7 @@ public class TextSound {
 		// crotchet
 
 		// How long to wait before playing the next note
-		noteGap = 0.0001; // 1 / 32d; // 1/32 = good default, 0 = no
+		noteGap = .0001; // 1 / 32d; // 1/32 = good default, 0 = no
 
 		// gap (chords)
 		// How long to pause when a rest (space etc.) is encountered
