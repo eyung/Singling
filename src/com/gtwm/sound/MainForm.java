@@ -3,17 +3,13 @@ package com.gtwm.sound;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import org.omg.CORBA.WStringSeqHelper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class MainForm extends JFrame {
     private JButton btnLoadText;
@@ -25,7 +21,6 @@ public class MainForm extends JFrame {
     private JSlider setOctaves;
     private JComboBox setTempo;
     private JButton btnGetDB;
-    private JButton button1;
     private JButton btnType;
 
     static List<SenseMap.Mapping> items;

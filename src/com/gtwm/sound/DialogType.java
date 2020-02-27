@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class DialogType extends JDialog {

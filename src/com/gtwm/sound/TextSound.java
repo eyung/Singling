@@ -22,14 +22,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import com.sun.xml.internal.ws.util.StringUtils;
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
-import javax.sql.rowset.Predicate;
 
 /**
  * Turn a stream of text into sound, using the overtone series Letter A = root
@@ -231,7 +227,7 @@ public class TextSound {
 			// A = 1, B = 2, ...
 			int charNum = orderings.get(ordering).indexOf(upperCh) + 1;
 			// int charNum = Character.getNumericValue(upperCh) - 9;
-			System.out.println(charNum);
+			//System.out.println(charNum);
 			//System.out.println("last word: " + lastWord.toString()); // testing
 
 			if ((Character.isWhitespace(ch)) || (charNum < 1)) {
@@ -253,8 +249,7 @@ public class TextSound {
 //					if (MainForm.items.contains(lastWord)) {
 						//typesSet.add(item.getKey());
 
-						System.out.println("Found: " + item.getKey());
-
+						//System.out.println("Found: " + item.getKey());
 
 						double targetOctave = Math.ceil((item.getValue() / 26d) * octaves);
 						double frequency = item.getValue() * baseFrequency;
