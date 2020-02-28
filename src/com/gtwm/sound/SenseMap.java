@@ -60,9 +60,9 @@ public class SenseMap {
 
         public String toString() {
             return "Word{" +
-                    "key=" + wordKey +
-                    "type=" + wordType +
-                    "value=" + wordValue +
+                    " key=" + wordKey +
+                    " type=" + wordType +
+                    " value=" + wordValue +
                     '}';
         }
     }

@@ -79,7 +79,7 @@
             <properties>
               <model>
                 <item value="tempo"/>
-                <item value="octave"/>
+                <item value="noteDuration"/>
                 <item value="instrument"/>
               </model>
             </properties>

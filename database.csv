@@ -1,4 +1,14 @@
 word,class,value
 test,n,1
-bat,n,2
-travel,v,3
+bat,n,14
+travel,v,46
+null,,3
+a,,4
+b,,7
+c,,9
+d,,13
+e,,16
+f,,20
+g,,25
+h,,34
+i,,39

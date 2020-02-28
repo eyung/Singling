@@ -7,8 +7,6 @@ import com.intellij.uiDesigner.core.Spacer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.HashSet;
-import java.util.Set;
 
 public class DialogType extends JDialog {
     private JPanel contentPane;
@@ -28,19 +26,20 @@ public class DialogType extends JDialog {
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                String wordset = String.valueOf(setType.getSelectedItem());
+                String modvalue = String.valueOf(setType.getSelectedItem());
                 String soundmodtype = String.valueOf(setSoundMod.getSelectedItem());
-                String soundmodvalue = String.valueOf(setTempo.getSelectedItem());
+
+                //String soundmodvalue = String.valueOf(setDuration.getSelectedItem());
 
                 String inputTempo = String.valueOf(setTempo.getSelectedItem());
                 String inputDuration = String.valueOf(setDuration.getSelectedItem());
                 String inputInstrument = String.valueOf(setInstrument.getSelectedItem());
 
-                //System.out.println("wordset: " + wordset
+                //System.out.println("wordset: " + modvalue
                 //        + " soundmod: " + soundmodtype
                 //        + " to " + soundmodvalue);
 
-                Set<String> typesSet = new HashSet<>();
+                /*Set<String> typesSet = new HashSet<>();
                 TextSound.wordSets.add(typesSet);
 
                 typesSet.add("WMT:wordtype");
@@ -50,11 +49,27 @@ public class DialogType extends JDialog {
                 typesSet.add("MDURATION:" + inputDuration);
                 typesSet.add("MINSTRUMENT:" + inputInstrument);
 
-                for (SenseMap.Mapping item : MainForm.items) {
+                for (SenseMap.Mapping item : TextSound.items) {
                     if (item.getType() == SenseMap.Type.valueOf(wordset)) {
                         typesSet.add(item.getKey());
                     }
+                }*/
+
+                Queue.Instruction instruction = new Queue.Instruction();
+                instruction.setMod(Queue.Instruction.Mods.wordType);
+                instruction.setModValue(modvalue);
+                instruction.setSoundMod(Queue.Instruction.SoundMods.valueOf(soundmodtype));
+
+                switch (soundmodtype) {
+                    case "tempo":
+                        instruction.setSoundModValue(inputTempo); break;
+                    case "noteDuration":
+                        instruction.setSoundModValue(inputDuration); break;
+                    case "instrument":
+                        instruction.setSoundModValue(inputInstrument); break;
                 }
+
+                System.out.println(instruction.toString());
 
                 onOK();
             }
@@ -146,7 +161,7 @@ public class DialogType extends JDialog {
         setSoundMod = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
         defaultComboBoxModel2.addElement("tempo");
-        defaultComboBoxModel2.addElement("octave");
+        defaultComboBoxModel2.addElement("noteDuration");
         defaultComboBoxModel2.addElement("instrument");
         setSoundMod.setModel(defaultComboBoxModel2);
         panel3.add(setSoundMod, new GridConstraints(0, 1, 3, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));

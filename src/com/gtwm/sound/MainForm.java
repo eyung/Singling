@@ -23,8 +23,6 @@ public class MainForm extends JFrame {
     private JButton btnGetDB;
     private JButton btnType;
 
-    static List<SenseMap.Mapping> items;
-
     String inputText = "";
 
     File workingDirectory = new File(System.getProperty("user.dir"));
@@ -42,7 +40,7 @@ public class MainForm extends JFrame {
         csvparser myParser = new csvparser();
 
         try {
-            items = myParser.csvtoSenseMap(dbFile);
+            TextSound.items = myParser.csvtoSenseMap(dbFile);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -123,7 +121,7 @@ public class MainForm extends JFrame {
                         try {
 
                             //csvparser myParser = new csvparser();
-                            items = myParser.csvtoSenseMap(file.getPath());
+                            TextSound.items = myParser.csvtoSenseMap(file.getPath());
 
                         } catch (Exception ex) {
                             ex.printStackTrace();

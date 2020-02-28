@@ -45,7 +45,7 @@ public class TextSound {
 
 	static List<String> orderings = new ArrayList<String>();
 
-	static Map<String, Double> sensemap = new HashMap<String, Double>();
+	static List<SenseMap.Mapping> items;
 
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
@@ -240,7 +240,7 @@ public class TextSound {
 				}
 
 				// Lookup database
-  				for (SenseMap.Mapping item : MainForm.items) {
+  				for (SenseMap.Mapping item : items) {
 
 					//System.out.println(("Key: " + item.getKey().toUpperCase()));
 					//System.out.println("lastword: " + lastWord); //testing
@@ -267,7 +267,7 @@ public class TextSound {
 								+ octaves + ", top frequency " + topFrequency + ": " +
 								frequency);
 
-						soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength);
+						soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength); // Note (and duration)
 						System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 
 						double theNoteGap = noteGap;
@@ -282,7 +282,7 @@ public class TextSound {
 				}
 
 				// Make changes based on user input
-				wordSets.forEach((i) -> {
+				/*wordSets.forEach((i) -> {
 
 					long count = i.stream().count();
 
@@ -323,7 +323,7 @@ public class TextSound {
 
 					}
 
-				});
+				});*/
 
 				lastWord.setLength(0);
 				soundString.append("R/" + String.format("%f", theRestLength) + " ");
@@ -441,10 +441,6 @@ public class TextSound {
 
 		//orderings = new ArrayList<String>();
 
-		// Starting settings
-		// NB: If any values are set to exactly zero, they will be unable to
-		// change throughout the generation
-		//
 		// How long to hold each note for
 		//noteLength = 1; // /1 = whole note (
 		// semibreve). /0.25 =
@@ -480,9 +476,5 @@ public class TextSound {
 		// Even characters increase setting values, odd characters decrease.
 		// This swaps that behaviour
 		tempoDirection = false;
-
-		// could use these to change and revert - opening bracket changes,
-		// closing changes the same setting in the opposite direction
-		//containers = "(){}[]<>\"\"";
 	}
 }
