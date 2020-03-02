@@ -5,11 +5,11 @@ public class Queue {
     static class Instruction {
 
         enum Mods {
-            wordType, wordLength
+            WORDTYPE, WORDLENGTH
         }
 
         enum SoundMods {
-            tempo, noteDuration, octave, instrument
+            TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT
         }
 
         Mods mod;
@@ -64,8 +64,8 @@ public class Queue {
         }
 
         public String toString() {
-            return "Instruction: {" +
-                    " mod=" + mod +
+            return "Instruction:{" +
+                    "mod=" + mod +
                     " modvalue=" + modValue +
                     " soundmod=" + soundMod +
                     " soundmodvalue=" + soundModValue +

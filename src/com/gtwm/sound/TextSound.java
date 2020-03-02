@@ -1,12 +1,12 @@
 /*
- *   Copyright 2012 Oliver Kohll
+ *   Copyright 2020
  * 
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
@@ -36,6 +36,11 @@ import org.jfugue.Player;
  * Higher notes are normalised down to fit in the octave range specified
  * 
  * @author oliver
+ *
+ * Turn a stream of text into sound using the overtone series and synset types
+ * ie. synset 1 = root, synset 2 = first over tone etc.
+ *
+ * @author effiam
  */
 public class TextSound {
 
@@ -96,7 +101,7 @@ public class TextSound {
 	
 	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
 
-	static List<Set<String>> wordSets = new ArrayList<Set<String>>();
+	static List<Queue.Instruction> instructions = new ArrayList<>();
 
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
@@ -245,11 +250,28 @@ public class TextSound {
 					//System.out.println(("Key: " + item.getKey().toUpperCase()));
 					//System.out.println("lastword: " + lastWord); //testing
 
+					// Match
 					if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
-//					if (MainForm.items.contains(lastWord)) {
-						//typesSet.add(item.getKey());
 
-						//System.out.println("Found: " + item.getKey());
+						// Go through the instructions queue
+						instructions.forEach((i) -> {
+							if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
+								if (item.getType() != null && item.getType().toString().equals(i.modValue)) {
+									switch (i.soundMod) {
+										case TEMPO:
+											tempo = Double.parseDouble(i.soundModValue);
+											soundString.append("T" + (int)tempo + " ");
+											break;
+										case NOTEDURATION:
+											noteLength = Double.parseDouble(i.soundModValue);
+											break;
+										case INSTRUMENT:
+											soundString.append("I[" + i.soundModValue + "] ");
+											break;
+									}
+								}
+							}
+						});
 
 						double targetOctave = Math.ceil((item.getValue() / 26d) * octaves);
 						double frequency = item.getValue() * baseFrequency;
@@ -280,50 +302,6 @@ public class TextSound {
 						soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap
 					}
 				}
-
-				// Make changes based on user input
-				/*wordSets.forEach((i) -> {
-
-					long count = i.stream().count();
-
-					//String soundmodtype = i.stream().skip(count-4).findFirst().get();
-
-					String wordmodtype = i.stream().filter(x -> x.startsWith("WMT:")).findAny().get().split(":")[1];
-                    //String soundmodtype = i.stream().filter(x -> x.startsWith("SMT:")).findAny().get().split(":")[1];
-                    //String soundmodvalue = i.stream().filter(x -> x.startsWith("SMV:")).findAny().get().split(":")[1];
-
-                    String modtempo = i.stream().filter(x -> x.startsWith("MTEMPO:")).findAny().get().split(":")[1];
-
-					String modduration = i.stream()
-							.filter(Objects::nonNull)
-							.filter(x -> x.startsWith("MDURATION:")).findAny().get().split(":")[1];
-					String modinstrument = i.stream().filter(x -> x.startsWith("MINSTRUMENT:")).findAny().get().split(":")[1];
-
-					if (i.stream().anyMatch(lastWord.toString()::equalsIgnoreCase)) {
-
-						switch (wordmodtype) {
-							case "wordtype":
-
-								//switch (soundmodtype) {
-								//	case "tempo":
-								//		soundString.append("T" + Integer.parseInt(soundmodvalue) + " ");
-								//}
-
-								if (!modtempo.isEmpty()) {
-									soundString.append("T" + Integer.parseInt(modtempo) + " ");
-								}
-								if (!modduration.isEmpty()) {
-									noteLength = Double.parseDouble(modduration);
-								}
-								if (!modinstrument.isEmpty()) {
-									soundString.append("I" + modinstrument + " ");
-								}
-
-						}
-
-					}
-
-				});*/
 
 				lastWord.setLength(0);
 				soundString.append("R/" + String.format("%f", theRestLength) + " ");

@@ -56,20 +56,25 @@ public class DialogType extends JDialog {
                 }*/
 
                 Queue.Instruction instruction = new Queue.Instruction();
-                instruction.setMod(Queue.Instruction.Mods.wordType);
+                instruction.setMod(Queue.Instruction.Mods.WORDTYPE);
                 instruction.setModValue(modvalue);
                 instruction.setSoundMod(Queue.Instruction.SoundMods.valueOf(soundmodtype));
 
-                switch (soundmodtype) {
-                    case "tempo":
-                        instruction.setSoundModValue(inputTempo); break;
-                    case "noteDuration":
-                        instruction.setSoundModValue(inputDuration); break;
-                    case "instrument":
-                        instruction.setSoundModValue(inputInstrument); break;
+                switch (instruction.soundMod) {
+                    case TEMPO:
+                        instruction.setSoundModValue(inputTempo);
+                        break;
+                    case NOTEDURATION:
+                        instruction.setSoundModValue(inputDuration);
+                        break;
+                    case INSTRUMENT:
+                        instruction.setSoundModValue(inputInstrument);
+                        break;
                 }
 
                 System.out.println(instruction.toString());
+                TextSound.instructions.add(instruction);
+                MainForm.listAddInstruction(instruction);
 
                 onOK();
             }
@@ -96,6 +101,25 @@ public class DialogType extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        setSoundMod.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (setSoundMod.getSelectedItem() == "TEMPO") {
+                    setTempo.setVisible(true);
+                    setDuration.setVisible(false);
+                    setInstrument.setVisible(false);
+                } else if (setSoundMod.getSelectedItem() == "NOTEDURATION") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(true);
+                    setInstrument.setVisible(false);
+                } else if (setSoundMod.getSelectedItem() == "INSTRUMENT") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(false);
+                    setInstrument.setVisible(true);
+                }
+            }
+        });
     }
 
     private void onOK() {
@@ -134,6 +158,7 @@ public class DialogType extends JDialog {
         contentPane.setLayout(new GridLayoutManager(2, 1, new Insets(10, 10, 10, 10), -1, -1));
         contentPane.setEnabled(true);
         contentPane.setMinimumSize(new Dimension(461, 101));
+        contentPane.setOpaque(false);
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, 1, null, null, null, 0, false));
@@ -160,11 +185,11 @@ public class DialogType extends JDialog {
         panel3.add(setType, new GridConstraints(0, 0, 3, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setSoundMod = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
-        defaultComboBoxModel2.addElement("tempo");
-        defaultComboBoxModel2.addElement("noteDuration");
-        defaultComboBoxModel2.addElement("instrument");
+        defaultComboBoxModel2.addElement("TEMPO");
+        defaultComboBoxModel2.addElement("NOTEDURATION");
+        defaultComboBoxModel2.addElement("INSTRUMENT");
         setSoundMod.setModel(defaultComboBoxModel2);
-        panel3.add(setSoundMod, new GridConstraints(0, 1, 3, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panel3.add(setSoundMod, new GridConstraints(0, 1, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setTempo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel3 = new DefaultComboBoxModel();
         defaultComboBoxModel3.addElement("40");
@@ -184,6 +209,7 @@ public class DialogType extends JDialog {
         defaultComboBoxModel4.addElement("0.03125");
         defaultComboBoxModel4.addElement("0.015625");
         setDuration.setModel(defaultComboBoxModel4);
+        setDuration.setVisible(false);
         panel3.add(setDuration, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setInstrument = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
@@ -191,6 +217,7 @@ public class DialogType extends JDialog {
         defaultComboBoxModel5.addElement("GUITAR");
         defaultComboBoxModel5.addElement("TINKLE_BELL");
         setInstrument.setModel(defaultComboBoxModel5);
+        setInstrument.setVisible(false);
         panel3.add(setInstrument, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 

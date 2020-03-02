@@ -22,6 +22,7 @@ public class MainForm extends JFrame {
     private JComboBox setTempo;
     private JButton btnGetDB;
     private JButton btnType;
+    private JList list1 = new JList(model);
 
     String inputText = "";
 
@@ -32,6 +33,9 @@ public class MainForm extends JFrame {
 
     // Set default db path
     String dbFile = "C:/Users/eyung/Downloads/dlc/TextSound/database.csv";
+
+    static DefaultListModel model = new DefaultListModel();
+
 
     public MainForm() {
 
@@ -149,6 +153,10 @@ public class MainForm extends JFrame {
 
     }
 
+    public static void listAddInstruction(Queue.Instruction thisInstruction) {
+        model.addElement(thisInstruction.toString());
+    }
+
     public static void createAndShowGUI() {
         JFrame frame = new JFrame("TextSound");
         frame.setContentPane(new MainForm().panel1);
@@ -187,7 +195,7 @@ public class MainForm extends JFrame {
      */
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(3, 3, new Insets(20, 20, 20, 20), -1, -1));
+        panel1.setLayout(new GridLayoutManager(3, 4, new Insets(20, 20, 20, 20), -1, -1));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(5, 2, new Insets(0, 50, 0, 50), -1, -1));
         panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(500, 500), null, null, 0, false));
@@ -276,6 +284,10 @@ public class MainForm extends JFrame {
         btnGetDB = new JButton();
         btnGetDB.setText("DB");
         panel1.add(btnGetDB, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JScrollPane scrollPane2 = new JScrollPane();
+        panel1.add(scrollPane2, new GridConstraints(1, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        list1 = new JList();
+        scrollPane2.setViewportView(list1);
         label2.setLabelFor(setTempo);
         label3.setLabelFor(setDuration);
         label4.setLabelFor(setInstrument);
