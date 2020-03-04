@@ -87,7 +87,7 @@ class csvparser {
         // The BeanListProcessor provides a list of objects extracted from the input.
         List<SenseMap.Mapping> beans = rowProcessor.getBeans();
 
-        //or (SenseMap.Mapping bean : beans){
+        //For (SenseMap.Mapping bean : beans){
         //    System.out.println(bean.getWordKey() + ", " + bean.getWordClass() + ", " + bean.getWordValue());
         //}
 

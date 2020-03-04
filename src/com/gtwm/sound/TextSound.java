@@ -210,7 +210,7 @@ public class TextSound {
 			Player player = new Player();
 			File file = new File(output);
 			player.saveMidi(ss, file);
-			//player.play(ss);
+			player.play(ss);
 			player.close();
 		//}
 	}
@@ -224,6 +224,8 @@ public class TextSound {
 		StringBuilder lastSentence = new StringBuilder();
 		// To allow word properties to influence sound
 		StringBuilder lastWord = new StringBuilder();
+		int lastWordLength = 0;
+
 		for (int charIndex = 0; charIndex < input.length(); charIndex++) {
 			char ch = input.charAt(charIndex);
 			char upperCh = Character.toUpperCase(ch);
@@ -254,26 +256,28 @@ public class TextSound {
 					if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
 
 						// Go through the instructions queue
-						instructions.forEach((i) -> {
+						//instructions.forEach((i) -> {
+						for ( Queue.Instruction i : instructions ) {
 							if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
 								if (item.getType() != null && item.getType().toString().equals(i.modValue)) {
-									switch (i.soundMod) {
-										case TEMPO:
-											tempo = Double.parseDouble(i.soundModValue);
-											soundString.append("T" + (int)tempo + " ");
-											break;
-										case NOTEDURATION:
-											noteLength = Double.parseDouble(i.soundModValue);
-											break;
-										case INSTRUMENT:
-											soundString.append("I[" + i.soundModValue + "] ");
-											break;
-									}
+									applyMod(i, soundString);
+								}
+							} else if (i.mod == Queue.Instruction.Mods.WORDLENGTH) {
+								switch (i.getModOperator()) {
+									case EQUALTO:
+										if (Integer.parseInt(i.getModValue()) == lastWordLength) { applyMod(i, soundString); }
+										break;
+									case LARGERTHAN:
+										if (Integer.parseInt(i.getModValue()) < lastWordLength) { applyMod(i, soundString); }
+										break;
+									case LESSTHAN:
+										if (Integer.parseInt(i.getModValue()) > lastWordLength) { applyMod(i, soundString); }
+										break;
 								}
 							}
-						});
+						};
 
-						double targetOctave = Math.ceil((item.getValue() / 26d) * octaves);
+						double targetOctave = Math.ceil((item.getValue() / 46d) * octaves); //26
 						double frequency = item.getValue() * baseFrequency;
 						// Normalise to fit in the range
 						double topFrequency = baseFrequency;
@@ -303,6 +307,7 @@ public class TextSound {
 					}
 				}
 
+  				lastWordLength = lastWord.length();
 				lastWord.setLength(0);
 				soundString.append("R/" + String.format("%f", theRestLength) + " ");
 
@@ -412,6 +417,31 @@ public class TextSound {
 				setting = testSetting;
 			}
 		}
+	}
+
+	private static StringBuilder applyMod(Queue.Instruction i, StringBuilder soundString) {
+		switch (i.soundMod) {
+			case TEMPO:
+				tempo = Double.parseDouble(i.soundModValue);
+				soundString.append("T" + (int)tempo + " ");
+				break;
+			case NOTEDURATION:
+				noteLength = Double.parseDouble(i.soundModValue);
+				break;
+			case OCTAVE:
+				octaves = Double.parseDouble(i.soundModValue);
+				break;
+			case INSTRUMENT:
+				soundString.append("I[" + i.soundModValue + "] ");
+				break;
+			case VOLUME:
+				soundString.append("X[Volume]=" + i.soundModValue + " ");
+				break;
+			case PERCUSSION:
+				soundString.append("V9 [" + i.soundModValue + "]q V0 ");
+				break;
+		}
+		return soundString;
 	}
 
 	private static void resetSettings() {

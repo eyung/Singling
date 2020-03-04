@@ -9,10 +9,16 @@ public class Queue {
         }
 
         enum SoundMods {
-            TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT
+            TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION
+        }
+
+        enum ModOperators {
+            EQUALTO, LARGERTHAN, LESSTHAN
         }
 
         Mods mod;
+
+        ModOperators modOperator;
 
         String modValue;
 
@@ -24,8 +30,9 @@ public class Queue {
 
         }
 
-        public Instruction(Mods w, String x, SoundMods y, String z) {
-            this.mod = w;
+        public Instruction(Mods v, ModOperators w, String x, SoundMods y, String z) {
+            this.mod = v;
+            this.modOperator = w;
             this.modValue = x;
             this.soundMod = y;
             this.soundModValue = z;
@@ -38,6 +45,12 @@ public class Queue {
         public Mods getMod() {
             return mod;
         }
+
+        public void setModOperator(ModOperators thisModOperator) {
+            modOperator = thisModOperator;
+        }
+
+        public ModOperators getModOperator() { return modOperator; }
 
         public void setModValue(String thisModValue) {
             modValue = thisModValue;
@@ -66,6 +79,7 @@ public class Queue {
         public String toString() {
             return "Instruction:{" +
                     "mod=" + mod +
+                    " modoperator=" + modOperator +
                     " modvalue=" + modValue +
                     " soundmod=" + soundMod +
                     " soundmodvalue=" + soundModValue +
