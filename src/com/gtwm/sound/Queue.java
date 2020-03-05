@@ -4,26 +4,16 @@ public class Queue {
 
     static class Instruction {
 
-        enum Mods {
-            WORDTYPE, WORDLENGTH
-        }
+        enum Mods { WORDTYPE, WORDLENGTH }
 
-        enum SoundMods {
-            TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION
-        }
+        enum SoundMods { TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION }
 
-        enum ModOperators {
-            EQUALTO, LARGERTHAN, LESSTHAN
-        }
+        enum ModOperators { EQUALTO, LARGERTHAN, LESSTHAN }
 
         Mods mod;
-
         ModOperators modOperator;
-
         String modValue;
-
         SoundMods soundMod;
-
         String soundModValue;
 
         public Instruction() {

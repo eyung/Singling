@@ -165,22 +165,10 @@ public class TextSound {
 	}
 
 	public static String loadFile(String inFilename) throws Exception{
-
-		// Default for testing purposes
-		//String inFilename = "/Users/eyung/Downloads/dlc/TextSound/README.txt";
-		//String inFilename = "";
-		//if (inFilename.length() > 0) {
-			//inFilename = inputFile;
-
-		//}
-
 		List<String> lines = Files.readAllLines(FileSystems.getDefault().getPath(inFilename),
 				StandardCharsets.UTF_8);
 		StringBuilder inBuilder = new StringBuilder();
-		//Player player = new Player();
-		//player.play("T" + (int) tempo + " I[" + instrument + "] ");
-		//String paraSoundString = "";
-		//String para = "";
+
 		int lineCount = 0;
 		for (String line : lines) {
 			lineCount++;
@@ -192,9 +180,7 @@ public class TextSound {
 	}
 
 	public static void runStuff(String input, String output) throws Exception{
-
 		resetSettings();
-
 		// Each ordering gives a different character
 		// Alphabetic
 		orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -203,16 +189,14 @@ public class TextSound {
 		// Decreasing frequency of use in English
 		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
 
-		//if (!follow) {
-			String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
-			System.out.println(ss);
-			//System.out.println(input);
-			Player player = new Player();
-			File file = new File(output);
-			player.saveMidi(ss, file);
-			player.play(ss);
-			player.close();
-		//}
+		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
+		System.out.println(ss);
+		//System.out.println(input);
+		Player player = new Player();
+		File file = new File(output);
+		player.saveMidi(ss, file);
+		player.play(ss);
+		player.close();
 	}
 
 	/**
@@ -254,7 +238,6 @@ public class TextSound {
 
 					// Match
 					if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
-
 						// Go through the instructions queue
 						//instructions.forEach((i) -> {
 						for ( Queue.Instruction i : instructions ) {
@@ -277,7 +260,7 @@ public class TextSound {
 							}
 						};
 
-						double targetOctave = Math.ceil((item.getValue() / 46d) * octaves); //26
+						double targetOctave = Math.ceil((item.getValue() / 26d) * octaves); //26
 						double frequency = item.getValue() * baseFrequency;
 						// Normalise to fit in the range
 						double topFrequency = baseFrequency;
@@ -420,6 +403,7 @@ public class TextSound {
 	}
 
 	private static StringBuilder applyMod(Queue.Instruction i, StringBuilder soundString) {
+		//TODO: change values by x AND to y
 		switch (i.soundMod) {
 			case TEMPO:
 				tempo = Double.parseDouble(i.soundModValue);
