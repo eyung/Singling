@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.prefs.Preferences;
 
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
@@ -103,6 +104,8 @@ public class TextSound {
 
 	static List<Queue.Instruction> instructions = new ArrayList<>();
 
+	static Preferences prefs = Preferences.userNodeForPackage(TextSound.class);
+
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
 				1.0, 5.0), TEMPO(100, 1000), LETTER_ORDERING(0.0,3.0);
@@ -180,7 +183,19 @@ public class TextSound {
 	}
 
 	public static void runStuff(String input, String output) throws Exception{
+
+		// Reset initial settings
 		resetSettings();
+
+		// Save instructions to file
+		ObjectOutputStream x = serialToString.serializeObject(instructions);
+		prefs.put("instructionsPref", x.toString());
+
+		//Verify list data
+		//for ( Queue.Instruction i : instructions ) {
+		//	System.out.println(i);
+		//}
+
 		// Each ordering gives a different character
 		// Alphabetic
 		orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -203,6 +218,9 @@ public class TextSound {
 	 * Turn the input string into a sound string that can be played by jFugue
 	 */
 	private static String processString(String input) {
+		//Preferences prefs = Preferences.userNodeForPackage(TextSound.class);
+		//prefs.put("TEST", instructions);
+
 		StringBuilder soundString = new StringBuilder();
 		// For debugging / printout purposes
 		StringBuilder lastSentence = new StringBuilder();
@@ -468,5 +486,52 @@ public class TextSound {
 		// Even characters increase setting values, odd characters decrease.
 		// This swaps that behaviour
 		tempoDirection = false;
+	}
+}
+
+class serialToString {
+	static ObjectOutputStream serializeObject(List<Queue.Instruction> thisObjectList) {
+		try {
+			FileOutputStream fos = new FileOutputStream("instructionsData");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+			oos.writeObject(thisObjectList);
+			oos.close();
+			fos.close();
+
+			System.out.println("\nSerialization Successful\n");
+
+			return oos;
+		} catch (FileNotFoundException e) {
+			System.out.println("a");
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			System.out.println("b");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	static List<Queue.Instruction> deserializeObject(String thisOutStream) {
+		try {
+			FileInputStream fis = new FileInputStream("instructionsData");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+
+			TextSound.instructions = (ArrayList) ois.readObject();
+
+			ois.close();
+			fis.close();
+
+			return TextSound.instructions;
+		} catch (IOException e) {
+			System.out.println("c");
+			e.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException e) {
+			System.out.println("d");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

@@ -54,6 +54,13 @@ public class MainForm extends JFrame {
             ex.printStackTrace();
         }
 
+        // Get user settings to populate instructions list
+        String prefString = TextSound.prefs.get("instructionsPref", "x");
+        TextSound.instructions = serialToString.deserializeObject(prefString.toString());
+        for (Queue.Instruction i : TextSound.instructions) {
+            listAddInstruction(MainForm.model, i);
+        }
+
         btnLoadText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

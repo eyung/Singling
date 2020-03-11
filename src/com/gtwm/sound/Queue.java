@@ -1,8 +1,10 @@
 package com.gtwm.sound;
 
+import java.io.Serializable;
+
 public class Queue {
 
-    static class Instruction {
+    static class Instruction implements Serializable {
 
         enum Mods { WORDTYPE, WORDLENGTH }
 
