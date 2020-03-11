@@ -188,7 +188,7 @@ public class TextSound {
 		resetSettings();
 
 		// Save instructions to file
-		ObjectOutputStream x = serialToString.serializeObject(instructions);
+		ObjectOutputStream x = serialInstructionsQueue.serializeObject(instructions);
 		prefs.put("instructionsPref", x.toString());
 
 		//Verify list data
@@ -489,10 +489,10 @@ public class TextSound {
 	}
 }
 
-class serialToString {
+class serialInstructionsQueue {
 	static ObjectOutputStream serializeObject(List<Queue.Instruction> thisObjectList) {
 		try {
-			FileOutputStream fos = new FileOutputStream("instructionsData");
+			FileOutputStream fos = new FileOutputStream("instructionsdata");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 
 			oos.writeObject(thisObjectList);
@@ -515,7 +515,7 @@ class serialToString {
 
 	static List<Queue.Instruction> deserializeObject(String thisOutStream) {
 		try {
-			FileInputStream fis = new FileInputStream("instructionsData");
+			FileInputStream fis = new FileInputStream("instructionsdata");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 
 			TextSound.instructions = (ArrayList) ois.readObject();

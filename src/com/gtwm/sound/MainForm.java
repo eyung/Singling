@@ -56,7 +56,7 @@ public class MainForm extends JFrame {
 
         // Get user settings to populate instructions list
         String prefString = TextSound.prefs.get("instructionsPref", "x");
-        TextSound.instructions = serialToString.deserializeObject(prefString.toString());
+        TextSound.instructions = serialInstructionsQueue.deserializeObject(prefString.toString());
         for (Queue.Instruction i : TextSound.instructions) {
             listAddInstruction(MainForm.model, i);
         }
