@@ -218,9 +218,6 @@ public class TextSound {
 	 * Turn the input string into a sound string that can be played by jFugue
 	 */
 	private static String processString(String input) {
-		//Preferences prefs = Preferences.userNodeForPackage(TextSound.class);
-		//prefs.put("TEST", instructions);
-
 		StringBuilder soundString = new StringBuilder();
 		// For debugging / printout purposes
 		StringBuilder lastSentence = new StringBuilder();

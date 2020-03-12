@@ -196,6 +196,14 @@ public class MainForm extends JFrame {
 
         // Menu Item (Drop down menus)
         saveItem = new JMenuItem("Save");
+        saveItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Save instructions to file
+                ObjectOutputStream x = serialInstructionsQueue.serializeObject(TextSound.instructions);
+                TextSound.prefs.put("instructionsPref", x.toString());
+            }
+        });
         exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
