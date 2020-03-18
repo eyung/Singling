@@ -28,6 +28,8 @@ public class InstructionFormWordLength extends JDialog {
 
     SpinnerNumberModel model1 = new SpinnerNumberModel(5.0, 0.0, 9.0, 1.0);
 
+    boolean instructionCheck = true;
+
     public InstructionFormWordLength() {
 
         changeTempo.setModel(model1);
@@ -76,9 +78,23 @@ public class InstructionFormWordLength extends JDialog {
                         break;
                 }
 
-                //System.out.println(instruction.toString());
-                TextSound.instructions.add(instruction);
-                MainForm.listAddInstruction(MainForm.model, instruction);
+                for (Queue.Instruction i : TextSound.instructions) {
+                    if (i.getMod() == instruction.getMod() && i.getSoundMod() == instruction.getSoundMod()) {
+                        System.out.println("already exist   ");
+                        instructionCheck = false;
+                    }
+                }
+
+                if (instructionCheck) {
+                    //System.out.println(instruction.toString());
+                    TextSound.instructions.add(instruction);
+                    MainForm.listAddInstruction(MainForm.model, instruction);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "NO",
+                            "NO",
+                            JOptionPane.WARNING_MESSAGE);
+                }
 
                 onOK();
             }

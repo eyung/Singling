@@ -21,6 +21,8 @@ public class InstructionFormWordType extends JDialog {
     private JSlider setVolume;
     private JComboBox setPercussion;
 
+    boolean instructionCheck = true;
+
     public InstructionFormWordType() {
         setContentPane(contentPane);
         setModal(true);
@@ -64,9 +66,23 @@ public class InstructionFormWordType extends JDialog {
                         break;
                 }
 
-                //System.out.println(instruction.toString());
-                TextSound.instructions.add(instruction);
-                MainForm.listAddInstruction(MainForm.model, instruction);
+                for (Queue.Instruction i : TextSound.instructions) {
+                    if (i.getMod() == instruction.getMod() && i.getSoundMod() == instruction.getSoundMod()) {
+                        System.out.println("already exist   ");
+                        instructionCheck = false;
+                    }
+                }
+
+                if (instructionCheck) {
+                    //System.out.println(instruction.toString());
+                    TextSound.instructions.add(instruction);
+                    MainForm.listAddInstruction(MainForm.model, instruction);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "NO",
+                            "NO",
+                            JOptionPane.WARNING_MESSAGE);
+                }
 
                 onOK();
             }
