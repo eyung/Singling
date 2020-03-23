@@ -8,8 +8,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.prefs.Preferences;
 
-public class MainForm extends JFrame {
+public class Main extends JFrame {
     private JButton btnLoadText;
     private JPanel panel1;
     private JTextArea textArea1;
@@ -34,13 +35,19 @@ public class MainForm extends JFrame {
     String outFilename = "output.mid";
 
     // Set default db path
-    String dbFile = "C:/Users/eyung/Downloads/dlc/TextSound/database.csv";
+    //String dbFile = "C:/Users/eyung/Downloads/dlc/TextSound/database.csv";
+    String dbFile = "C:/Users/Effiam/IdeaProjects/TextSound/database.csv";
 
     static DefaultListModel model = new DefaultListModel();
 
-    public MainForm() {
+    static JTextArea textModel;
+
+    static Preferences prefs = Preferences.userNodeForPackage(Main.class);
+
+    public Main() {
 
         list1.setModel(model);
+        textModel = this.textArea1;
 
         JFileChooser fc = new JFileChooser();
 
@@ -54,12 +61,14 @@ public class MainForm extends JFrame {
             ex.printStackTrace();
         }
 
-        // Get user settings to populate instructions list
-        String prefString = TextSound.prefs.get("instructionsPref", "x");
+        // Get user settings
+        String prefString = prefs.get("instructionsPref", "x");
         TextSound.instructions = serialInstructionsQueue.deserializeObject(prefString.toString());
         for (Queue.Instruction i : TextSound.instructions) {
-            listAddInstruction(MainForm.model, i);
+            listAddInstruction(Main.model, i);
         }
+        String prefString2 = prefs.get("textPref", "y");
+        this.textArea1.setText(prefString2);
 
         btnLoadText.addActionListener(new ActionListener() {
             @Override
@@ -201,7 +210,8 @@ public class MainForm extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Save instructions to file
                 ObjectOutputStream x = serialInstructionsQueue.serializeObject(TextSound.instructions);
-                TextSound.prefs.put("instructionsPref", x.toString());
+                prefs.put("instructionsPref", x.toString());
+                prefs.put("textPref", Main.textModel.getText());
             }
         });
         exitItem = new JMenuItem("Exit");
@@ -221,7 +231,7 @@ public class MainForm extends JFrame {
         // Frame
         JFrame frame = new JFrame("TextSound");
         frame.setJMenuBar(menuBar);
-        frame.setContentPane(new MainForm().panel1);
+        frame.setContentPane(new Main().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);

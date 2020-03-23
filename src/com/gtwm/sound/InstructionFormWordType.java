@@ -68,7 +68,7 @@ public class InstructionFormWordType extends JDialog {
 
                 for (Queue.Instruction i : TextSound.instructions) {
                     if (i.getMod() == instruction.getMod() && i.getSoundMod() == instruction.getSoundMod()) {
-                        System.out.println("already exist   ");
+                        //System.out.println("already exist   ");
                         instructionCheck = false;
                     }
                 }
@@ -76,7 +76,7 @@ public class InstructionFormWordType extends JDialog {
                 if (instructionCheck) {
                     //System.out.println(instruction.toString());
                     TextSound.instructions.add(instruction);
-                    MainForm.listAddInstruction(MainForm.model, instruction);
+                    Main.listAddInstruction(Main.model, instruction);
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "NO",

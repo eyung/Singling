@@ -2,7 +2,6 @@ package com.gtwm.sound;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,8 +78,8 @@ public class InstructionFormWordLength extends JDialog {
                 }
 
                 for (Queue.Instruction i : TextSound.instructions) {
-                    if (i.getMod() == instruction.getMod() && i.getSoundMod() == instruction.getSoundMod()) {
-                        System.out.println("already exist   ");
+                    if (i.getMod() == instruction.getMod() && i.getSoundMod() == instruction.getSoundMod() && i.modOperator == instruction.getModOperator()) {
+                        //System.out.println("already exist   ");
                         instructionCheck = false;
                     }
                 }
@@ -88,7 +87,7 @@ public class InstructionFormWordLength extends JDialog {
                 if (instructionCheck) {
                     //System.out.println(instruction.toString());
                     TextSound.instructions.add(instruction);
-                    MainForm.listAddInstruction(MainForm.model, instruction);
+                    Main.listAddInstruction(Main.model, instruction);
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "NO",

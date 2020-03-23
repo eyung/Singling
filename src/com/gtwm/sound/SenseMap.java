@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SenseMap {
 
-    enum Type { n, v, a }
+    enum Type { n, v, a, r }
 
     static class Mapping {
         @Parsed(index = 0)

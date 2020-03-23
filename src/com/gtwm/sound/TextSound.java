@@ -104,8 +104,6 @@ public class TextSound {
 
 	static List<Queue.Instruction> instructions = new ArrayList<>();
 
-	static Preferences prefs = Preferences.userNodeForPackage(TextSound.class);
-
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
 				1.0, 5.0), TEMPO(100, 1000), LETTER_ORDERING(0.0,3.0);
@@ -189,7 +187,7 @@ public class TextSound {
 
 		// Save instructions to file
 		ObjectOutputStream x = serialInstructionsQueue.serializeObject(instructions);
-		prefs.put("instructionsPref", x.toString());
+		//prefs.put("instructionsPref", x.toString());
 
 		//Verify list data
 		//for ( Queue.Instruction i : instructions ) {
