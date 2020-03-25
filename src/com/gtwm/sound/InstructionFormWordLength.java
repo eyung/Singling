@@ -92,9 +92,8 @@ public class InstructionFormWordLength extends JDialog {
 
                 //TODO Check against duplicate instruction
                 for (Queue.Instruction i : TextSound.instructions) {
-                    if (i.getMod() == instruction.getMod() && i.getSoundMod() == instruction.getSoundMod() && i.modOperator == instruction.getModOperator()) {
-                        //System.out.println("already exist   ");
-                        //instructionCheck = false;
+                    if (i.getSoundMod() == instruction.getSoundMod() && i.getModOperator() == instruction.getModOperator()) {
+                        instructionCheck = false;
                     }
                 }
 

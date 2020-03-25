@@ -86,9 +86,9 @@ public class InstructionFormWordType extends JDialog {
 
                 //TODO Check against duplicate instruction
                 for (Queue.Instruction i : TextSound.instructions) {
-                    if (i.changeMode == instruction.getChangeMode() && i.getMod() == instruction.getMod() && i.getSoundMod() == instruction.getSoundMod()) {
+                    if (i.getModValue() == instruction.getModValue() && i.getSoundMod() == instruction.getSoundMod()) {
                         //System.out.println("already exist   ");
-                        //instructionCheck = false;
+                        instructionCheck = false;
                     }
                 }
 
