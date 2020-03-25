@@ -6,28 +6,32 @@ public class Queue {
 
     static class Instruction implements Serializable {
 
-        enum Mods { WORDTYPE, WORDLENGTH }
+        enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE }
 
         enum SoundMods { TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION }
 
         enum ModOperators { EQUALTO, LARGERTHAN, LESSTHAN }
+
+        enum ChangeModes { SET, INCREMENT }
 
         Mods mod;
         ModOperators modOperator;
         String modValue;
         SoundMods soundMod;
         String soundModValue;
+        ChangeModes changeMode;
 
         public Instruction() {
 
         }
 
-        public Instruction(Mods v, ModOperators w, String x, SoundMods y, String z) {
+        public Instruction(Mods v, ModOperators w, String x, SoundMods y, String z, ChangeModes a) {
             this.mod = v;
             this.modOperator = w;
             this.modValue = x;
             this.soundMod = y;
             this.soundModValue = z;
+            this.changeMode = a;
         }
 
         public void setMod(Mods thisMod) {
@@ -68,6 +72,14 @@ public class Queue {
             return soundModValue;
         }
 
+        public void setChangeMode(ChangeModes thisChangeMode) {
+            changeMode = thisChangeMode;
+        }
+
+        public ChangeModes getChangeMode() {
+            return changeMode;
+        }
+
         public String toString() {
             return "Instruction:{" +
                     "mod=" + mod +
@@ -75,6 +87,7 @@ public class Queue {
                     " modvalue=" + modValue +
                     " soundmod=" + soundMod +
                     " soundmodvalue=" + soundModValue +
+                    " changemode=" + changeMode +
                     '}';
         }
     }

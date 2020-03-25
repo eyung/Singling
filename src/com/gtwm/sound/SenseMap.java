@@ -20,13 +20,13 @@ public class SenseMap {
         Type wordType;
 
         @Parsed(index = 2)
-        double wordValue;
+        String wordValue;
 
         public Mapping() {
 
         }
 
-        public Mapping(String x, Type y, double z) {
+        public Mapping(String x, Type y, String z) {
             this.wordKey = x;
             this.wordType = y;
             this.wordValue = z;
@@ -48,11 +48,11 @@ public class SenseMap {
             return wordType;
         }
 
-        public void setValue(double thisValue) {
+        public void setValue(String thisValue) {
             wordValue = thisValue;
         }
 
-        public double getValue() {
+        public String getValue() {
             return wordValue;
         }
 

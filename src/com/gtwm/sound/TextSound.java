@@ -254,10 +254,12 @@ public class TextSound {
 						// Go through the instructions queue
 						//instructions.forEach((i) -> {
 						for ( Queue.Instruction i : instructions ) {
+
 							if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
 								if (item.getType() != null && item.getType().toString().equals(i.modValue)) {
 									applyMod(i, soundString);
 								}
+
 							} else if (i.mod == Queue.Instruction.Mods.WORDLENGTH) {
 								switch (i.getModOperator()) {
 									case EQUALTO:
@@ -270,11 +272,26 @@ public class TextSound {
 										if (Integer.parseInt(i.getModValue()) > lastWordLength) { applyMod(i, soundString); }
 										break;
 								}
+
+							} else if (i.mod == Queue.Instruction.Mods.WORDVALUE) {
+								double[] lexnames = convertToArr.toDoubleArr(item.getValue());
+								int lexCount = 0;
+								for (double n : lexnames) {
+									if (n == Double.parseDouble(i.modValue)) {
+										//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+										applyMod(i, soundString);
+									}
+								}
+								//if (convertToArr.toDoubleArr(item.getValue())[0] == Double.parseDouble(i.modValue)) {
+									//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+								//	applyMod(i, soundString);
+								//}
 							}
 						};
 
-						double targetOctave = Math.ceil((item.getValue() / 26d) * octaves); //26
-						double frequency = item.getValue() * baseFrequency;
+						double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0] / 26d) * octaves); //26
+						double frequency = convertToArr.toDoubleArr(item.getValue())[0] * baseFrequency;
+
 						// Normalise to fit in the range
 						double topFrequency = baseFrequency;
 						for (int j = 0; j < targetOctave; j++) {
@@ -419,15 +436,33 @@ public class TextSound {
 		//TODO: change values by x AND to y
 		switch (i.soundMod) {
 			case TEMPO:
-				tempo = Double.parseDouble(i.soundModValue);
+
+				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+					tempo = Double.parseDouble(i.soundModValue);
+				} else {
+					tempo += Double.parseDouble(i.soundModValue);
+				}
 				soundString.append("T" + (int)tempo + " ");
 				break;
+
 			case NOTEDURATION:
-				noteLength = Double.parseDouble(i.soundModValue);
+
+				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+					noteLength = Double.parseDouble(i.soundModValue);
+				} else {
+					noteLength += Double.parseDouble(i.soundModValue);
+				}
 				break;
+
 			case OCTAVE:
-				octaves = Double.parseDouble(i.soundModValue);
+
+				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+					octaves = Double.parseDouble(i.soundModValue);
+				} else {
+					octaves += Double.parseDouble(i.soundModValue);
+				}
 				break;
+
 			case INSTRUMENT:
 				soundString.append("I[" + i.soundModValue + "] ");
 				break;
@@ -528,5 +563,17 @@ class serialInstructionsQueue {
 			e.printStackTrace();
 			return null;
 		}
+	}
+}
+
+class convertToArr {
+	static double[] toDoubleArr(String inString) {
+		String[] tokens = inString.split(",");
+		double[] arr = new double[inString.length()];
+		int i=0;
+		for (String st : tokens) {
+			arr[i++] = Double.valueOf(st);
+		}
+		return arr;
 	}
 }

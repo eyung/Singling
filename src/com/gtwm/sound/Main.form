@@ -250,6 +250,7 @@
                 <item value=""/>
                 <item value="WORDTYPE"/>
                 <item value="WORDLENGTH"/>
+                <item value="LEXNAME"/>
               </model>
             </properties>
           </component>

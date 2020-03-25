@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.gtwm.sound.InstructionFormWordLength">
-  <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="2" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="2" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="48" y="54" width="872" height="288"/>
+      <xy x="48" y="54" width="1104" height="303"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="af029" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="af029" binding="setPanel" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <visible value="true"/>
@@ -118,10 +118,117 @@
           </component>
         </children>
       </grid>
+      <component id="b7b9c" class="javax.swing.JComboBox" binding="setOperator">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="EQUALTO"/>
+            <item value="LARGERTHAN"/>
+            <item value="LESSTHAN"/>
+          </model>
+        </properties>
+      </component>
+      <component id="da756" class="javax.swing.JComboBox" binding="setSoundModTo">
+        <constraints>
+          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="TEMPO"/>
+            <item value="NOTEDURATION"/>
+            <item value="OCTAVE"/>
+            <item value="INSTRUMENT"/>
+            <item value="VOLUME"/>
+          </model>
+        </properties>
+      </component>
+      <component id="61a43" class="javax.swing.JSpinner" binding="setLength">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <grid id="98203" binding="incrementPanel" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <visible value="false"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="2c11a" class="javax.swing.JSpinner" binding="incrementTempo">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="8ee8f" class="javax.swing.JComboBox" binding="incrementDuration">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="1.00"/>
+                <item value="0.50"/>
+                <item value="0.25"/>
+                <item value="0.125"/>
+                <item value="0.0625"/>
+                <item value="0.03125"/>
+                <item value="0.015625"/>
+              </model>
+              <visible value="false"/>
+            </properties>
+          </component>
+          <component id="dacce" class="javax.swing.JComboBox" binding="incrementOctave">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="0"/>
+                <item value="1"/>
+                <item value="2"/>
+                <item value="3"/>
+                <item value="4"/>
+                <item value="5"/>
+                <item value="6"/>
+                <item value="7"/>
+                <item value="8"/>
+                <item value="9"/>
+                <item value="10"/>
+              </model>
+              <visible value="false"/>
+            </properties>
+          </component>
+          <component id="3fee7" class="javax.swing.JSpinner" binding="incrementVolume">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <visible value="false"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <component id="ff4af" class="javax.swing.JComboBox" binding="setChangeMode">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="SET"/>
+            <item value="INCREMENT"/>
+          </model>
+        </properties>
+      </component>
       <grid id="94766" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -154,102 +261,20 @@
           </grid>
         </children>
       </grid>
-      <component id="b7b9c" class="javax.swing.JComboBox" binding="setOperator">
+      <component id="4b264" class="javax.swing.JComboBox" binding="setSoundModBy">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <model>
-            <item value="EQUALTO"/>
-            <item value="LARGERTHAN"/>
-            <item value="LESSTHAN"/>
-          </model>
-        </properties>
-      </component>
-      <component id="da756" class="javax.swing.JComboBox" binding="setSoundMod">
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <model>
             <item value="TEMPO"/>
             <item value="NOTEDURATION"/>
             <item value="OCTAVE"/>
-            <item value="INSTRUMENT"/>
             <item value="VOLUME"/>
           </model>
-        </properties>
-      </component>
-      <component id="61a43" class="javax.swing.JSpinner" binding="setLength">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-      </component>
-      <grid id="98203" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
           <visible value="false"/>
         </properties>
-        <border type="none"/>
-        <children>
-          <component id="2c11a" class="javax.swing.JSpinner" binding="changeTempo">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties/>
-          </component>
-          <component id="8ee8f" class="javax.swing.JComboBox" binding="changeDuration">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <model>
-                <item value="1.00"/>
-                <item value="0.50"/>
-                <item value="0.25"/>
-                <item value="0.125"/>
-                <item value="0.0625"/>
-                <item value="0.03125"/>
-                <item value="0.015625"/>
-              </model>
-              <visible value="true"/>
-            </properties>
-          </component>
-          <component id="dacce" class="javax.swing.JComboBox" binding="changeOctave">
-            <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <model>
-                <item value="0"/>
-                <item value="1"/>
-                <item value="2"/>
-                <item value="3"/>
-                <item value="4"/>
-                <item value="5"/>
-                <item value="6"/>
-                <item value="7"/>
-                <item value="8"/>
-                <item value="9"/>
-                <item value="10"/>
-              </model>
-              <visible value="false"/>
-            </properties>
-          </component>
-          <component id="3fee7" class="javax.swing.JSpinner" binding="changeVolume">
-            <constraints>
-              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <visible value="false"/>
-            </properties>
-          </component>
-        </children>
-      </grid>
+      </component>
     </children>
   </grid>
 </form>

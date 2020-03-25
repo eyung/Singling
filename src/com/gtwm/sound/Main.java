@@ -185,6 +185,13 @@ public class Main extends JFrame {
                     dialog.setLocationRelativeTo(panelInstructions);
                     dialog.setVisible(true);
                     btnAddInstruction.setSelectedIndex(0);
+                } else if (btnAddInstruction.getSelectedItem() == "LEXNAME") {
+                    InstructionFormWordValue dialog = new InstructionFormWordValue();
+                    dialog.setTitle("Instruction: Lexname");
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(panelInstructions);
+                    dialog.setVisible(true);
+                    btnAddInstruction.setSelectedIndex(0);
                 }
             }
         });
@@ -376,6 +383,7 @@ public class Main extends JFrame {
         defaultComboBoxModel4.addElement("");
         defaultComboBoxModel4.addElement("WORDTYPE");
         defaultComboBoxModel4.addElement("WORDLENGTH");
+        defaultComboBoxModel4.addElement("LEXNAME");
         btnAddInstruction.setModel(defaultComboBoxModel4);
         panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label6 = new JLabel();
