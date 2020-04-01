@@ -208,7 +208,7 @@ public class TextSound {
 		Player player = new Player();
 		File file = new File(output);
 		player.saveMidi(ss, file);
-		player.play(ss);
+		//player.play(ss);
 		player.close();
 	}
 
@@ -274,7 +274,7 @@ public class TextSound {
 								}
 
 							} else if (i.mod == Queue.Instruction.Mods.WORDVALUE) {
-								double[] lexnames = convertToArr.toDoubleArr(item.getValue());
+								double[] lexnames = convertToArr.toDoubleArr(item.getValue()+1);
 								int lexCount = 0;
 								for (double n : lexnames) {
 									if (n == Double.parseDouble(i.modValue)) {
@@ -289,8 +289,8 @@ public class TextSound {
 							}
 						};
 
-						double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0] / 26d) * octaves); //26
-						double frequency = convertToArr.toDoubleArr(item.getValue())[0] * baseFrequency;
+						double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0]+1 / 26d) * octaves); //26
+						double frequency = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
 						// Normalise to fit in the range
 						double topFrequency = baseFrequency;
@@ -329,9 +329,9 @@ public class TextSound {
 					soundString.append("R/" + String.format("%f", restLength) + " ");
 				}
 
-				//if (settingChangers.contains(charString)) {
-				//	changeSetting();
-				//}
+				if (settingChangers.contains(charString)) {
+					changeSetting();
+				}
 
 				else if (!Character.isWhitespace(ch)) {
 					// punctuation

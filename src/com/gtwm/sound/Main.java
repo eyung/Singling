@@ -38,6 +38,14 @@ public class Main extends JFrame {
     //String dbFile = "C:/Users/eyung/Downloads/dlc/TextSound/database.csv";
     String dbFile = "C:/Users/Effiam/IdeaProjects/TextSound/database.csv";
 
+    final String dbAdj = "C:/Users/Effiam/IdeaProjects/TextSound/db/xls/Adj.csv";
+    final String dbAdv = "C:/Users/Effiam/IdeaProjects/TextSound/db/xls/Adv.csv";
+    final String dbModals = "C:/Users/Effiam/IdeaProjects/TextSound/db/csv/Modals.csv";
+    final String dbNoun = "C:/Users/Effiam/IdeaProjects/TextSound/db/xls/Noun.csv";
+    final String dbPrepositions = "C:/Users/Effiam/IdeaProjects/TextSound/db/csv/Prepositions.csv";
+    final String dbSymbols = "C:/Users/Effiam/IdeaProjects/TextSound/db/csv/Symbols.csv";
+    final String dbVerbs = "C:/Users/Effiam/IdeaProjects/TextSound/db/xls/Verbs.csv";
+
     static DefaultListModel model = new DefaultListModel();
 
     static JTextArea textModel;
@@ -55,8 +63,15 @@ public class Main extends JFrame {
 
         // Preload database for testing
         try {
-            TextSound.items = myParser.csvtoSenseMap(dbFile);
-            tfDBpath.setText(dbFile);
+            //TextSound.items = myParser.csvtoSenseMap(dbFile);
+            TextSound.items = (myParser.csvtoSenseMap(dbAdj));
+            TextSound.items.addAll(myParser.csvtoSenseMap(dbAdv));
+            //TextSound.items.addAll(myParser.csvtoSenseMap(dbModals));
+            TextSound.items.addAll(myParser.csvtoSenseMap(dbNoun));
+            //TextSound.items.addAll(myParser.csvtoSenseMap(dbPrepositions));
+            //TextSound.items.addAll(myParser.csvtoSenseMap(dbSymbols));
+            TextSound.items.addAll(myParser.csvtoSenseMap(dbVerbs));
+            tfDBpath.setText("OK");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
