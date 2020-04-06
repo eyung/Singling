@@ -8,6 +8,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 public class Main extends JFrame {
@@ -36,15 +40,15 @@ public class Main extends JFrame {
 
     // Set default db path
     //String dbFile = "C:/Users/eyung/Downloads/dlc/TextSound/database.csv";
-    String dbFile = "C:/Users/Effiam/IdeaProjects/TextSound/database.csv";
-
-    final String dbAdj = "C:/Users/Effiam/IdeaProjects/TextSound/db/xls/Adj.csv";
-    final String dbAdv = "C:/Users/Effiam/IdeaProjects/TextSound/db/xls/Adv.csv";
-    final String dbModals = "C:/Users/Effiam/IdeaProjects/TextSound/db/csv/Modals.csv";
-    final String dbNoun = "C:/Users/Effiam/IdeaProjects/TextSound/db/xls/Noun.csv";
-    final String dbPrepositions = "C:/Users/Effiam/IdeaProjects/TextSound/db/csv/Prepositions.csv";
-    final String dbSymbols = "C:/Users/Effiam/IdeaProjects/TextSound/db/csv/Symbols.csv";
-    final String dbVerbs = "C:/Users/Effiam/IdeaProjects/TextSound/db/xls/Verbs.csv";
+    //final String dbFile = "C:/Users/Effiam/IdeaProjects/TextSound/database.csv";
+    //final String dbFile2 = "C:/Users/Effiam/IdeaProjects/TextSound/database2.csv";
+    final String dbAdj = "C:/Users/Effiam/IdeaProjects/TextSound//lib/db/csv/Adj.csv";
+    final String dbAdv = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Adv.csv";
+    final String dbModals = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Modals.csv";
+    final String dbNoun = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Noun.csv";
+    final String dbPrepositions = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Prepositions.csv";
+    final String dbSymbols = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Symbols.csv";
+    final String dbVerbs = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Verbs.csv";
 
     static DefaultListModel model = new DefaultListModel();
 
@@ -60,18 +64,56 @@ public class Main extends JFrame {
         JFileChooser fc = new JFileChooser();
 
         csvparser myParser = new csvparser();
+        List<SenseMap.Mapping> allItems;
+        //Set<SenseMap.Mapping> tempList = new HashSet<>();
+        List<SenseMap.Mapping> tempList = new ArrayList<>();
 
-        // Preload database for testing
+        // Preload database
         try {
-            //TextSound.items = myParser.csvtoSenseMap(dbFile);
-            TextSound.items = (myParser.csvtoSenseMap(dbAdj));
-            TextSound.items.addAll(myParser.csvtoSenseMap(dbAdv));
-            //TextSound.items.addAll(myParser.csvtoSenseMap(dbModals));
-            TextSound.items.addAll(myParser.csvtoSenseMap(dbNoun));
-            //TextSound.items.addAll(myParser.csvtoSenseMap(dbPrepositions));
-            //TextSound.items.addAll(myParser.csvtoSenseMap(dbSymbols));
-            TextSound.items.addAll(myParser.csvtoSenseMap(dbVerbs));
+            //allItems = myParser.csvtoSenseMap(dbFile);
+            //allItems.addAll(myParser.csvtoSenseMap(dbFile2));
+            allItems = (myParser.csvtoSenseMap(dbAdj));
+            //allItems.addAll(myParser.csvtoSenseMap(dbAdv));
+            //allItems.addAll(myParser.csvtoSenseMap(dbModals));
+            //allItems.addAll(myParser.csvtoSenseMap(dbNoun));
+            //allItems.addAll(myParser.csvtoSenseMap(dbPrepositions));
+            allItems.addAll(myParser.csvtoSenseMap(dbSymbols));
+            //allItems.addAll(myParser.csvtoSenseMap(dbVerbs));
             tfDBpath.setText("OK");
+
+            //Set<SenseMap.Mapping> targetSet = new HashSet<>(allItems);
+
+            // True if duplicate found in database
+            boolean dupeCheck = false;
+
+            // Loop through the database, add to word type and value if key is found
+            for (SenseMap.Mapping i : allItems) {
+                dupeCheck = false;
+                for (SenseMap.Mapping j : tempList) {
+                    if (j.equals(i)) {
+                        //System.out.println("Exists already: " + j.getKey());
+
+                        j.addType(i.wordType);
+                        j.addValue(i.wordValue);
+
+                        dupeCheck = true;
+                    }
+                }
+                if (!dupeCheck) {
+                    tempList.add(i);
+                }
+            }
+
+            //System.out.println(tempList.toString());
+            // Write final results in file for error logging
+            FileWriter writer = new FileWriter("resultList.txt");
+            for (SenseMap.Mapping str : tempList) {
+                writer.write(str + System.lineSeparator());
+            }
+            writer.close();
+
+            TextSound.items = tempList;
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -372,6 +414,7 @@ public class Main extends JFrame {
         panel3.add(tfDBpath, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         btnGetDB = new JButton();
         btnGetDB.setText("...");
+        btnGetDB.setVisible(false);
         panel3.add(btnGetDB, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 3, false));
         final JPanel panel4 = new JPanel();
         panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));

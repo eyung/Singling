@@ -23,6 +23,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
@@ -208,7 +209,7 @@ public class TextSound {
 		Player player = new Player();
 		File file = new File(output);
 		player.saveMidi(ss, file);
-		//player.play(ss);
+		player.play(ss);
 		player.close();
 	}
 
@@ -223,25 +224,43 @@ public class TextSound {
 		StringBuilder lastWord = new StringBuilder();
 		int lastWordLength = 0;
 
+		// Placing a space before punctuations to sound them and the word before
+		input = input.replaceAll("\\p{Punct}", " $0");
+
+		System.out.println(input);
+
 		for (int charIndex = 0; charIndex < input.length(); charIndex++) {
 			char ch = input.charAt(charIndex);
+			//char lastCh = input.charAt(charIndex-1);
 			char upperCh = Character.toUpperCase(ch);
 			lastSentence.append(ch);
 			String charString = String.valueOf(ch);
 			// A = 1, B = 2, ...
-			int charNum = orderings.get(ordering).indexOf(upperCh) + 1;
+			//int charNum = orderings.get(ordering).indexOf(upperCh) + 1;
 			// int charNum = Character.getNumericValue(upperCh) - 9;
 			//System.out.println(charNum);
 			//System.out.println("last word: " + lastWord.toString()); // testing
 
-			if ((Character.isWhitespace(ch)) || (charNum < 1)) {
+			//if ((Character.isWhitespace(ch)) || (charNum < 1)) {
+			if (Character.isWhitespace(ch)) {
 				// space at the end
 
 				double theRestLength = restLength;
 
-				if (passingWords.contains(lastWord)) {
-					theRestLength = restLength * (2d/3d);
-				}
+				//if (passingWords.contains(lastWord)) {
+				//	theRestLength = restLength * (2d/3d);
+				//}
+
+				// Last character of word is a punctuation
+				//System.out.println("lastCh: " + input.charAt(charIndex-1));
+				//System.out.println("charString: " + charString);
+				//String lastCharString = String.valueOf(input.charAt((charIndex-1)));
+				//if (Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(input.charAt(charIndex-1)))) {
+				//	System.out.println("last char: " + lastCharString);
+				//	if (lastCharString.equals(".")) {
+				//		System.out.println("period");
+				//	}
+				//}
 
 				// Lookup database
   				for (SenseMap.Mapping item : items) {
@@ -255,10 +274,18 @@ public class TextSound {
 						//instructions.forEach((i) -> {
 						for ( Queue.Instruction i : instructions ) {
 
+							// The main logic part of the program
+							// Make changes based on user instructions
 							if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
-								if (item.getType() != null && item.getType().toString().equals(i.modValue)) {
-									applyMod(i, soundString);
+								SenseMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
+								for (SenseMap.Type m : wordtypes) {
+									if (m != null && m.toString().equals(i.modValue)) {
+											applyMod(i, soundString);
+										}
 								}
+								//if (item.getType() != null && item.getType().toString().equals(i.modValue)) {
+								//	applyMod(i, soundString);
+								//}
 
 							} else if (i.mod == Queue.Instruction.Mods.WORDLENGTH) {
 								switch (i.getModOperator()) {
@@ -289,6 +316,7 @@ public class TextSound {
 							}
 						};
 
+						// Word value + 1 because it starts at 0 in the database
 						double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0]+1 / 26d) * octaves); //26
 						double frequency = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
@@ -329,13 +357,13 @@ public class TextSound {
 					soundString.append("R/" + String.format("%f", restLength) + " ");
 				}
 
-				if (settingChangers.contains(charString)) {
+/*				if (settingChangers.contains(charString)) {
 					changeSetting();
-				}
+				} */
 
 				else if (!Character.isWhitespace(ch)) {
 					// punctuation
-					//System.out.println(""); //testing
+					System.out.println("PUNCUTATION: " + ch); //testing
 					int ascii = (int) ch;
 					boolean increase = (ascii % 2 == 0);
 					// Stop things getting too slow - see switch statement below
@@ -358,15 +386,15 @@ public class TextSound {
 						noteGap = setting.keepInRange(noteGap * factor);
 						// Stop things getting too slow if we're staying on the
 						// slowest. Start to speed up again
-						/*
-						 * if ((oldNoteGap == noteGap) && (noteGap ==
-						 * setting.keepInRange(99999d))) { noteGap =
-						 * setting.keepInRange(0d); System.out .println(
-						 * "Reached largest note gap, reversing direction of travel. Gap = "
-						 * + noteGap); //directionOfTravel = !directionOfTravel;
-						 * 
-						 * }
-						 */
+						//*
+						  if ((oldNoteGap == noteGap) && (noteGap ==
+						  setting.keepInRange(99999d))) { noteGap =
+						  setting.keepInRange(0d); System.out .println(
+						  "Reached largest note gap, reversing direction of travel. Gap = "
+						  + noteGap); //directionOfTravel = !directionOfTravel;
+
+						  }
+						  //*
 						break;
 					case REST_LENGTH:
 						restLength = setting.keepInRange(restLength * factor);
@@ -573,6 +601,16 @@ class convertToArr {
 		int i=0;
 		for (String st : tokens) {
 			arr[i++] = Double.valueOf(st);
+		}
+		return arr;
+	}
+
+	static SenseMap.Type[] toTypeArr(String inString) {
+		String[] tokens = inString.split(",");
+		SenseMap.Type[] arr = new SenseMap.Type[inString.length()];
+		int i=0;
+		for (String st : tokens) {
+			arr[i++] = SenseMap.Type.valueOf(st);
 		}
 		return arr;
 	}

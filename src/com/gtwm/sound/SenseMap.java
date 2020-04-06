@@ -6,18 +6,21 @@ import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SenseMap {
 
-    enum Type { n, v, a, r }
+    enum Type { n, v, a, r, m, p, s }
 
     static class Mapping {
         @Parsed(index = 0)
         String wordKey;
 
         @Parsed(index = 1)
-        Type wordType;
+        String wordType;
 
         @Parsed(index = 2)
         String wordValue;
@@ -26,7 +29,7 @@ public class SenseMap {
 
         }
 
-        public Mapping(String x, Type y, String z) {
+        public Mapping(String x, String y, String z) {
             this.wordKey = x;
             this.wordType = y;
             this.wordValue = z;
@@ -36,24 +39,56 @@ public class SenseMap {
             wordKey = thisKey;
         }
 
-        public String getKey() {
-            return wordKey;
+        public String getKey() { return wordKey; }
+
+        public void setType(String thisClass) { wordType = thisClass; }
+
+        public String getType() { return wordType; }
+
+        public void addType(String thisClass) {
+            wordType = wordType + "," + thisClass;
+
+            String[] strArr = wordType.split(",");
+            Set<String> set = new HashSet<String>(Arrays.asList(strArr));
+
+            String[] result = new String[set.size()];
+            set.toArray(result);
+
+            StringBuilder res = new StringBuilder();
+            for (int i = 0; i < result.length; i++) {
+                String string = result[i];
+                if(i==result.length-1)
+                    res.append(string);
+                else
+                    res.append(string).append(",");
+            }
+
+            wordType = res.toString();
         }
 
-        public void setType(Type thisClass) {
-            wordType = thisClass;
-        }
+        public void setValue(String thisValue) { wordValue = thisValue; }
 
-        public Type getType() {
-            return wordType;
-        }
+        public String getValue() { return wordValue; }
 
-        public void setValue(String thisValue) {
-            wordValue = thisValue;
-        }
+        public void addValue(String thisValue) {
+            wordValue = wordValue + "," + thisValue;
 
-        public String getValue() {
-            return wordValue;
+            String[] strArr = wordValue.split(",");
+            Set<String> set = new HashSet<String>(Arrays.asList(strArr));
+
+            String[] result = new String[set.size()];
+            set.toArray(result);
+
+            StringBuilder res = new StringBuilder();
+            for (int i = 0; i < result.length; i++) {
+                String string = result[i];
+                if(i==result.length-1)
+                    res.append(string);
+                else
+                    res.append(string).append(",");
+            }
+
+            wordValue = res.toString();
         }
 
         public String toString() {
@@ -61,8 +96,29 @@ public class SenseMap {
                     " key=" + wordKey +
                     " type=" + wordType +
                     " value=" + wordValue +
-                    '}';
+                    '}'+"\n";
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (obj.getClass() != getClass()) {
+                return false;
+            }
+            Mapping map = (Mapping) obj;
+            if (this.wordKey.equals(map.wordKey)) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return wordKey.hashCode();
+        }
+
     }
 
 }
@@ -77,7 +133,7 @@ class csvparser {
         CsvParserSettings parserSettings = new CsvParserSettings();
         parserSettings.getFormat().setLineSeparator("\n");
         parserSettings.setProcessor(rowProcessor);
-        parserSettings.setHeaderExtractionEnabled(true);
+        parserSettings.setHeaderExtractionEnabled(false);
 
         CsvParser parser = new CsvParser(parserSettings);
         parser.parse(getReader(filePath));
@@ -85,8 +141,8 @@ class csvparser {
         // The BeanListProcessor provides a list of objects extracted from the input.
         List<SenseMap.Mapping> beans = rowProcessor.getBeans();
 
-        //For (SenseMap.Mapping bean : beans){
-        //    System.out.println(bean.getWordKey() + ", " + bean.getWordClass() + ", " + bean.getWordValue());
+        //for (SenseMap.Mapping bean : beans) {
+            //System.out.println(bean.getKey() + ", " + bean.getType() + ", " + bean.getValue());
         //}
 
         return beans;
