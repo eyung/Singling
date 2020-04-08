@@ -249,6 +249,13 @@ public class Main extends JFrame {
                     dialog.setLocationRelativeTo(panelInstructions);
                     dialog.setVisible(true);
                     btnAddInstruction.setSelectedIndex(0);
+                } else if (btnAddInstruction.getSelectedItem() == "PUNCTUATION") {
+                    InstructionFormPunctuation dialog = new InstructionFormPunctuation();
+                    dialog.setTitle("Instruction: Punctuation");
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(panelInstructions);
+                    dialog.setVisible(true);
+                    btnAddInstruction.setSelectedIndex(0);
                 }
             }
         });
@@ -411,7 +418,8 @@ public class Main extends JFrame {
         panel3.add(btnLoadText, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 0, false));
         tfDBpath = new JTextField();
         tfDBpath.setEditable(false);
-        panel3.add(tfDBpath, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        tfDBpath.setVisible(false);
+        panel3.add(tfDBpath, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btnGetDB = new JButton();
         btnGetDB.setText("...");
         btnGetDB.setVisible(false);
@@ -442,6 +450,7 @@ public class Main extends JFrame {
         defaultComboBoxModel4.addElement("WORDTYPE");
         defaultComboBoxModel4.addElement("WORDLENGTH");
         defaultComboBoxModel4.addElement("LEXNAME");
+        defaultComboBoxModel4.addElement("PUNCTUATION");
         btnAddInstruction.setModel(defaultComboBoxModel4);
         panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label6 = new JLabel();

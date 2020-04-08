@@ -227,8 +227,6 @@ public class TextSound {
 		// Placing a space before punctuations to sound them and the word before
 		input = input.replaceAll("\\p{Punct}", " $0");
 
-		System.out.println(input);
-
 		for (int charIndex = 0; charIndex < input.length(); charIndex++) {
 			char ch = input.charAt(charIndex);
 			//char lastCh = input.charAt(charIndex-1);
@@ -238,8 +236,6 @@ public class TextSound {
 			// A = 1, B = 2, ...
 			//int charNum = orderings.get(ordering).indexOf(upperCh) + 1;
 			// int charNum = Character.getNumericValue(upperCh) - 9;
-			//System.out.println(charNum);
-			//System.out.println("last word: " + lastWord.toString()); // testing
 
 			//if ((Character.isWhitespace(ch)) || (charNum < 1)) {
 			if (Character.isWhitespace(ch)) {
@@ -302,7 +298,7 @@ public class TextSound {
 
 							} else if (i.mod == Queue.Instruction.Mods.WORDVALUE) {
 								double[] lexnames = convertToArr.toDoubleArr(item.getValue()+1);
-								int lexCount = 0;
+								//int lexCount = 0;
 								for (double n : lexnames) {
 									if (n == Double.parseDouble(i.modValue)) {
 										//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
@@ -312,6 +308,15 @@ public class TextSound {
 								//if (convertToArr.toDoubleArr(item.getValue())[0] == Double.parseDouble(i.modValue)) {
 									//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
 								//	applyMod(i, soundString);
+								//}
+							} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
+								//String[] punctuations = convertToArr.toStringArr(item.getValue());
+
+								//for (String n : punctuations) {
+									if (item.getKey().equals(i.modValue)) {
+										//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+										applyMod(i, soundString);
+									}
 								//}
 							}
 						};
@@ -361,7 +366,7 @@ public class TextSound {
 					changeSetting();
 				} */
 
-				else if (!Character.isWhitespace(ch)) {
+				/*else if (!Character.isWhitespace(ch)) {
 					// punctuation
 					System.out.println("PUNCUTATION: " + ch); //testing
 					int ascii = (int) ch;
@@ -422,7 +427,7 @@ public class TextSound {
 					default:
 						throw new IllegalStateException("Setting " + setting + " is not handled");
 					}
-				}
+				}*/
 			} else {
 
 				lastWord.append(upperCh);
@@ -611,6 +616,16 @@ class convertToArr {
 		int i=0;
 		for (String st : tokens) {
 			arr[i++] = SenseMap.Type.valueOf(st);
+		}
+		return arr;
+	}
+
+	static String[] toStringArr(String inString) {
+		String[] tokens = inString.split(",");
+		String[] arr = new String[inString.length()];
+		int i=0;
+		for (String st : tokens) {
+			arr[i++] = st;
 		}
 		return arr;
 	}

@@ -6,7 +6,7 @@ public class Queue {
 
     static class Instruction implements Serializable {
 
-        enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE }
+        enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE, PUNCTUATION }
 
         enum SoundMods { TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION }
 
