@@ -8,7 +8,7 @@ public class Queue {
 
         enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE, PUNCTUATION }
 
-        enum SoundMods { TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION }
+        enum SoundMods { TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION, FREQUENCY }
 
         enum ModOperators { EQUALTO, LARGERTHAN, LESSTHAN }
 
@@ -81,14 +81,30 @@ public class Queue {
         }
 
         public String toString() {
-            return "Instruction:{" +
-                    "mod=" + mod +
-                    " modoperator=" + modOperator +
-                    " modvalue=" + modValue +
-                    " soundmod=" + soundMod +
-                    " soundmodvalue=" + soundModValue +
-                    " changemode=" + changeMode +
-                    '}';
+            if (mod.equals(Mods.WORDLENGTH)) {
+                return "WORDLENGTH " + modOperator +
+                        " " + modValue +
+                        " TO " + changeMode +
+                        " " + soundMod +
+                        " " + soundModValue;
+            } else if (mod.equals(Mods.WORDTYPE) ||
+                    mod.equals(Mods.PUNCTUATION) ||
+                    mod.equals(Mods.WORDVALUE)) {
+                return mod +
+                        ":" + modValue +
+                        " TO " +changeMode +
+                        " " + soundMod +
+                        " " + soundModValue;
+            } else {
+                return "Instruction:{" +
+                        "mod=" + mod +
+                        " modoperator=" + modOperator +
+                        " modvalue=" + modValue +
+                        " soundmod=" + soundMod +
+                        " soundmodvalue=" + soundModValue +
+                        " changemode=" + changeMode +
+                        '}';
+            }
         }
     }
 }
