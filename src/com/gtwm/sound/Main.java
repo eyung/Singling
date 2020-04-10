@@ -75,6 +75,12 @@ public class Main extends JFrame {
             return;
         }
 
+        //for (int i = 0; i < 100; i++) {
+        //renderSplashFrame(g, i);
+        g.drawString("Starting up...", 120, 150);
+        splash.update();
+        //}
+
         list1.setModel(model);
         textModel = this.textArea1;
 
@@ -93,7 +99,7 @@ public class Main extends JFrame {
         try {
             allItems = myParser.csvtoSenseMap(dbFile);
             allItems.addAll(myParser.csvtoSenseMap(dbFile2));
-            allItems = (myParser.csvtoSenseMap(dbAdj));
+            //allItems = (myParser.csvtoSenseMap(dbAdj));
             //allItems.addAll(myParser.csvtoSenseMap(dbAdv));
             //allItems.addAll(myParser.csvtoSenseMap(dbModals));
             //allItems.addAll(myParser.csvtoSenseMap(dbNoun));
@@ -297,14 +303,14 @@ public class Main extends JFrame {
         thisModel.addElement(thisInstruction);
     }
 
-    static void renderSplashFrame(Graphics2D g, int frame, String loadingText) {
+    static void renderSplashFrame(Graphics2D g, int frame) {
         final String[] comps = {".", "..", "..."};
         g.setComposite(AlphaComposite.Clear);
         g.fillRect(120, 140, 200, 40);
         g.setPaintMode();
-        g.setColor(Color.BLACK);
+        g.setColor(Color.WHITE);
         //g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
-        g.drawString("Loading " + loadingText, 120, 150);
+        g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
     }
 
     public static void createAndShowGUI() {
@@ -505,6 +511,9 @@ public class Main extends JFrame {
         muteRadioButton = new JRadioButton();
         muteRadioButton.setText("Mute");
         panel2.add(muteRadioButton, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label6 = new JLabel();
+        label6.setText("Default Note Behaviour:");
+        panel2.add(label6, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(500, 500), null, 0, false));
         textArea1 = new JTextArea();
@@ -532,9 +541,9 @@ public class Main extends JFrame {
         btnProcess = new JButton();
         btnProcess.setText("Start");
         panel4.add(btnProcess, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label6 = new JLabel();
-        label6.setText("Base Settings");
-        panel1.add(label6, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label7 = new JLabel();
+        label7.setText("Base Settings");
+        panel1.add(label7, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane2 = new JScrollPane();
         panel1.add(scrollPane2, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         list1 = new JList();
@@ -555,9 +564,9 @@ public class Main extends JFrame {
         defaultComboBoxModel5.addElement("PUNCTUATION");
         btnAddInstruction.setModel(defaultComboBoxModel5);
         panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label7 = new JLabel();
-        label7.setText("Instruction");
-        panelInstructions.add(label7, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label8 = new JLabel();
+        label8.setText("Instruction");
+        panelInstructions.add(label8, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label2.setLabelFor(setTempo);
         label3.setLabelFor(setDuration);
         label4.setLabelFor(setInstrument);
