@@ -9,9 +9,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 public class Main extends JFrame {
     private JButton btnLoadText;
@@ -34,36 +38,32 @@ public class Main extends JFrame {
     private JRadioButton staticRadioButton;
     private JRadioButton muteRadioButton;
 
-    String inputText = "";
+    // Set default database diectory
+    final File workingDirectory = new File(System.getProperty("user.dir"));
 
-    File workingDirectory = new File(System.getProperty("user.dir"));
+    // Input file name
+    String inputText = "";
 
     // Set default output file name
     String outFilename = "output.mid";
 
-    // Set default db path
-    //String dbFile = "C:/Users/eyung/Downloads/dlc/TextSound/database.csv";
-    final String dbFile = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/test.csv";
-    final String dbFile2 = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/test2.csv";
-    final String dbAdj = "C:/Users/Effiam/IdeaProjects/TextSound//lib/db/csv/Adj.csv";
-    final String dbAdv = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Adv.csv";
-    final String dbModals = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Modals.csv";
-    final String dbNoun = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Noun.csv";
-    final String dbPrepositions = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Prepositions.csv";
-    final String dbSymbols = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Symbols.csv";
-    final String dbVerbs = "C:/Users/Effiam/IdeaProjects/TextSound/lib/db/csv/Verbs.csv";
-
+    // Creating a text model for instructions textarea so that it can be updated
     static DefaultListModel model = new DefaultListModel();
-
     static JTextArea textModel;
+
+    // To get and load user settings
+    static Preferences prefs = Preferences.userNodeForPackage(Main.class);
+
+    // Storing database words and values to list item
+    List<SenseMap.Mapping> allItems;
 
     //static Highlighter highlighter;
     //static HighlightPainter painter;
 
-    static Preferences prefs = Preferences.userNodeForPackage(Main.class);
+    final int splashx = 100;
+    final int splashy = 250;
 
     public Main() {
-
         final SplashScreen splash = SplashScreen.getSplashScreen();
         if (splash == null) {
             System.out.println("SplashScreen.getSplashScreen() returned null");
@@ -75,40 +75,41 @@ public class Main extends JFrame {
             return;
         }
 
-        //for (int i = 0; i < 100; i++) {
-        //renderSplashFrame(g, i);
         g.drawString("Starting up...", 120, 150);
         splash.update();
-        //}
 
         list1.setModel(model);
         textModel = this.textArea1;
 
         JFileChooser fc = new JFileChooser();
-
         csvparser myParser = new csvparser();
 
         //highlighter = this.textArea1.getHighlighter();
         //painter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
 
-        List<SenseMap.Mapping> allItems;
-        //Set<SenseMap.Mapping> tempList = new HashSet<>();
         List<SenseMap.Mapping> tempList = new ArrayList<>();
 
         // Preload database
         try {
-            allItems = myParser.csvtoSenseMap(dbFile);
-            allItems.addAll(myParser.csvtoSenseMap(dbFile2));
-            //allItems = (myParser.csvtoSenseMap(dbAdj));
-            //allItems.addAll(myParser.csvtoSenseMap(dbAdv));
-            //allItems.addAll(myParser.csvtoSenseMap(dbModals));
-            //allItems.addAll(myParser.csvtoSenseMap(dbNoun));
-            //allItems.addAll(myParser.csvtoSenseMap(dbPrepositions));
-            allItems.addAll(myParser.csvtoSenseMap(dbSymbols));
-            //allItems.addAll(myParser.csvtoSenseMap(dbVerbs));
-            //tfDBpath.setText("OK");
+            g.drawString("Loading databases...", 120, 170);
+            splash.update();
 
-            //Set<SenseMap.Mapping> targetSet = new HashSet<>(allItems);
+            //Load test database
+            allItems = myParser.csvtoSenseMap(workingDirectory.toString() + "/lib/db/test.csv");
+
+            Files.walk(Paths.get(workingDirectory.toString() + "/lib/db/"))
+                .filter(Files::isRegularFile)
+                .filter(p -> p.toString().endsWith(".csv"))
+                .forEach(p -> {
+                    try {
+                        System.out.println("Reading " + p.toString());
+                        allItems.addAll(myParser.csvtoSenseMap(p.toString()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+            //tfDBpath.setText("OK");
 
             // True if duplicate found in database
             boolean dupeCheck = false;
@@ -303,17 +304,16 @@ public class Main extends JFrame {
         thisModel.addElement(thisInstruction);
     }
 
-    static void renderSplashFrame(Graphics2D g, int frame) {
+    private void renderSplashFrame(Graphics2D g, int frame) {
         final String[] comps = {".", "..", "..."};
         g.setComposite(AlphaComposite.Clear);
         g.fillRect(120, 140, 200, 40);
         g.setPaintMode();
         g.setColor(Color.WHITE);
-        //g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
         g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
     }
 
-    public static void createAndShowGUI() {
+    private static void createAndShowGUI() {
 
         // Menu
         JMenuBar menuBar = new JMenuBar();
@@ -355,9 +355,6 @@ public class Main extends JFrame {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    }
-
-    public void loadDatabase(csvparser myParser) {
     }
 
     public static void main(String[] args) throws Exception {
