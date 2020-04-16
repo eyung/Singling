@@ -61,9 +61,11 @@ public class Main extends JFrame {
     //static HighlightPainter painter;
 
     final int splashx = 100;
-    final int splashy = 250;
+    final int splashy = 450;
 
     public Main() {
+
+        // Load splash
         final SplashScreen splash = SplashScreen.getSplashScreen();
         if (splash == null) {
             System.out.println("SplashScreen.getSplashScreen() returned null");
@@ -74,8 +76,7 @@ public class Main extends JFrame {
             System.out.println("g is null");
             return;
         }
-
-        g.drawString("Starting up...", 120, 150);
+        g.drawString("Starting up...", splashx, splashy);
         splash.update();
 
         list1.setModel(model);
@@ -91,23 +92,30 @@ public class Main extends JFrame {
 
         // Preload database
         try {
-            g.drawString("Loading databases...", 120, 170);
+            // Update splash screen
+            g.drawString("Loading databases...", splashx, splashy + 20);
             splash.update();
 
             //Load test database
-            allItems = myParser.csvtoSenseMap(workingDirectory.toString() + "/lib/db/test.csv");
+            //allItems = myParser.csvtoSenseMap(workingDirectory.toString() + "/db/test.csv");
 
-            Files.walk(Paths.get(workingDirectory.toString() + "/lib/db/"))
-                .filter(Files::isRegularFile)
-                .filter(p -> p.toString().endsWith(".csv"))
-                .forEach(p -> {
-                    try {
-                        System.out.println("Reading " + p.toString());
-                        allItems.addAll(myParser.csvtoSenseMap(p.toString()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+            // Load all database files in directory 'db'
+            Files.walk(Paths.get(workingDirectory.toString() + "/db/"))
+                    .filter(Files::isRegularFile)
+                    .filter(p -> p.toString().endsWith(".csv"))
+                    .forEach(p -> {
+                        try {
+                            if (allItems == null) {
+                                allItems = myParser.csvtoSenseMap(p.toString());
+                                System.out.println("Initializing database using: " + p.toString());
+                            } else {
+                                allItems.addAll(myParser.csvtoSenseMap(p.toString()));
+                                System.out.println("Reading " + p.toString());
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
 
             //tfDBpath.setText("OK");
 
@@ -134,7 +142,7 @@ public class Main extends JFrame {
 
             //System.out.println(tempList.toString());
             // Write final results in file for error logging
-            FileWriter writer = new FileWriter("resultList.txt");
+            FileWriter writer = new FileWriter("resultlist.txt");
             for (SenseMap.Mapping str : tempList) {
                 writer.write(str + System.lineSeparator());
             }
@@ -190,35 +198,48 @@ public class Main extends JFrame {
                 // Handle open button action
                 if (e.getSource() == btnProcess) {
                     if (textArea1.getLineCount() > 0) {
-                        try {
-                            // Get initial settings from user inputs
-                            TextSound.userInstrument = String.valueOf(setInstrument.getSelectedItem());
-                            System.out.println("Instrument: " + TextSound.userInstrument);
 
-                            TextSound.userNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
-                            System.out.println("Note Length: " + TextSound.userNoteLength);
+                        fc.setCurrentDirectory(workingDirectory);
 
-                            TextSound.userOctaves = Double.valueOf(setOctaves.getValue());
-                            System.out.println("Octaves: " + TextSound.userOctaves);
+                        int returnVal = fc.showSaveDialog(panel1);
 
-                            TextSound.userTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
-                            System.out.println("Tempo: " + TextSound.userTempo);
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            File fileToSave = fc.getSelectedFile();
+                            outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
+                            System.out.println("Save as file: " + outFilename);
 
-                            TextSound.userBaseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
-                            System.out.println("Frequency: " + TextSound.userBaseFrequency);
+                            try {
+                                // Get initial settings from user inputs
+                                TextSound.userInstrument = String.valueOf(setInstrument.getSelectedItem());
+                                System.out.println("Instrument: " + TextSound.userInstrument);
 
-                            if (lexnamesRadioButton.isSelected()) {
-                                TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;
-                            } else if (staticRadioButton.isSelected()) {
-                                TextSound.defaultNoteOperation = TextSound.noteOperationType.STATICFREQ;
-                            } else if (muteRadioButton.isSelected()) {
-                                TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
+                                TextSound.userNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
+                                System.out.println("Note Length: " + TextSound.userNoteLength);
+
+                                TextSound.userOctaves = Double.valueOf(setOctaves.getValue());
+                                System.out.println("Octaves: " + TextSound.userOctaves);
+
+                                TextSound.userTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
+                                System.out.println("Tempo: " + TextSound.userTempo);
+
+                                TextSound.userBaseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
+                                System.out.println("Frequency: " + TextSound.userBaseFrequency);
+
+                                if (lexnamesRadioButton.isSelected()) {
+                                    TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;
+                                } else if (staticRadioButton.isSelected()) {
+                                    TextSound.defaultNoteOperation = TextSound.noteOperationType.STATICFREQ;
+                                } else if (muteRadioButton.isSelected()) {
+                                    TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
+                                }
+
+                                // Process text
+                                TextSound.runStuff(textArea1.getText(), outFilename);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
-
-                            // Process text
-                            TextSound.runStuff(textArea1.getText(), outFilename);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                        } else {
+                            System.out.println("Save command cancelled by user.");
                         }
                     }
                 }
