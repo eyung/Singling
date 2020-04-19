@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="20" left="20" bottom="20" right="20"/>
     <constraints>
-      <xy x="123" y="62" width="1564" height="642"/>
+      <xy x="123" y="62" width="2263" height="823"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -329,6 +329,7 @@
             </constraints>
             <properties>
               <text value="-"/>
+              <toolTipText value="Alt+Del"/>
             </properties>
           </component>
           <component id="54607" class="javax.swing.JComboBox" binding="btnAddInstruction">

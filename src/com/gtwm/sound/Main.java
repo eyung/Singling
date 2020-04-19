@@ -5,9 +5,11 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.w3c.dom.Text;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +40,7 @@ public class Main extends JFrame {
     private JRadioButton staticRadioButton;
     private JRadioButton muteRadioButton;
 
-    // Set default database diectory
+    // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
 
     // Input file name
@@ -60,6 +62,7 @@ public class Main extends JFrame {
     //static Highlighter highlighter;
     //static HighlightPainter painter;
 
+    // Splash screen coordinates
     final int splashx = 100;
     final int splashy = 450;
 
@@ -76,11 +79,14 @@ public class Main extends JFrame {
             System.out.println("g is null");
             return;
         }
+        g.drawString("DLC TextSound ver 0.1", splashx, splashy - 20);
         g.drawString("Starting up...", splashx, splashy);
         splash.update();
 
         list1.setModel(model);
         textModel = this.textArea1;
+
+        textArea1.getDocument().addDocumentListener(documentListener);
 
         JFileChooser fc = new JFileChooser();
         csvparser myParser = new csvparser();
@@ -141,12 +147,13 @@ public class Main extends JFrame {
             }
 
             //System.out.println(tempList.toString());
+
             // Write final results in file for error logging
-            FileWriter writer = new FileWriter("resultlist.txt");
-            for (SenseMap.Mapping str : tempList) {
-                writer.write(str + System.lineSeparator());
-            }
-            writer.close();
+            //FileWriter writer = new FileWriter("resultlist.txt");
+            //for (SenseMap.Mapping str : tempList) {
+            //    writer.write(str + System.lineSeparator());
+            //}
+            //writer.close();
 
             TextSound.items = tempList;
 
@@ -154,14 +161,8 @@ public class Main extends JFrame {
             ex.printStackTrace();
         }
 
-        // Get user settings
-        String prefString = prefs.get("instructionsPref", "x");
-        TextSound.instructions = serialInstructionsQueue.deserializeObject(prefString.toString());
-        for (Queue.Instruction i : TextSound.instructions) {
-            listAddInstruction(Main.model, i);
-        }
-        String prefString2 = prefs.get("textPref", "y");
-        this.textArea1.setText(prefString2);
+        // Load user preferences
+        loadSettings(this.textArea1);
 
         btnLoadText.addActionListener(new ActionListener() {
             @Override
@@ -284,6 +285,7 @@ public class Main extends JFrame {
                 model.removeElement(selectedInstruction);
             }
         });
+        btnRemoveInstruction.setMnemonic(KeyEvent.VK_DELETE);
 
         btnAddInstruction.addActionListener(new ActionListener() {
             @Override
@@ -325,6 +327,94 @@ public class Main extends JFrame {
         thisModel.addElement(thisInstruction);
     }
 
+    private DocumentListener documentListener = new DocumentListener() {
+        int wordLen = 0;
+        int lastWordLen;
+        StringBuilder currentWord = new StringBuilder();
+        String lastWord;
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            try {
+                String a = e.getDocument().getText(e.getOffset(), e.getLength());
+                if (!a.equals(" ") && !a.equals("\n")) {
+                    currentWord.append(a);
+                    wordLen++;
+                }
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+            //System.out.println(wordLen);
+            printIt(e);
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            if (wordLen != 0) {
+                currentWord.deleteCharAt(wordLen - 1);
+                wordLen--;
+            }
+            //System.out.println(wordLen);
+            //printIt(e);
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            //printIt(e);
+        }
+
+        private void printIt(DocumentEvent e) {
+            DocumentEvent.EventType type = e.getType();
+            try {
+                String a = e.getDocument().getText(e.getOffset(), e.getLength());
+                if (type == DocumentEvent.EventType.INSERT) {
+                    if (a.equals(" ") || a.equals("\n")) {
+                        //System.out.println(e.getDocument().getText(e.getOffset(), wordLen));
+
+                        try {
+                            // Get initial settings from user inputs
+                            TextSound.userInstrument = String.valueOf(setInstrument.getSelectedItem());
+                            System.out.println("Instrument: " + TextSound.userInstrument);
+
+                            TextSound.userNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
+                            System.out.println("Note Length: " + TextSound.userNoteLength);
+
+                            TextSound.userOctaves = Double.valueOf(setOctaves.getValue());
+                            System.out.println("Octaves: " + TextSound.userOctaves);
+
+                            TextSound.userTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
+                            System.out.println("Tempo: " + TextSound.userTempo);
+
+                            TextSound.userBaseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
+                            System.out.println("Frequency: " + TextSound.userBaseFrequency);
+
+                            if (lexnamesRadioButton.isSelected()) {
+                                TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;
+                            } else if (staticRadioButton.isSelected()) {
+                                TextSound.defaultNoteOperation = TextSound.noteOperationType.STATICFREQ;
+                            } else if (muteRadioButton.isSelected()) {
+                                TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
+                            }
+
+                            // Process text
+                            TextSound.testf(currentWord);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        lastWord = currentWord.toString();
+                        currentWord.setLength(0);
+                        lastWordLen = wordLen;
+                        wordLen = 0;
+                        //System.out.println(lastWord);
+                    }
+                }
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+        }
+    };
+
     private void renderSplashFrame(Graphics2D g, int frame) {
         final String[] comps = {".", "..", "..."};
         g.setComposite(AlphaComposite.Clear);
@@ -332,6 +422,24 @@ public class Main extends JFrame {
         g.setPaintMode();
         g.setColor(Color.WHITE);
         g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
+    }
+
+    private static void saveSettings() {
+        // Save instructions to file
+        ObjectOutputStream x = serialInstructionsQueue.serializeObject(TextSound.instructions);
+        prefs.put("instructionsPref", x.toString());
+        prefs.put("textPref", Main.textModel.getText());
+    }
+
+    private static void loadSettings(JTextArea textArea) {
+        // Get user settings
+        String prefString = prefs.get("instructionsPref", "x");
+        TextSound.instructions = serialInstructionsQueue.deserializeObject(prefString.toString());
+        for (Queue.Instruction i : TextSound.instructions) {
+            listAddInstruction(Main.model, i);
+        }
+        String prefString2 = prefs.get("textPref", "y");
+        textArea.setText(prefString2);
     }
 
     private static void createAndShowGUI() {
@@ -344,16 +452,18 @@ public class Main extends JFrame {
         JMenu fileMenu = new JMenu("File");
 
         // Menu Item (Drop down menus)
-        saveItem = new JMenuItem("Save");
+        saveItem = new JMenuItem("Save instructions");
         saveItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Save instructions to file
-                ObjectOutputStream x = serialInstructionsQueue.serializeObject(TextSound.instructions);
-                prefs.put("instructionsPref", x.toString());
-                prefs.put("textPref", Main.textModel.getText());
+                saveSettings();
             }
         });
+
+        // Separator
+        JSeparator separatorBar = new JSeparator();
+
+        // Exit
         exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
@@ -363,6 +473,7 @@ public class Main extends JFrame {
 
         // Adding menu items to menu
         fileMenu.add(saveItem);
+        fileMenu.add(separatorBar);
         fileMenu.add(exitItem);
 
         // Adding menu to menu bar
@@ -572,6 +683,7 @@ public class Main extends JFrame {
         panel1.add(panelInstructions, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         btnRemoveInstruction = new JButton();
         btnRemoveInstruction.setText("-");
+        btnRemoveInstruction.setToolTipText("Alt+Del");
         panelInstructions.add(btnRemoveInstruction, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(2, 2), null, 0, false));
         btnAddInstruction = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();

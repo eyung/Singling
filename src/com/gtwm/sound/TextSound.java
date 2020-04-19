@@ -31,6 +31,7 @@ import javax.swing.text.DefaultHighlighter;
 import org.jfugue.MicrotoneNotation;
 import org.jfugue.Player;
 import org.jfugue.StreamingPlayer;
+import org.jfugue.TimeFactor;
 
 
 /**
@@ -202,10 +203,6 @@ public class TextSound {
 		// Reset initial settings
 		resetSettings();
 
-		// Save instructions to file
-		//ObjectOutputStream x = serialInstructionsQueue.serializeObject(instructions);
-		//prefs.put("instructionsPref", x.toString());
-
 		//Verify list data
 		//for ( Queue.Instruction i : instructions ) {
 		//	System.out.println(i);
@@ -221,7 +218,6 @@ public class TextSound {
 
 		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 		System.out.println(ss);
-		//System.out.println(input);
 		Player player = new Player();
 		File file = new File(output);
 		player.saveMidi(ss, file);
@@ -499,6 +495,122 @@ public class TextSound {
 		return soundString.toString();
 	}
 
+	public static void testf(StringBuilder lastWord) {
+		StreamingPlayer streamingPlayer = new StreamingPlayer();
+		StringBuilder soundString = new StringBuilder();
+
+		resetSettings();
+
+		soundString.append( (int) tempo + " I[" + instrument + "] " );
+
+		// Lookup database
+		for (SenseMap.Mapping item : items) {
+
+			// Match
+			if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
+
+				// Word value + 1 because it starts at 0 in the database
+				double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0]+1 / 26d) * octaves); //26
+				frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
+
+				switch (defaultNoteOperation) {
+					case LEXNAMEFREQ:
+						//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
+						frequency = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
+						break;
+					case STATICFREQ:
+						// If we want a default tone, leave freq as static
+						break;
+					case MUTE:
+						// If we want a mute tone, set duration of each note to be 0
+						noteLength = 0;
+						break;
+				}
+
+				// Go through the instructions queue
+				for ( Queue.Instruction i : instructions ) {
+
+					// The main logic part of the program
+					// Make changes based on user instructions
+					if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
+						SenseMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
+						for (SenseMap.Type m : wordtypes) {
+							if (m != null && m.toString().equals(i.modValue)) {
+								applyMod(i, soundString);
+							}
+						}
+
+					} else if (i.mod == Queue.Instruction.Mods.WORDLENGTH) {
+						switch (i.getModOperator()) {
+							case EQUALTO:
+								if (Integer.parseInt(i.getModValue()) == lastWord.length()) {
+									applyMod(i, soundString);
+								}
+								break;
+							case LARGERTHAN:
+								if (Integer.parseInt(i.getModValue()) < lastWord.length()) {
+									applyMod(i, soundString);
+								}
+								break;
+							case LESSTHAN:
+								if (Integer.parseInt(i.getModValue()) > lastWord.length()) {
+									applyMod(i, soundString);
+								}
+								break;
+						}
+
+					} else if (i.mod == Queue.Instruction.Mods.WORDVALUE) {
+						double[] lexnames = convertToArr.toDoubleArr(item.getValue()+1);
+						//int lexCount = 0;
+						for (double n : lexnames) {
+							if (n == Double.parseDouble(i.modValue)) {
+								//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+								applyMod(i, soundString);
+							}
+						}
+						//if (convertToArr.toDoubleArr(item.getValue())[0] == Double.parseDouble(i.modValue)) {
+						//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+						//	applyMod(i, soundString);
+						//}
+					} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
+						//String[] punctuations = convertToArr.toStringArr(item.getValue());
+
+						//for (String n : punctuations) {
+						if (item.getKey().equals(i.modValue)) {
+							//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+							applyMod(i, soundString);
+						}
+						//}
+					}
+				};
+
+				// Normalise to fit in the range
+				double topFrequency = baseFrequency;
+				for (int j = 0; j < targetOctave; j++) {
+					topFrequency = topFrequency * 2;
+				}
+				while (frequency > topFrequency) {
+					frequency = frequency / 2;
+				}
+
+				// Testing
+				System.out.println("Frequency for " + lastWord + "=" + item.getValue() +
+						" normalized to octave "
+						+ octaves + ", top frequency " + topFrequency + ": " +
+						frequency);
+
+				// Convert freq to music string and append to sound string
+				soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength); // Note (and duration)
+				System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
+			}
+		}
+
+		//soundString.append("R/" + String.format("%f", theRestLength) + " ");
+		System.out.println(soundString);
+		streamingPlayer.stream(soundString.toString());
+		streamingPlayer.close();
+	}
+
 	/*private static void changeSetting() {
 		int newSettingNum = setting.ordinal() + 1;
 		if (newSettingNum >= allSettings.size()) {
@@ -615,9 +727,9 @@ class serialInstructionsQueue {
 
 			return TextSound.instructions;
 		} catch (IOException e) {
-			System.out.println("c");
-			e.printStackTrace();
-			return null;
+			System.out.println("No user saved instructions to load.");
+			//e.printStackTrace();
+			return TextSound.instructions;
 		} catch (ClassNotFoundException e) {
 			System.out.println("d");
 			e.printStackTrace();
