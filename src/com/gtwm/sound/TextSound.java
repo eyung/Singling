@@ -22,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import javax.swing.text.BadLocationException;
@@ -52,6 +51,7 @@ import org.jfugue.TimeFactor;
 public class TextSound {
 
 	//static String inputFile;
+	static String prefsFile = "usersettings";
 
 	static String instrument;
 
@@ -495,7 +495,7 @@ public class TextSound {
 		return soundString.toString();
 	}
 
-	public static void testf(StringBuilder lastWord) {
+	public static void streamText(StringBuilder lastWord) {
 		StreamingPlayer streamingPlayer = new StreamingPlayer();
 		StringBuilder soundString = new StringBuilder();
 
@@ -694,7 +694,7 @@ public class TextSound {
 class serialInstructionsQueue {
 	static ObjectOutputStream serializeObject(List<Queue.Instruction> thisObjectList) {
 		try {
-			FileOutputStream fos = new FileOutputStream("usersettings");
+			FileOutputStream fos = new FileOutputStream(TextSound.prefsFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 
 			oos.writeObject(thisObjectList);
@@ -717,7 +717,7 @@ class serialInstructionsQueue {
 
 	static List<Queue.Instruction> deserializeObject(String thisOutStream) {
 		try {
-			FileInputStream fis = new FileInputStream("usersettings");
+			FileInputStream fis = new FileInputStream(TextSound.prefsFile);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 
 			TextSound.instructions = (ArrayList) ois.readObject();

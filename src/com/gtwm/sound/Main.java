@@ -2,7 +2,6 @@ package com.gtwm.sound;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import org.w3c.dom.Text;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -12,12 +11,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 public class Main extends JFrame {
     private JButton btnLoadText;
@@ -162,7 +159,7 @@ public class Main extends JFrame {
         }
 
         // Load user preferences
-        loadSettings(this.textArea1);
+        //loadSettings(this.textArea1, TextSound.prefsFile);
 
         btnLoadText.addActionListener(new ActionListener() {
             @Override
@@ -397,7 +394,7 @@ public class Main extends JFrame {
                             }
 
                             // Process text
-                            TextSound.testf(currentWord);
+                            TextSound.streamText(currentWord);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -424,39 +421,78 @@ public class Main extends JFrame {
         g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
     }
 
-    private static void saveSettings() {
+    private static void saveSettings(String saveFile) {
+        TextSound.prefsFile = saveFile;
         // Save instructions to file
         ObjectOutputStream x = serialInstructionsQueue.serializeObject(TextSound.instructions);
         prefs.put("instructionsPref", x.toString());
         prefs.put("textPref", Main.textModel.getText());
     }
 
-    private static void loadSettings(JTextArea textArea) {
+    private static void loadSettings(JTextArea textArea, String loadFile) {
+        TextSound.prefsFile = loadFile;
         // Get user settings
         String prefString = prefs.get("instructionsPref", "x");
-        TextSound.instructions = serialInstructionsQueue.deserializeObject(prefString.toString());
+        TextSound.instructions = serialInstructionsQueue.deserializeObject(prefString);
+        Main.model.clear();
         for (Queue.Instruction i : TextSound.instructions) {
             listAddInstruction(Main.model, i);
         }
         String prefString2 = prefs.get("textPref", "y");
-        textArea.setText(prefString2);
+        //textArea.setText(prefString2);
     }
 
     private static void createAndShowGUI() {
+        JFileChooser fc = new JFileChooser();
+        final File workingDirectory = new File(System.getProperty("user.dir"));
 
         // Menu
         JMenuBar menuBar = new JMenuBar();
-        JMenuItem saveItem, exitItem;
+        JMenuItem loadItem, saveItem, exitItem;
 
         // File
         JMenu fileMenu = new JMenu("File");
 
         // Menu Item (Drop down menus)
-        saveItem = new JMenuItem("Save instructions");
+        // Import instructions
+        loadItem = new JMenuItem("Load Settings");
+        loadItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fc.setCurrentDirectory(workingDirectory);
+                String prefsFile = "";
+
+                int returnVal = fc.showOpenDialog(Main.textModel);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    prefsFile = file.getAbsoluteFile().toString();
+                    System.out.println("Load user settings from file: " + prefsFile);
+                    loadSettings(Main.textModel, prefsFile);
+                } else {
+                    System.out.println("Open command cancelled by user.");
+                }
+            }
+        });
+
+        // Export instructions
+        saveItem = new JMenuItem("Save Settings as...");
         saveItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveSettings();
+                fc.setCurrentDirectory(workingDirectory);
+                String prefsFile = "";
+
+                int returnVal = fc.showSaveDialog(Main.textModel);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave = fc.getSelectedFile();
+                    prefsFile = fileToSave.getAbsoluteFile().toString();
+                    System.out.println("Save user settings as file: " + prefsFile);
+                    saveSettings(prefsFile);
+                } else {
+                    System.out.println("Save command cancelled by user.");
+                }
             }
         });
 
@@ -473,6 +509,7 @@ public class Main extends JFrame {
 
         // Adding menu items to menu
         fileMenu.add(saveItem);
+        fileMenu.add(loadItem);
         fileMenu.add(separatorBar);
         fileMenu.add(exitItem);
 
@@ -695,7 +732,7 @@ public class Main extends JFrame {
         btnAddInstruction.setModel(defaultComboBoxModel5);
         panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label8 = new JLabel();
-        label8.setText("Instruction");
+        label8.setText("Transformation");
         panelInstructions.add(label8, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label2.setLabelFor(setTempo);
         label3.setLabelFor(setDuration);
