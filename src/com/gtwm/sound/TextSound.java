@@ -69,7 +69,8 @@ public class TextSound {
 	static double userNoteLength;
 
 	// How long to wait before playing the next note
-	static double noteGap = 0.0001; // 1 / 32d; // 1/32 = good default, 0 = no
+	//static double noteGap = 0.0001; // 1 / 32d; // 1/32 = good default, 0 = no
+	static double noteGap = 1/32d;
 
 	// gap (chords)
 	// How long to pause when a rest (space etc.) is encountered
@@ -92,11 +93,15 @@ public class TextSound {
 	static String userInstrument;
 
 	// Default note operation
-	static enum noteOperationType { LEXNAMEFREQ, STATICFREQ, MUTE }
+	enum noteOperationType { LEXNAMEFREQ, STATICFREQ, MUTE }
 	static noteOperationType defaultNoteOperation = noteOperationType.LEXNAMEFREQ;
 
+	// Per key or word operation
+	static boolean perChar;
+	static boolean perWord;
+
 	// Which letter ordering (defined above) to use, zero indexed
-	//static int ordering = 1;
+	static int ordering = 1;
 
 	// Initial setting type
 	//static Setting setting = Setting.TEMPO;
@@ -210,11 +215,11 @@ public class TextSound {
 
 		// Each ordering gives a different character
 		// Alphabetic
-		//orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 		// Increasing order of scrabble scores
 		//orderings.add("AEILNORSTUDGBCMPFHVWYKJXQZ");
 		// Decreasing frequency of use in English
-		//orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
+		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
 
 		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 		System.out.println(ss);
@@ -246,10 +251,9 @@ public class TextSound {
 			lastSentence.append(ch);
 			String charString = String.valueOf(ch);
 			// A = 1, B = 2, ...
-			//int charNum = orderings.get(ordering).indexOf(upperCh) + 1;
-			// int charNum = Character.getNumericValue(upperCh) - 9;
+			int charNum = orderings.get(ordering).indexOf(upperCh);
 
-			// Space after word
+			// Space
 			if (Character.isWhitespace(ch)) {
 
 				double theRestLength = restLength;
@@ -259,19 +263,19 @@ public class TextSound {
 				//}
 
 				// Lookup database
-  				for (SenseMap.Mapping item : items) {
+				for (SenseMap.Mapping item : items) {
 
 					// Match
 					if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
 
 						// Word value + 1 because it starts at 0 in the database
-						double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0]+1 / 26d) * octaves); //26
+						double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0] + 1 / 26d) * octaves); //26
 						frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
 						switch (defaultNoteOperation) {
 							case LEXNAMEFREQ:
 								//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
-								frequency = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
+								frequency = convertToArr.toDoubleArr(item.getValue())[0] + 1 * baseFrequency;
 								break;
 							case STATICFREQ:
 								// If we want a default tone, leave freq as static
@@ -283,7 +287,7 @@ public class TextSound {
 						}
 
 						// Go through the instructions queue
-						for ( Queue.Instruction i : instructions ) {
+						for (Queue.Instruction i : instructions) {
 
 							// The main logic part of the program
 							// Make changes based on user instructions
@@ -315,7 +319,7 @@ public class TextSound {
 								}
 
 							} else if (i.mod == Queue.Instruction.Mods.WORDVALUE) {
-								double[] lexnames = convertToArr.toDoubleArr(item.getValue()+1);
+								double[] lexnames = convertToArr.toDoubleArr(item.getValue() + 1);
 								//int lexCount = 0;
 								for (double n : lexnames) {
 									if (n == Double.parseDouble(i.modValue)) {
@@ -324,20 +328,21 @@ public class TextSound {
 									}
 								}
 								//if (convertToArr.toDoubleArr(item.getValue())[0] == Double.parseDouble(i.modValue)) {
-									//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+								//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
 								//	applyMod(i, soundString);
 								//}
 							} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
 								//String[] punctuations = convertToArr.toStringArr(item.getValue());
 
 								//for (String n : punctuations) {
-									if (item.getKey().equals(i.modValue)) {
-										//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-										applyMod(i, soundString);
-									}
+								if (item.getKey().equals(i.modValue)) {
+									//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+									applyMod(i, soundString);
+								}
 								//}
 							}
-						};
+						}
+						;
 
 						// Normalise to fit in the range
 						double topFrequency = baseFrequency;
@@ -360,7 +365,7 @@ public class TextSound {
 
 						double theNoteGap = noteGap;
 						if (theNoteGap > 0.2) {
-							theNoteGap  = theNoteGap / lastWord.length();
+							theNoteGap = theNoteGap / lastWord.length();
 						} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
 							theNoteGap = theNoteGap * 0.5;
 						}
@@ -468,26 +473,60 @@ public class TextSound {
 						throw new IllegalStateException("Setting " + setting + " is not handled");
 					}
 				}*/
+			// Character
 			} else {
-
+				System.out.println("character: " + upperCh);
 				lastWord.append(upperCh);
 
-				/*soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
+				double targetOctave = Math.ceil((charNum / 26d) * octaves); //26
+				frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
+
+				switch (defaultNoteOperation) {
+					case LEXNAMEFREQ:
+						//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
+						frequency = charNum + 1 * baseFrequency;
+						break;
+					case STATICFREQ:
+						// If we want a default tone, leave freq as static
+						break;
+					case MUTE:
+						// If we want a mute tone, set duration of each note to be 0
+						noteLength = 0;
+						break;
+				}
+
+				soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
 				System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
+
+				// Normalise to fit in the range
+				double topFrequency = baseFrequency;
+				for (int j = 0; j < targetOctave; j++) {
+					topFrequency = topFrequency * 2;
+				}
+				while (frequency > topFrequency) {
+					frequency = frequency / 2;
+				}
+
+				// Testing
+				System.out.println("Frequency for " + lastWord + "=" + charNum +
+						" normalized to octave "
+						+ octaves + ", top frequency " + topFrequency + ": " +
+						frequency);
 				if (Character.isUpperCase(ch)) {
 					//System.out.println("notelength: " + noteLength);
 					soundString.append("/" + String.format("%f", noteLength * 4)); // If it's an uppercase letter increase note length
 					//System.out.println("soundString: " + soundString);
 				} else {
-					//soundString.append("/" + String.format("%f", noteLength));
+					soundString.append("/" + String.format("%f", noteLength));
 				}
 				double theNoteGap = noteGap;
 				if (theNoteGap > 0.2) {
-					theNoteGap  = theNoteGap / lastWord.length();
+					theNoteGap = theNoteGap / lastWord.length();
 				} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
 					theNoteGap = theNoteGap * 0.5;
 				}
-				soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap*/
+				soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap
+
 			}
 		}
 
