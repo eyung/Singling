@@ -2,6 +2,7 @@ package com.gtwm.sound;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import org.w3c.dom.Text;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -38,6 +39,8 @@ public class Main extends JFrame {
     private JRadioButton muteRadioButton;
     private JCheckBox characterCheckBox;
     private JCheckBox wordCheckBox;
+    private JRadioButton onRadioButton;
+    private JRadioButton offRadioButton;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -163,6 +166,7 @@ public class Main extends JFrame {
         // Load user preferences
         //loadSettings(this.textArea1, TextSound.prefsFile);
 
+        // Can remove (??)
         btnLoadText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -210,28 +214,7 @@ public class Main extends JFrame {
 
                             try {
                                 // Get initial settings from user inputs
-                                TextSound.userInstrument = String.valueOf(setInstrument.getSelectedItem());
-                                System.out.println("Instrument: " + TextSound.userInstrument);
-
-                                TextSound.userNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
-                                System.out.println("Note Length: " + TextSound.userNoteLength);
-
-                                TextSound.userOctaves = Double.valueOf(setOctaves.getValue());
-                                System.out.println("Octaves: " + TextSound.userOctaves);
-
-                                TextSound.userTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
-                                System.out.println("Tempo: " + TextSound.userTempo);
-
-                                TextSound.userBaseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
-                                System.out.println("Frequency: " + TextSound.userBaseFrequency);
-
-                                if (lexnamesRadioButton.isSelected()) {
-                                    TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;
-                                } else if (staticRadioButton.isSelected()) {
-                                    TextSound.defaultNoteOperation = TextSound.noteOperationType.STATICFREQ;
-                                } else if (muteRadioButton.isSelected()) {
-                                    TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
-                                }
+                                setBaseValues();
 
                                 // Process text
                                 TextSound.runStuff(textArea1.getText(), outFilename);
@@ -246,6 +229,7 @@ public class Main extends JFrame {
             }
         });
 
+        // Safe to delete
         btnGetDB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -358,7 +342,9 @@ public class Main extends JFrame {
                 ex.printStackTrace();
             }
             //System.out.println(wordLen);
-            streamWord(e);
+            if (onRadioButton.isSelected()) {
+                streamIt(e);
+            }
         }
 
         @Override
@@ -376,7 +362,7 @@ public class Main extends JFrame {
             //printIt(e);
         }
 
-        private void streamWord(DocumentEvent e) {
+        private void streamIt(DocumentEvent e) {
             DocumentEvent.EventType type = e.getType();
             try {
                 String a = e.getDocument().getText(e.getOffset(), e.getLength());
@@ -386,28 +372,7 @@ public class Main extends JFrame {
 
                         try {
                             // Get initial settings from user inputs
-                            TextSound.userInstrument = String.valueOf(setInstrument.getSelectedItem());
-                            System.out.println("Instrument: " + TextSound.userInstrument);
-
-                            TextSound.userNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
-                            System.out.println("Note Length: " + TextSound.userNoteLength);
-
-                            TextSound.userOctaves = Double.valueOf(setOctaves.getValue());
-                            System.out.println("Octaves: " + TextSound.userOctaves);
-
-                            TextSound.userTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
-                            System.out.println("Tempo: " + TextSound.userTempo);
-
-                            TextSound.userBaseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
-                            System.out.println("Frequency: " + TextSound.userBaseFrequency);
-
-                            if (lexnamesRadioButton.isSelected()) {
-                                TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;
-                            } else if (staticRadioButton.isSelected()) {
-                                TextSound.defaultNoteOperation = TextSound.noteOperationType.STATICFREQ;
-                            } else if (muteRadioButton.isSelected()) {
-                                TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
-                            }
+                            setBaseValues();
 
                             // Process text
                             TextSound.streamText(currentWord);
@@ -458,21 +423,74 @@ public class Main extends JFrame {
         //textArea.setText(prefString2);
     }
 
+    private void setBaseValues() {
+        TextSound.userInstrument = String.valueOf(setInstrument.getSelectedItem());
+        System.out.println("Instrument: " + TextSound.userInstrument);
+
+        TextSound.userNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
+        System.out.println("Note Length: " + TextSound.userNoteLength);
+
+        TextSound.userOctaves = Double.valueOf(setOctaves.getValue());
+        System.out.println("Octaves: " + TextSound.userOctaves);
+
+        TextSound.userTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
+        System.out.println("Tempo: " + TextSound.userTempo);
+
+        TextSound.userBaseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
+        System.out.println("Frequency: " + TextSound.userBaseFrequency);
+
+        TextSound.perWord = wordCheckBox.isSelected();
+        TextSound.perChar = characterCheckBox.isSelected();
+
+        if (lexnamesRadioButton.isSelected()) {
+            TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;
+        } else if (staticRadioButton.isSelected()) {
+            TextSound.defaultNoteOperation = TextSound.noteOperationType.STATICFREQ;
+        } else if (muteRadioButton.isSelected()) {
+            TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
+        }
+    }
+
     private static void createAndShowGUI() {
         JFileChooser fc = new JFileChooser();
         final File workingDirectory = new File(System.getProperty("user.dir"));
 
         // Menu
         JMenuBar menuBar = new JMenuBar();
-        JMenuItem loadItem, saveItem, exitItem;
+        JMenuItem loadText, loadSettings, saveSettings, exitItem;
 
         // File
         JMenu fileMenu = new JMenu("File");
 
         // Menu Item (Drop down menus)
+        // Load text file
+        loadText = new JMenuItem("Import File");
+        loadText.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent actionEvent) {
+               fc.setCurrentDirectory(workingDirectory);
+               String inputText = "";
+
+               int returnVal = fc.showOpenDialog(Main.textModel);
+
+               if (returnVal == JFileChooser.APPROVE_OPTION) {
+                   File file = fc.getSelectedFile();
+                   //This is where a real application would open the file.
+                   try {
+                       inputText = TextSound.loadFile(file.getAbsolutePath());
+                   } catch (Exception ex) {
+                       ex.printStackTrace();
+                   }
+                   Main.textModel.setText(inputText);
+               } else {
+                   System.out.println("Open command cancelled by user.");
+               }
+           }
+       });
+
         // Import instructions
-        loadItem = new JMenuItem("Load Settings");
-        loadItem.addActionListener(new ActionListener() {
+        loadSettings = new JMenuItem("Load Settings");
+        loadSettings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fc.setCurrentDirectory(workingDirectory);
@@ -492,8 +510,8 @@ public class Main extends JFrame {
         });
 
         // Export instructions
-        saveItem = new JMenuItem("Save Settings as...");
-        saveItem.addActionListener(new ActionListener() {
+        saveSettings = new JMenuItem("Save Settings as...");
+        saveSettings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fc.setCurrentDirectory(workingDirectory);
@@ -512,8 +530,9 @@ public class Main extends JFrame {
             }
         });
 
-        // Separator
-        JSeparator separatorBar = new JSeparator();
+        // Separators
+        JSeparator separatorBar1 = new JSeparator();
+        JSeparator separatorBar2 = new JSeparator();
 
         // Exit
         exitItem = new JMenuItem("Exit");
@@ -524,9 +543,11 @@ public class Main extends JFrame {
         });
 
         // Adding menu items to menu
-        fileMenu.add(saveItem);
-        fileMenu.add(loadItem);
-        fileMenu.add(separatorBar);
+        fileMenu.add(loadText);
+        fileMenu.add(separatorBar1);
+        fileMenu.add(saveSettings);
+        fileMenu.add(loadSettings);
+        fileMenu.add(separatorBar2);
         fileMenu.add(exitItem);
 
         // Adding menu to menu bar
@@ -574,7 +595,7 @@ public class Main extends JFrame {
         panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(3, 3, new Insets(20, 20, 20, 20), -1, -1, true, false));
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(8, 4, new Insets(0, 50, 0, 50), -1, -1));
+        panel2.setLayout(new GridLayoutManager(9, 4, new Insets(0, 50, 0, 50), -1, -1));
         panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(250, 500), null, 0, false));
         setInstrument = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
@@ -627,13 +648,13 @@ public class Main extends JFrame {
         setTempo.setSelectedIndex(6);
         panel2.add(setTempo, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label1 = new JLabel();
-        label1.setText("Octave range:");
+        label1.setText("Octave Range:");
         panel2.add(label1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label2 = new JLabel();
         label2.setText("Tempo (BPS):");
         panel2.add(label2, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label3 = new JLabel();
-        label3.setText("Note duration:");
+        label3.setText("Note Duration:");
         panel2.add(label3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label4 = new JLabel();
         label4.setText("Instrument:");
@@ -686,25 +707,36 @@ public class Main extends JFrame {
         lexnamesRadioButton = new JRadioButton();
         lexnamesRadioButton.setSelected(true);
         lexnamesRadioButton.setText("Lexnames");
-        panel2.add(lexnamesRadioButton, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(lexnamesRadioButton, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         staticRadioButton = new JRadioButton();
         staticRadioButton.setText("Static");
-        panel2.add(staticRadioButton, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(staticRadioButton, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         muteRadioButton = new JRadioButton();
         muteRadioButton.setText("Mute");
-        panel2.add(muteRadioButton, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(muteRadioButton, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label6 = new JLabel();
         label6.setText("Default Note Behaviour:");
         panel2.add(label6, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        characterCheckBox = new JCheckBox();
-        characterCheckBox.setText("Character");
-        panel2.add(characterCheckBox, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        wordCheckBox = new JCheckBox();
-        wordCheckBox.setText("Word");
-        panel2.add(wordCheckBox, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label7 = new JLabel();
         label7.setText("Scope:");
         panel2.add(label7, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        wordCheckBox = new JCheckBox();
+        wordCheckBox.setSelected(true);
+        wordCheckBox.setText("Word");
+        panel2.add(wordCheckBox, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        characterCheckBox = new JCheckBox();
+        characterCheckBox.setText("Character");
+        panel2.add(characterCheckBox, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        onRadioButton = new JRadioButton();
+        onRadioButton.setSelected(true);
+        onRadioButton.setText("On");
+        panel2.add(onRadioButton, new GridConstraints(8, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        offRadioButton = new JRadioButton();
+        offRadioButton.setText("Off");
+        panel2.add(offRadioButton, new GridConstraints(8, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        final JLabel label8 = new JLabel();
+        label8.setText("Stream Mode:");
+        panel2.add(label8, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(500, 500), null, 0, false));
         textArea1 = new JTextArea();
@@ -715,9 +747,6 @@ public class Main extends JFrame {
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        btnLoadText = new JButton();
-        btnLoadText.setText("Load file");
-        panel3.add(btnLoadText, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 0, false));
         tfDBpath = new JTextField();
         tfDBpath.setEditable(false);
         tfDBpath.setVisible(false);
@@ -726,15 +755,19 @@ public class Main extends JFrame {
         btnGetDB.setText("...");
         btnGetDB.setVisible(false);
         panel3.add(btnGetDB, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 3, false));
+        btnLoadText = new JButton();
+        btnLoadText.setText("Load file");
+        btnLoadText.setVisible(false);
+        panel3.add(btnLoadText, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 0, false));
         final JPanel panel4 = new JPanel();
         panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         btnProcess = new JButton();
         btnProcess.setText("Start");
         panel4.add(btnProcess, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label8 = new JLabel();
-        label8.setText("Base Settings");
-        panel1.add(label8, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label9 = new JLabel();
+        label9.setText("Base Settings");
+        panel1.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane2 = new JScrollPane();
         panel1.add(scrollPane2, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         list1 = new JList();
@@ -756,9 +789,9 @@ public class Main extends JFrame {
         defaultComboBoxModel5.addElement("PUNCTUATION");
         btnAddInstruction.setModel(defaultComboBoxModel5);
         panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label9 = new JLabel();
-        label9.setText("Transformation");
-        panelInstructions.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label10 = new JLabel();
+        label10.setText("Transformation");
+        panelInstructions.add(label10, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label2.setLabelFor(setTempo);
         label3.setLabelFor(setDuration);
         label4.setLabelFor(setInstrument);
@@ -767,6 +800,9 @@ public class Main extends JFrame {
         buttonGroup.add(lexnamesRadioButton);
         buttonGroup.add(staticRadioButton);
         buttonGroup.add(muteRadioButton);
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(onRadioButton);
+        buttonGroup.add(offRadioButton);
     }
 
     /**
