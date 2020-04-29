@@ -2,7 +2,6 @@ package com.gtwm.sound;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import org.w3c.dom.Text;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -359,7 +358,7 @@ public class Main extends JFrame {
                 ex.printStackTrace();
             }
             //System.out.println(wordLen);
-            printIt(e);
+            streamWord(e);
         }
 
         @Override
@@ -377,7 +376,7 @@ public class Main extends JFrame {
             //printIt(e);
         }
 
-        private void printIt(DocumentEvent e) {
+        private void streamWord(DocumentEvent e) {
             DocumentEvent.EventType type = e.getType();
             try {
                 String a = e.getDocument().getText(e.getOffset(), e.getLength());

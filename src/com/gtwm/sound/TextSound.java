@@ -208,7 +208,7 @@ public class TextSound {
 		// Reset initial settings
 		resetSettings();
 
-		//Verify list data
+		// Verify list data
 		//for ( Queue.Instruction i : instructions ) {
 		//	System.out.println(i);
 		//}
@@ -264,10 +264,10 @@ public class TextSound {
 
 				// Lookup database
 				for (SenseMap.Mapping item : items) {
-
+					System.out.println("space: " + lastWord.toString());
 					// Match
 					if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
-
+						System.out.println("ITEM FOUND");
 						// Word value + 1 because it starts at 0 in the database
 						double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0] + 1 / 26d) * octaves); //26
 						frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
@@ -342,7 +342,7 @@ public class TextSound {
 								//}
 							}
 						}
-						;
+
 
 						// Normalise to fit in the range
 						double topFrequency = baseFrequency;
@@ -473,60 +473,62 @@ public class TextSound {
 						throw new IllegalStateException("Setting " + setting + " is not handled");
 					}
 				}*/
+
 			// Character
 			} else {
-				System.out.println("character: " + upperCh);
+
 				lastWord.append(upperCh);
 
-				double targetOctave = Math.ceil((charNum / 26d) * octaves); //26
-				frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
+				if (perChar) {
+					double targetOctave = Math.ceil((charNum / 26d) * octaves); //26
+					frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
-				switch (defaultNoteOperation) {
-					case LEXNAMEFREQ:
-						//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
-						frequency = charNum + 1 * baseFrequency;
-						break;
-					case STATICFREQ:
-						// If we want a default tone, leave freq as static
-						break;
-					case MUTE:
-						// If we want a mute tone, set duration of each note to be 0
-						noteLength = 0;
-						break;
-				}
+					switch (defaultNoteOperation) {
+						case LEXNAMEFREQ:
+							//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
+							frequency = charNum + 1 * baseFrequency;
+							break;
+						case STATICFREQ:
+							// If we want a default tone, leave freq as static
+							break;
+						case MUTE:
+							// If we want a mute tone, set duration of each note to be 0
+							noteLength = 0;
+							break;
+					}
 
-				soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
-				System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
+					soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
+					System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 
-				// Normalise to fit in the range
-				double topFrequency = baseFrequency;
-				for (int j = 0; j < targetOctave; j++) {
-					topFrequency = topFrequency * 2;
-				}
-				while (frequency > topFrequency) {
-					frequency = frequency / 2;
-				}
+					// Normalise to fit in the range
+					double topFrequency = baseFrequency;
+					for (int j = 0; j < targetOctave; j++) {
+						topFrequency = topFrequency * 2;
+					}
+					while (frequency > topFrequency) {
+						frequency = frequency / 2;
+					}
 
-				// Testing
-				System.out.println("Frequency for " + lastWord + "=" + charNum +
-						" normalized to octave "
-						+ octaves + ", top frequency " + topFrequency + ": " +
-						frequency);
-				if (Character.isUpperCase(ch)) {
-					//System.out.println("notelength: " + noteLength);
-					soundString.append("/" + String.format("%f", noteLength * 4)); // If it's an uppercase letter increase note length
-					//System.out.println("soundString: " + soundString);
-				} else {
-					soundString.append("/" + String.format("%f", noteLength));
+					// Testing
+					System.out.println("Frequency for " + lastWord + "=" + charNum +
+							" normalized to octave "
+							+ octaves + ", top frequency " + topFrequency + ": " +
+							frequency);
+					if (Character.isUpperCase(ch)) {
+						//System.out.println("notelength: " + noteLength);
+						soundString.append("/" + String.format("%f", noteLength * 4)); // If it's an uppercase letter increase note length
+						//System.out.println("soundString: " + soundString);
+					} else {
+						soundString.append("/" + String.format("%f", noteLength));
+					}
+					double theNoteGap = noteGap;
+					if (theNoteGap > 0.2) {
+						theNoteGap = theNoteGap / lastWord.length();
+					} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
+						theNoteGap = theNoteGap * 0.5;
+					}
+					soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap
 				}
-				double theNoteGap = noteGap;
-				if (theNoteGap > 0.2) {
-					theNoteGap = theNoteGap / lastWord.length();
-				} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
-					theNoteGap = theNoteGap * 0.5;
-				}
-				soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap
-
 			}
 		}
 
