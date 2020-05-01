@@ -451,7 +451,7 @@ public class TextSound {
 		}
 	}*/
 
-	public static void processWord(List<SenseMap.Mapping> items, StringBuilder lastWord, StringBuilder soundString, boolean isNoteGap) {
+	public static void processWord(List<SenseMap.Mapping> items, StringBuilder lastWord, StringBuilder soundString, boolean doNoteGap) {
 		// Lookup database
 		for (SenseMap.Mapping item : items) {
 
@@ -552,7 +552,7 @@ public class TextSound {
 				soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength); // Note (and duration)
 				System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 
-				if (isNoteGap) {
+				if (doNoteGap) {
 					double theNoteGap = noteGap;
 					if (theNoteGap > 0.2) {
 						theNoteGap = theNoteGap / lastWord.length();

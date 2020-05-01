@@ -457,14 +457,14 @@ public class Main extends JFrame {
 
         // Menu
         JMenuBar menuBar = new JMenuBar();
-        JMenuItem loadText, loadSettings, saveSettings, exitItem;
+        JMenuItem loadText, saveText, loadSettings, saveSettings, exitItem;
 
         // File
         JMenu fileMenu = new JMenu("File");
 
         // Menu Item (Drop down menus)
         // Load text file
-        loadText = new JMenuItem("Import File");
+        loadText = new JMenuItem("Import Text");
         loadText.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent actionEvent) {
@@ -487,6 +487,32 @@ public class Main extends JFrame {
                }
            }
        });
+
+        // Save text as file
+        saveText = new JMenuItem("Export Text as...");
+        saveText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fc.setCurrentDirectory(workingDirectory);
+                String outFile = "";
+
+                int returnVal = fc.showSaveDialog(Main.textModel);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave = fc.getSelectedFile();
+                    outFile = fileToSave.getAbsoluteFile().toString() + ".txt";
+                    System.out.println("Save text as file: " + outFile);
+                    try {
+                        FileWriter fw = new FileWriter(outFile, true);
+                        Main.textModel.write(fw);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Save command cancelled by user.");
+                }
+            }
+        });
 
         // Import instructions
         loadSettings = new JMenuItem("Load Settings");
@@ -544,6 +570,7 @@ public class Main extends JFrame {
 
         // Adding menu items to menu
         fileMenu.add(loadText);
+        fileMenu.add(saveText);
         fileMenu.add(separatorBar1);
         fileMenu.add(saveSettings);
         fileMenu.add(loadSettings);
