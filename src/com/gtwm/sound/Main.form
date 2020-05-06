@@ -184,7 +184,7 @@
             </constraints>
             <properties>
               <selected value="true"/>
-              <text value="Lexnames"/>
+              <text value="Overtone"/>
             </properties>
           </component>
           <component id="2cc63" class="javax.swing.JRadioButton" binding="staticRadioButton" default-binding="true">

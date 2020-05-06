@@ -550,6 +550,10 @@ public class TextSound {
 
 				// Convert freq to music string and append to sound string
 				soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength); // Note (and duration)
+				// Hack to append a space between notes for streaming player when a word has more than one lexname
+				if (!doNoteGap) {
+					soundString.append(" ");
+				}
 				System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 
 				if (doNoteGap) {

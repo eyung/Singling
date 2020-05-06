@@ -128,13 +128,15 @@ public class Main extends JFrame {
             //tfDBpath.setText("OK");
 
             // True if duplicate found in database
-            boolean dupeCheck = false;
+            boolean dupeCheck;
 
+            // To find words that belong to multiple word categories
             // Loop through the database, add to word type and value if key is found
             for (SenseMap.Mapping i : allItems) {
                 dupeCheck = false;
                 for (SenseMap.Mapping j : tempList) {
-                    if (j.equals(i)) {
+                    if (j.getKey().equalsIgnoreCase(i.getKey())) {
+                    //if (j.toString().equalsIgnoreCase(i.toString())) {
                         //System.out.println("Exists already: " + j.getKey());
 
                         j.addType(i.wordType);
@@ -151,15 +153,16 @@ public class Main extends JFrame {
             //System.out.println(tempList.toString());
 
             // Write final results in file for error logging
-            //FileWriter writer = new FileWriter("resultlist.txt");
-            //for (SenseMap.Mapping str : tempList) {
-            //    writer.write(str + System.lineSeparator());
-            //}
-            //writer.close();
+            FileWriter writer = new FileWriter("resultlist.txt");
+            for (SenseMap.Mapping str : tempList) {
+                writer.write(str + System.lineSeparator());
+            }
+            writer.close();
 
             TextSound.items = tempList;
 
-        } catch (Exception ex) {
+        } catch (
+                Exception ex) {
             ex.printStackTrace();
         }
 
@@ -167,157 +170,171 @@ public class Main extends JFrame {
         //loadSettings(this.textArea1, TextSound.prefsFile);
 
         // Can remove (??)
-        btnLoadText.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        btnLoadText.addActionListener(new
 
-                // Handle open button action
-                if (e.getSource() == btnLoadText) {
-                    //File workingDirectory = new File(System.getProperty("user.dir"));
-                    fc.setCurrentDirectory(workingDirectory);
+                                              ActionListener() {
+                                                  @Override
+                                                  public void actionPerformed(ActionEvent e) {
 
-                    int returnVal = fc.showOpenDialog(panel1);
+                                                      // Handle open button action
+                                                      if (e.getSource() == btnLoadText) {
+                                                          //File workingDirectory = new File(System.getProperty("user.dir"));
+                                                          fc.setCurrentDirectory(workingDirectory);
 
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        //This is where a real application would open the file.
-                        try {
-                            inputText = TextSound.loadFile(file.getAbsolutePath());
-                            outFilename = file.getAbsoluteFile() + ".mid";
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        textArea1.setText(inputText);
-                    } else {
-                        System.out.println("Open command cancelled by user.");
-                    }
-                }
-            }
-        });
+                                                          int returnVal = fc.showOpenDialog(panel1);
 
-        btnProcess.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+                                                          if (returnVal == JFileChooser.APPROVE_OPTION) {
+                                                              File file = fc.getSelectedFile();
+                                                              //This is where a real application would open the file.
+                                                              try {
+                                                                  inputText = TextSound.loadFile(file.getAbsolutePath());
+                                                                  outFilename = file.getAbsoluteFile() + ".mid";
+                                                              } catch (Exception ex) {
+                                                                  ex.printStackTrace();
+                                                              }
+                                                              textArea1.setText(inputText);
+                                                          } else {
+                                                              System.out.println("Open command cancelled by user.");
+                                                          }
+                                                      }
+                                                  }
+                                              });
 
-                // Handle open button action
-                if (e.getSource() == btnProcess) {
-                    if (textArea1.getLineCount() > 0) {
+        btnProcess.addActionListener(new
 
-                        fc.setCurrentDirectory(workingDirectory);
+                                             ActionListener() {
+                                                 @Override
+                                                 public void actionPerformed(ActionEvent e) {
 
-                        int returnVal = fc.showSaveDialog(panel1);
+                                                     // Handle open button action
+                                                     if (e.getSource() == btnProcess) {
+                                                         if (textArea1.getLineCount() > 0) {
 
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            File fileToSave = fc.getSelectedFile();
-                            outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
-                            System.out.println("Save as file: " + outFilename);
+                                                             fc.setCurrentDirectory(workingDirectory);
 
-                            try {
-                                // Get initial settings from user inputs
-                                setBaseValues();
+                                                             int returnVal = fc.showSaveDialog(panel1);
 
-                                // Process text
-                                TextSound.runStuff(textArea1.getText(), outFilename);
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        } else {
-                            System.out.println("Save command cancelled by user.");
-                        }
-                    }
-                }
-            }
-        });
+                                                             if (returnVal == JFileChooser.APPROVE_OPTION) {
+                                                                 File fileToSave = fc.getSelectedFile();
+                                                                 outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
+                                                                 System.out.println("Save as file: " + outFilename);
+
+                                                                 try {
+                                                                     // Get initial settings from user inputs
+                                                                     setBaseValues();
+
+                                                                     // Process text
+                                                                     TextSound.runStuff(textArea1.getText(), outFilename);
+                                                                 } catch (Exception ex) {
+                                                                     ex.printStackTrace();
+                                                                 }
+                                                             } else {
+                                                                 System.out.println("Save command cancelled by user.");
+                                                             }
+                                                         }
+                                                     }
+                                                 }
+                                             });
 
         // Safe to delete
-        btnGetDB.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        btnGetDB.addActionListener(new
 
-                // Handle open button action
-                if (e.getSource() == btnGetDB) {
-                    File workingDirectory = new File(System.getProperty("user.dir"));
-                    fc.setCurrentDirectory(workingDirectory);
+                                           ActionListener() {
+                                               @Override
+                                               public void actionPerformed(ActionEvent e) {
 
-                    int returnVal = fc.showOpenDialog(panel1);
+                                                   // Handle open button action
+                                                   if (e.getSource() == btnGetDB) {
+                                                       File workingDirectory = new File(System.getProperty("user.dir"));
+                                                       fc.setCurrentDirectory(workingDirectory);
 
-                    if (returnVal == JFileChooser.APPROVE_OPTION) {
-                        File file = fc.getSelectedFile();
-                        //This is where a real application would open the file.
-                        try {
-                            //csvparser myParser = new csvparser();
-                            TextSound.items = myParser.csvtoSenseMap(file.getPath());
-                            tfDBpath.setText(file.getPath());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            tfDBpath.setText("File not found or unsupported file type");
-                        }
+                                                       int returnVal = fc.showOpenDialog(panel1);
 
-                    } else {
-                        System.out.println("Open command cancelled by user.");
-                    }
-                }
-            }
-        });
+                                                       if (returnVal == JFileChooser.APPROVE_OPTION) {
+                                                           File file = fc.getSelectedFile();
+                                                           //This is where a real application would open the file.
+                                                           try {
+                                                               //csvparser myParser = new csvparser();
+                                                               TextSound.items = myParser.csvtoSenseMap(file.getPath());
+                                                               tfDBpath.setText(file.getPath());
+                                                           } catch (Exception ex) {
+                                                               ex.printStackTrace();
+                                                               tfDBpath.setText("File not found or unsupported file type");
+                                                           }
 
-        btnRemoveInstruction.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Queue.Instruction selectedInstruction = list1.getSelectedValue();
-                TextSound.instructions.remove(selectedInstruction);
-                model.removeElement(selectedInstruction);
-            }
-        });
+                                                       } else {
+                                                           System.out.println("Open command cancelled by user.");
+                                                       }
+                                                   }
+                                               }
+                                           });
+
+        btnRemoveInstruction.addActionListener(new
+
+                                                       ActionListener() {
+                                                           @Override
+                                                           public void actionPerformed(ActionEvent e) {
+                                                               Queue.Instruction selectedInstruction = list1.getSelectedValue();
+                                                               TextSound.instructions.remove(selectedInstruction);
+                                                               model.removeElement(selectedInstruction);
+                                                           }
+                                                       });
         btnRemoveInstruction.setMnemonic(KeyEvent.VK_DELETE);
 
-        btnAddInstruction.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (btnAddInstruction.getSelectedItem() == "WORDTYPE") {
-                    InstructionFormWordType dialog = new InstructionFormWordType();
-                    dialog.setTitle("Instruction: Word Type");
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(panelInstructions);
-                    dialog.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                } else if (btnAddInstruction.getSelectedItem() == "WORDLENGTH") {
-                    InstructionFormWordLength dialog = new InstructionFormWordLength();
-                    dialog.setTitle("Instruction: Word Length");
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(panelInstructions);
-                    dialog.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                } else if (btnAddInstruction.getSelectedItem() == "LEXNAME") {
-                    InstructionFormWordValue dialog = new InstructionFormWordValue();
-                    dialog.setTitle("Instruction: Lexname");
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(panelInstructions);
-                    dialog.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                } else if (btnAddInstruction.getSelectedItem() == "PUNCTUATION") {
-                    InstructionFormPunctuation dialog = new InstructionFormPunctuation();
-                    dialog.setTitle("Instruction: Punctuation");
-                    dialog.pack();
-                    dialog.setLocationRelativeTo(panelInstructions);
-                    dialog.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                }
-            }
-        });
+        btnAddInstruction.addActionListener(new
 
-        characterCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                TextSound.perChar = !TextSound.perChar;
-            }
-        });
+                                                    ActionListener() {
+                                                        @Override
+                                                        public void actionPerformed(ActionEvent e) {
+                                                            if (btnAddInstruction.getSelectedItem() == "WORDTYPE") {
+                                                                InstructionFormWordType dialog = new InstructionFormWordType();
+                                                                dialog.setTitle("Instruction: Word Type");
+                                                                dialog.pack();
+                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setVisible(true);
+                                                                btnAddInstruction.setSelectedIndex(0);
+                                                            } else if (btnAddInstruction.getSelectedItem() == "WORDLENGTH") {
+                                                                InstructionFormWordLength dialog = new InstructionFormWordLength();
+                                                                dialog.setTitle("Instruction: Word Length");
+                                                                dialog.pack();
+                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setVisible(true);
+                                                                btnAddInstruction.setSelectedIndex(0);
+                                                            } else if (btnAddInstruction.getSelectedItem() == "LEXNAME") {
+                                                                InstructionFormWordValue dialog = new InstructionFormWordValue();
+                                                                dialog.setTitle("Instruction: Lexname");
+                                                                dialog.pack();
+                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setVisible(true);
+                                                                btnAddInstruction.setSelectedIndex(0);
+                                                            } else if (btnAddInstruction.getSelectedItem() == "PUNCTUATION") {
+                                                                InstructionFormPunctuation dialog = new InstructionFormPunctuation();
+                                                                dialog.setTitle("Instruction: Punctuation");
+                                                                dialog.pack();
+                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setVisible(true);
+                                                                btnAddInstruction.setSelectedIndex(0);
+                                                            }
+                                                        }
+                                                    });
 
-        wordCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                TextSound.perWord = !TextSound.perWord;
-            }
-        });
+        characterCheckBox.addActionListener(new
+
+                                                    ActionListener() {
+                                                        @Override
+                                                        public void actionPerformed(ActionEvent actionEvent) {
+                                                            TextSound.perChar = !TextSound.perChar;
+                                                        }
+                                                    });
+
+        wordCheckBox.addActionListener(new
+
+                                               ActionListener() {
+                                                   @Override
+                                                   public void actionPerformed(ActionEvent actionEvent) {
+                                                       TextSound.perWord = !TextSound.perWord;
+                                                   }
+                                               });
     }
 
     public static void listAddInstruction(DefaultListModel thisModel, Queue.Instruction thisInstruction) {
@@ -466,27 +483,27 @@ public class Main extends JFrame {
         // Load text file
         loadText = new JMenuItem("Import Text");
         loadText.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent actionEvent) {
-               fc.setCurrentDirectory(workingDirectory);
-               String inputText = "";
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                fc.setCurrentDirectory(workingDirectory);
+                String inputText = "";
 
-               int returnVal = fc.showOpenDialog(Main.textModel);
+                int returnVal = fc.showOpenDialog(Main.textModel);
 
-               if (returnVal == JFileChooser.APPROVE_OPTION) {
-                   File file = fc.getSelectedFile();
-                   //This is where a real application would open the file.
-                   try {
-                       inputText = TextSound.loadFile(file.getAbsolutePath());
-                   } catch (Exception ex) {
-                       ex.printStackTrace();
-                   }
-                   Main.textModel.setText(inputText);
-               } else {
-                   System.out.println("Open command cancelled by user.");
-               }
-           }
-       });
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    //This is where a real application would open the file.
+                    try {
+                        inputText = TextSound.loadFile(file.getAbsolutePath());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    Main.textModel.setText(inputText);
+                } else {
+                    System.out.println("Open command cancelled by user.");
+                }
+            }
+        });
 
         // Save text as file
         saveText = new JMenuItem("Export Text as...");
@@ -602,7 +619,6 @@ public class Main extends JFrame {
             }
         });
     }
-
 
     {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
@@ -733,7 +749,7 @@ public class Main extends JFrame {
         panel2.add(setFrequency, new GridConstraints(5, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         lexnamesRadioButton = new JRadioButton();
         lexnamesRadioButton.setSelected(true);
-        lexnamesRadioButton.setText("Lexnames");
+        lexnamesRadioButton.setText("Overtone");
         panel2.add(lexnamesRadioButton, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         staticRadioButton = new JRadioButton();
         staticRadioButton.setText("Static");
@@ -838,5 +854,6 @@ public class Main extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return panel1;
     }
+
 
 }
