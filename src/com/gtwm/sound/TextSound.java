@@ -27,10 +27,7 @@ import java.util.stream.Stream;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
 
-import org.jfugue.MicrotoneNotation;
-import org.jfugue.Player;
-import org.jfugue.StreamingPlayer;
-import org.jfugue.TimeFactor;
+import org.jfugue.*;
 
 
 /**
@@ -126,6 +123,9 @@ public class TextSound {
 	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
 
 	static List<Queue.Instruction> instructions = new ArrayList<>();
+
+	// Keeping track of how many categories a word falls under
+	static int lexCount;
 
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
@@ -460,6 +460,8 @@ public class TextSound {
 
 				double[] wordValues = convertToArr.toDoubleArr(item.getValue());
 
+				lexCount = 0;
+
 				for (double thisValue : wordValues) {
 					//System.out.println(thisValue);
 
@@ -552,33 +554,46 @@ public class TextSound {
 							+ octaves + ", top frequency " + topFrequency + ": " +
 							frequency);
 
+					// If word is in multiple lexname categories then set duration to
+					//if (wordValues.length>1) {
+						//noteLength = 1/64f;
+					//}
+
 					// Convert freq to music string and append to sound string
-					soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength); // Note (and duration)
+					//soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength + " "); // Note (and duration)
+					//System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 
-					// Hack to append a space between notes for streaming player when a word has more than one lexname
-					if (!doNoteGap) {
-						soundString.append(" ");
-					}
+					// Convert freq to MIDI music string using reference note and frequency A4 440hz
+					double tempNote;
+					int musicNote;
+					tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
+					musicNote = (int) Math.rint(tempNote);
+					soundString.append("[" + musicNote + "]" + "/" + noteLength + "+");
+					System.out.println("Convert frequency: " + frequency + "to note: " + musicNote);
 
-					System.out.println("Convert freq to music string: " + soundString);
-
-					if (doNoteGap) {
-						double theNoteGap = noteGap;
-						if (theNoteGap > 0.2) {
-							theNoteGap = theNoteGap / lastWord.length();
-						} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
-							theNoteGap = theNoteGap * 0.5;
-						}
-
-						// Insert at end of note soundstring: Note + Resting gap
-						soundString.append("+R/" + String.format("%f", theNoteGap) + " ");
-
-						// Reset to base settings
-						resetSettings();
-						soundString.append("I[" + instrument + "] ");
-					}
+					lexCount++;
 				}
 
+
+
+				if (doNoteGap) {
+					double theNoteGap = noteGap;
+					if (theNoteGap > 0.2) {
+						theNoteGap = theNoteGap / lastWord.length();
+					} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
+						theNoteGap = theNoteGap * 0.5;
+					}
+
+					// Insert at end of note soundstring: Note + Resting gap
+					soundString.append("R/" + String.format("%f", noteGap) + " ");
+
+					// Reset to base settings
+					resetSettings();
+					soundString.append("I[" + instrument + "] ");
+				} else if (!doNoteGap) {
+					//
+					soundString.append(" ");
+				}
 
 			}
 		}
@@ -591,13 +606,15 @@ public class TextSound {
 		switch (i.soundMod) {
 			case TEMPO:
 
-				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
-					tempo = Double.parseDouble(i.soundModValue);
-				} else {
-					tempo += Double.parseDouble(i.soundModValue);
-					userTempo = tempo;
+				if (lexCount < 1) {
+					if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+						tempo = Double.parseDouble(i.soundModValue);
+					} else {
+						tempo += Double.parseDouble(i.soundModValue);
+						userTempo = tempo;
+					}
+					soundString.append("T" + (int) tempo + " ");
 				}
-				soundString.append("T" + (int)tempo + " ");
 				break;
 
 			case NOTEDURATION:
@@ -621,13 +638,19 @@ public class TextSound {
 				break;
 
 			case INSTRUMENT:
-				soundString.append("I[" + i.soundModValue + "] ");
+				if (lexCount < 1) {
+					soundString.append("I[" + i.soundModValue + "] ");
+				}
 				break;
 			case VOLUME:
-				soundString.append("X[Volume]=" + i.soundModValue + " ");
+				if (lexCount < 1) {
+					soundString.append("X[Volume]=" + i.soundModValue + " ");
+				}
 				break;
 			case PERCUSSION:
-				soundString.append("V9 [" + i.soundModValue + "]q V0 ");
+				if (lexCount < 1) {
+					soundString.append("V9 [" + i.soundModValue + "]q V0 ");
+				}
 				break;
 
 			case FREQUENCY:
@@ -728,5 +751,12 @@ class convertToArr {
 			arr[i++] = st;
 		}
 		return arr;
+	}
+}
+
+class logCalc {
+	static double log(double x, double base)
+	{
+		return (Math.log(x) / Math.log(base));
 	}
 }
