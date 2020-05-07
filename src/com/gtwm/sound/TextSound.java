@@ -458,119 +458,128 @@ public class TextSound {
 			// Match
 			if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
 
-				// Word value + 1 because it starts at 0 in the database
-				double targetOctave = Math.ceil((convertToArr.toDoubleArr(item.getValue())[0] + 1 / 26d) * octaves); //26
-				frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
+				double[] wordValues = convertToArr.toDoubleArr(item.getValue());
 
-				switch (defaultNoteOperation) {
-					case LEXNAMEFREQ:
-						//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
-						frequency = convertToArr.toDoubleArr(item.getValue())[0] + 1 * baseFrequency;
-						break;
-					case STATICFREQ:
-						// If we want a default tone, leave freq as static
-						break;
-					case MUTE:
-						// If we want a mute tone, set duration of each note to be 0
-						noteLength = 0;
-						break;
-				}
+				for (double thisValue : wordValues) {
+					//System.out.println(thisValue);
 
-				// Go through the instructions queue
-				for (Queue.Instruction i : instructions) {
+					// Word value + 1 because it starts at 0 in the database
+					double targetOctave = Math.ceil(((thisValue+1) / 26d) * octaves); //26
+					frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
-					// The main logic part of the program
-					// Make changes based on user instructions
-					if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
-						SenseMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
-						for (SenseMap.Type m : wordtypes) {
-							if (m != null && m.toString().equals(i.modValue)) {
+					switch (defaultNoteOperation) {
+						case LEXNAMEFREQ:
+							//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
+							frequency = (thisValue+1) * baseFrequency;
+							break;
+						case STATICFREQ:
+							// If we want a default tone, leave freq as static
+							break;
+						case MUTE:
+							// If we want a mute tone, set duration of each note to be 0
+							noteLength = 0;
+							break;
+					}
+
+					// Go through the instructions queue
+					for (Queue.Instruction i : instructions) {
+
+						// The main logic part of the program
+						// Make changes based on user instructions
+						if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
+							SenseMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
+							for (SenseMap.Type m : wordtypes) {
+								if (m != null && m.toString().equals(i.modValue)) {
+									applyMod(i, soundString);
+								}
+							}
+
+						} else if (i.mod == Queue.Instruction.Mods.WORDLENGTH) {
+							switch (i.getModOperator()) {
+								case EQUALTO:
+									if (Integer.parseInt(i.getModValue()) == lastWord.length()) {
+										applyMod(i, soundString);
+									}
+									break;
+								case LARGERTHAN:
+									if (Integer.parseInt(i.getModValue()) < lastWord.length()) {
+										applyMod(i, soundString);
+									}
+									break;
+								case LESSTHAN:
+									if (Integer.parseInt(i.getModValue()) > lastWord.length()) {
+										applyMod(i, soundString);
+									}
+									break;
+							}
+
+						} else if (i.mod == Queue.Instruction.Mods.WORDVALUE) {
+							//double[] lexnames = convertToArr.toDoubleArr(item.getValue() + 1);
+							//for (double n : lexnames) {
+							//	if (n == Double.parseDouble(i.modValue)) {
+									//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+							//		applyMod(i, soundString);
+							//	}
+							//}
+							if (thisValue == Double.parseDouble(i.modValue)) {
+							//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
 								applyMod(i, soundString);
 							}
-						}
+						} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
+							//String[] punctuations = convertToArr.toStringArr(item.getValue());
 
-					} else if (i.mod == Queue.Instruction.Mods.WORDLENGTH) {
-						switch (i.getModOperator()) {
-							case EQUALTO:
-								if (Integer.parseInt(i.getModValue()) == lastWord.length()) {
-									applyMod(i, soundString);
-								}
-								break;
-							case LARGERTHAN:
-								if (Integer.parseInt(i.getModValue()) < lastWord.length()) {
-									applyMod(i, soundString);
-								}
-								break;
-							case LESSTHAN:
-								if (Integer.parseInt(i.getModValue()) > lastWord.length()) {
-									applyMod(i, soundString);
-								}
-								break;
-						}
-
-					} else if (i.mod == Queue.Instruction.Mods.WORDVALUE) {
-						double[] lexnames = convertToArr.toDoubleArr(item.getValue() + 1);
-						//int lexCount = 0;
-						for (double n : lexnames) {
-							if (n == Double.parseDouble(i.modValue)) {
+							//for (String n : punctuations) {
+							if (item.getKey().equals(i.modValue)) {
 								//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
 								applyMod(i, soundString);
 							}
+							//}
 						}
-						//if (convertToArr.toDoubleArr(item.getValue())[0] == Double.parseDouble(i.modValue)) {
-						//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-						//	applyMod(i, soundString);
-						//}
-					} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
-						//String[] punctuations = convertToArr.toStringArr(item.getValue());
+					}
 
-						//for (String n : punctuations) {
-						if (item.getKey().equals(i.modValue)) {
-							//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-							applyMod(i, soundString);
+					// Normalise to fit in the range
+					double topFrequency = baseFrequency;
+					for (int j = 0; j < targetOctave; j++) {
+						topFrequency = topFrequency * 2;
+					}
+					while (frequency > topFrequency) {
+						frequency = frequency / 2;
+					}
+
+					// Testing
+					System.out.println("Frequency for " + lastWord + "=" + thisValue +
+							" normalized to octave "
+							+ octaves + ", top frequency " + topFrequency + ": " +
+							frequency);
+
+					// Convert freq to music string and append to sound string
+					soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength); // Note (and duration)
+
+					// Hack to append a space between notes for streaming player when a word has more than one lexname
+					if (!doNoteGap) {
+						soundString.append(" ");
+					}
+
+					System.out.println("Convert freq to music string: " + soundString);
+
+					if (doNoteGap) {
+						double theNoteGap = noteGap;
+						if (theNoteGap > 0.2) {
+							theNoteGap = theNoteGap / lastWord.length();
+						} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
+							theNoteGap = theNoteGap * 0.5;
 						}
-						//}
+
+						// Insert at end of note soundstring: Note + Resting gap
+						soundString.append("+R/" + String.format("%f", theNoteGap) + " ");
+
+						// Reset to base settings
+						resetSettings();
+						soundString.append("I[" + instrument + "] ");
 					}
 				}
 
-				// Normalise to fit in the range
-				double topFrequency = baseFrequency;
-				for (int j = 0; j < targetOctave; j++) {
-					topFrequency = topFrequency * 2;
-				}
-				while (frequency > topFrequency) {
-					frequency = frequency / 2;
-				}
 
-				// Testing
-				System.out.println("Frequency for " + lastWord + "=" + item.getValue() +
-						" normalized to octave "
-						+ octaves + ", top frequency " + topFrequency + ": " +
-						frequency);
-
-				// Convert freq to music string and append to sound string
-				soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength); // Note (and duration)
-				// Hack to append a space between notes for streaming player when a word has more than one lexname
-				if (!doNoteGap) {
-					soundString.append(" ");
-				}
-				System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
-
-				if (doNoteGap) {
-					double theNoteGap = noteGap;
-					if (theNoteGap > 0.2) {
-						theNoteGap = theNoteGap / lastWord.length();
-					} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
-						theNoteGap = theNoteGap * 0.5;
-					}
-
-					// Insert at end of note soundstring: Note + Resting gap
-					soundString.append("+R/" + String.format("%f", theNoteGap) + " ");
-
-					// Reset to base settings
-					resetSettings();
-					soundString.append("I[" + instrument + "] ");
-				}
 			}
 		}
 	}
@@ -693,7 +702,7 @@ class serialInstructionsQueue {
 class convertToArr {
 	static double[] toDoubleArr(String inString) {
 		String[] tokens = inString.split(",");
-		double[] arr = new double[inString.length()];
+		double[] arr = new double[tokens.length];
 		int i=0;
 		for (String st : tokens) {
 			arr[i++] = Double.valueOf(st);
@@ -703,7 +712,7 @@ class convertToArr {
 
 	static SenseMap.Type[] toTypeArr(String inString) {
 		String[] tokens = inString.split(",");
-		SenseMap.Type[] arr = new SenseMap.Type[inString.length()];
+		SenseMap.Type[] arr = new SenseMap.Type[tokens.length];
 		int i=0;
 		for (String st : tokens) {
 			arr[i++] = SenseMap.Type.valueOf(st);
@@ -713,7 +722,7 @@ class convertToArr {
 
 	static String[] toStringArr(String inString) {
 		String[] tokens = inString.split(",");
-		String[] arr = new String[inString.length()];
+		String[] arr = new String[tokens.length];
 		int i=0;
 		for (String st : tokens) {
 			arr[i++] = st;
