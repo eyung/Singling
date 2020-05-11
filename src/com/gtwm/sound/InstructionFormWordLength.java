@@ -32,13 +32,11 @@ public class InstructionFormWordLength extends JDialog {
     private JComboBox setFrequency;
     private JComboBox incrementFrequency;
 
-    //SpinnerNumberModel model1 = new SpinnerNumberModel(5.0, 0.0, 9.0, 1.0);
-
     boolean instructionCheck = true;
 
     public InstructionFormWordLength() {
 
-        //incrementTempo.setModel(model1);
+        incrementTempo.setModel(InstructionFormModels.modelIncrementTempo);
 
         setContentPane(contentPane);
         setModal(true);

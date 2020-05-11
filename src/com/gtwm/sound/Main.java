@@ -136,7 +136,7 @@ public class Main extends JFrame {
                 dupeCheck = false;
                 for (SenseMap.Mapping j : tempList) {
                     if (j.getKey().equalsIgnoreCase(i.getKey())) {
-                    //if (j.toString().equalsIgnoreCase(i.toString())) {
+                        //if (j.toString().equalsIgnoreCase(i.toString())) {
                         //System.out.println("Exists already: " + j.getKey());
 
                         j.addType(i.wordType);
@@ -288,28 +288,35 @@ public class Main extends JFrame {
                                                         public void actionPerformed(ActionEvent e) {
                                                             if (btnAddInstruction.getSelectedItem() == "WORDTYPE") {
                                                                 InstructionFormWordType dialog = new InstructionFormWordType();
-                                                                dialog.setTitle("Instruction: Word Type");
+                                                                dialog.setTitle("Transformation: Word Type");
                                                                 dialog.pack();
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             } else if (btnAddInstruction.getSelectedItem() == "WORDLENGTH") {
                                                                 InstructionFormWordLength dialog = new InstructionFormWordLength();
-                                                                dialog.setTitle("Instruction: Word Length");
+                                                                dialog.setTitle("Transformation: Word Length");
                                                                 dialog.pack();
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             } else if (btnAddInstruction.getSelectedItem() == "LEXNAME") {
                                                                 InstructionFormWordValue dialog = new InstructionFormWordValue();
-                                                                dialog.setTitle("Instruction: Lexname");
+                                                                dialog.setTitle("Transformation: Lexname");
                                                                 dialog.pack();
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             } else if (btnAddInstruction.getSelectedItem() == "PUNCTUATION") {
                                                                 InstructionFormPunctuation dialog = new InstructionFormPunctuation();
-                                                                dialog.setTitle("Instruction: Punctuation");
+                                                                dialog.setTitle("Transformation: Punctuation");
+                                                                dialog.pack();
+                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setVisible(true);
+                                                                btnAddInstruction.setSelectedIndex(0);
+                                                            } else if (btnAddInstruction.getSelectedItem() == "CHARACTER") {
+                                                                InstructionFormCharacter dialog = new InstructionFormCharacter();
+                                                                dialog.setTitle("Transformation: Character");
                                                                 dialog.pack();
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
@@ -341,6 +348,7 @@ public class Main extends JFrame {
         thisModel.addElement(thisInstruction);
     }
 
+    // Listen for changes to the text area for real-time processing
     private DocumentListener documentListener = new DocumentListener() {
         int wordLen = 0;
         int lastWordLen;
@@ -586,8 +594,8 @@ public class Main extends JFrame {
         });
 
         // Adding menu items to menu
-        fileMenu.add(loadText);
         fileMenu.add(saveText);
+        fileMenu.add(loadText);
         fileMenu.add(separatorBar1);
         fileMenu.add(saveSettings);
         fileMenu.add(loadSettings);
@@ -667,7 +675,7 @@ public class Main extends JFrame {
         setOctaves.setPaintTicks(true);
         setOctaves.setPaintTrack(true);
         setOctaves.setSnapToTicks(false);
-        setOctaves.setValue(5);
+        setOctaves.setValue(2);
         setOctaves.setValueIsAdjusting(true);
         panel2.add(setOctaves, new GridConstraints(3, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setTempo = new JComboBox();
@@ -771,10 +779,11 @@ public class Main extends JFrame {
         characterCheckBox.setText("Character");
         panel2.add(characterCheckBox, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         onRadioButton = new JRadioButton();
-        onRadioButton.setSelected(true);
+        onRadioButton.setSelected(false);
         onRadioButton.setText("On");
         panel2.add(onRadioButton, new GridConstraints(8, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         offRadioButton = new JRadioButton();
+        offRadioButton.setSelected(true);
         offRadioButton.setText("Off");
         panel2.add(offRadioButton, new GridConstraints(8, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label8 = new JLabel();
@@ -830,6 +839,7 @@ public class Main extends JFrame {
         defaultComboBoxModel5.addElement("WORDLENGTH");
         defaultComboBoxModel5.addElement("LEXNAME");
         defaultComboBoxModel5.addElement("PUNCTUATION");
+        defaultComboBoxModel5.addElement("CHARACTER");
         btnAddInstruction.setModel(defaultComboBoxModel5);
         panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label10 = new JLabel();

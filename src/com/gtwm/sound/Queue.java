@@ -6,7 +6,7 @@ public class Queue {
 
     static class Instruction implements Serializable {
 
-        enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE, PUNCTUATION }
+        enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE, PUNCTUATION, CHARACTER }
 
         enum SoundMods { TEMPO, NOTEDURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION, FREQUENCY }
 
@@ -89,10 +89,11 @@ public class Queue {
                         " " + soundModValue;
             } else if (mod.equals(Mods.WORDTYPE) ||
                     mod.equals(Mods.PUNCTUATION) ||
-                    mod.equals(Mods.WORDVALUE)) {
+                    mod.equals(Mods.WORDVALUE) ||
+                    mod.equals(Mods.CHARACTER)) {
                 return mod +
                         ":" + modValue +
-                        " TO " +changeMode +
+                        " TO " + changeMode +
                         " " + soundMod +
                         " " + soundModValue;
             } else {

@@ -59,7 +59,7 @@
               <paintTicks value="true"/>
               <paintTrack value="true"/>
               <snapToTicks value="false"/>
-              <value value="5"/>
+              <value value="2"/>
               <valueIsAdjusting value="true"/>
             </properties>
           </component>
@@ -241,7 +241,7 @@
               <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <selected value="true"/>
+              <selected value="false"/>
               <text value="On"/>
             </properties>
           </component>
@@ -250,6 +250,7 @@
               <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <selected value="true"/>
               <text value="Off"/>
             </properties>
           </component>
@@ -394,6 +395,7 @@
                 <item value="WORDLENGTH"/>
                 <item value="LEXNAME"/>
                 <item value="PUNCTUATION"/>
+                <item value="CHARACTER"/>
               </model>
             </properties>
           </component>
