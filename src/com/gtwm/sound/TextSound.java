@@ -23,9 +23,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
 
 import org.jfugue.*;
 
@@ -61,9 +58,8 @@ public class TextSound {
 	// change throughout the generation
 	//
 	// How long to hold each note for
-	static double noteLength; // /1 = whole note (semibreve). /0.25 =
-									// crotchet
-	static double userNoteLength;
+	static double noteLength; // /1 = whole note (semibreve). /0.25 = crotchet
+	static double baseNoteLength;
 
 	// How long to wait before playing the next note
 	//static double noteGap = 0.0001; // 1 / 32d; // 1/32 = good default, 0 = no
@@ -80,14 +76,14 @@ public class TextSound {
 
 	// Octave range in which to place notes
 	static double octaves;
-	static double userOctaves;
+	static double baseOctaves;
 
 	// Tempo in beats per second
 	static double tempo;
-	static double userTempo;
+	static double baseTempo;
 
 	// Instrument default
-	static String userInstrument;
+	static String baseInstrument;
 
 	// Default note operation
 	enum noteOperationType { LEXNAMEFREQ, STATICFREQ, MUTE }
@@ -420,7 +416,7 @@ public class TextSound {
 					//System.out.println(thisValue);
 
 					// Word value + 1 because it starts at 0 in the database
-					double targetOctave = Math.ceil(((thisValue+1) / 26d) * octaves); //26
+					double targetOctave = Math.ceil(((thisValue+1) / 45d) * octaves); //26
 					frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
 					switch (defaultNoteOperation) {
@@ -514,17 +510,20 @@ public class TextSound {
 						//noteLength = 1/64f;
 					//}
 
-					// Convert freq to music string and append to sound string
-					soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength + " "); // Note (and duration)
-					System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
-
-					// Convert freq to MIDI music string using reference note and frequency A4 440hz
-					//double tempNote;
-					//int musicNote;
-					//tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
-					//musicNote = (int) Math.rint(tempNote);
-					//soundString.append("[" + musicNote + "]" + "/" + noteLength + " ");
-					//System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
+					// Mash notes together if word has more than one category
+					if (wordValues.length > 1) {
+						// Convert freq to MIDI music string using reference note and frequency A4 440hz
+						double tempNote;
+						int musicNote;
+						tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
+						musicNote = (int) Math.rint(tempNote);
+						soundString.append("[" + musicNote + "]" + "/" + noteLength + "+");
+						System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
+					} else {
+						// Convert freq to music string and append to sound string
+						soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength + "+"); // Note (and duration)
+						System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
+					}
 
 					lexCount++;
 				}
@@ -538,7 +537,7 @@ public class TextSound {
 					}
 
 					// Insert at end of note soundstring: Note + Resting gap
-					soundString.append("R/" + String.format("%f", theNoteGap) + " ");
+					soundString.append("R/" + String.format("%f", noteGap) + " ");
 
 					// Reset to base settings
 					resetSettings();
@@ -633,7 +632,7 @@ public class TextSound {
 		} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
 			theNoteGap = theNoteGap * 0.5;
 		}
-		soundString.append("+R/" + String.format("%f", theNoteGap) + " "); // Note + Resting gap
+		soundString.append("+R/" + String.format("%f", noteGap) + " "); // Note + Resting gap
 
 		// Reset to base settings
 		resetSettings();
@@ -642,20 +641,22 @@ public class TextSound {
 
 	private static StringBuilder applyMod(Queue.Instruction i, StringBuilder soundString) {
 		// Allow sound instructions to be played, if notes are set to mute in default settings
-		if (defaultNoteOperation == noteOperationType.MUTE) { noteLength = userNoteLength; }
+		if (defaultNoteOperation == noteOperationType.MUTE) { noteLength = baseNoteLength; }
 
 		switch (i.soundMod) {
 			case TEMPO:
 
-				if (lexCount < 1) {
+				if (lexCount <= 0) {
 					if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
-						//tempo = Double.parseDouble(i.soundModValue);
-						soundString.append("T[" + i.soundModValue + "] ");
-						//tempo += Double.parseDouble(i.soundModValue);
-						userTempo = tempo;
-						soundString.append("T" + (int) tempo + " ");
+						tempo = Double.parseDouble(i.soundModValue);
+						//soundString.append("T" + (int) tempo + " ");
+					} else {
+						tempo += Double.parseDouble(i.soundModValue);
+						//baseTempo = tempo;
+						//soundString.append("T" + (int) tempo + " ");
 					}
-					//soundString.append("T" + (int) tempo + " ");
+					baseTempo = tempo;
+					soundString.append("T" + (int) tempo + " ");
 				}
 				break;
 
@@ -665,8 +666,9 @@ public class TextSound {
 					noteLength = Double.parseDouble(i.soundModValue);
 				} else {
 					noteLength += Double.parseDouble(i.soundModValue);
-					userNoteLength = noteLength;
+					baseNoteLength = noteLength;
 				}
+
 				break;
 
 			case OCTAVE:
@@ -675,24 +677,25 @@ public class TextSound {
 					octaves = Double.parseDouble(i.soundModValue);
 				} else {
 					octaves += Double.parseDouble(i.soundModValue);
-					userOctaves = octaves;
 				}
+				baseOctaves = octaves;
 				break;
 
 			case INSTRUMENT:
-				if (lexCount < 1) {
-					soundString.append("I[" + i.soundModValue + "] ");
+				if (lexCount <= 0) {
+					instrument = i.soundModValue;
+					soundString.append("I[" + instrument + "] ");
 				}
 				break;
+
 			case VOLUME:
-				if (lexCount < 1) {
+				if (lexCount <= 0) {
 					soundString.append("X[Volume]=" + i.soundModValue + " ");
 				}
 				break;
+
 			case PERCUSSION:
-				if (lexCount < 1) {
-					soundString.append("V9 [" + i.soundModValue + "]q V0 ");
-				}
+				soundString.append("V9 [" + i.soundModValue + "]q V0 ");
 				break;
 
 			case FREQUENCY:
@@ -700,8 +703,9 @@ public class TextSound {
 					frequency = Double.parseDouble(i.soundModValue);
 				} else {
 					frequency += Double.parseDouble(i.soundModValue);
-					userBaseFrequency = frequency;
+					baseFrequency = frequency;
 				}
+
 				//System.out.println("Change freq to: " + i.soundModValue);
 				break;
 		}
@@ -709,11 +713,11 @@ public class TextSound {
 	}
 
 	private static void resetSettings() {
-		noteLength = userNoteLength;
-		baseFrequency = userBaseFrequency;
-		instrument = userInstrument;
-		octaves = userOctaves;
-		tempo = userTempo;
+		noteLength = baseNoteLength;
+		frequency = baseFrequency;
+		instrument = baseInstrument;
+		octaves = baseOctaves;
+		tempo = baseTempo;
 	}
 }
 

@@ -2,7 +2,6 @@ package com.gtwm.sound;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import org.w3c.dom.Text;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -449,20 +448,20 @@ public class Main extends JFrame {
     }
 
     private void setBaseValues() {
-        TextSound.userInstrument = String.valueOf(setInstrument.getSelectedItem());
-        System.out.println("Instrument: " + TextSound.userInstrument);
+        TextSound.baseInstrument = String.valueOf(setInstrument.getSelectedItem());
+        System.out.println("Instrument: " + TextSound.baseInstrument);
 
-        TextSound.userNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
-        System.out.println("Note Length: " + TextSound.userNoteLength);
+        TextSound.baseNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
+        System.out.println("Note Length: " + TextSound.baseNoteLength);
 
-        TextSound.userOctaves = Double.valueOf(setOctaves.getValue());
-        System.out.println("Octaves: " + TextSound.userOctaves);
+        TextSound.baseOctaves = Double.valueOf(setOctaves.getValue());
+        System.out.println("Octaves: " + TextSound.baseOctaves);
 
-        TextSound.userTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
-        System.out.println("Tempo: " + TextSound.userTempo);
+        TextSound.baseTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
+        System.out.println("Tempo: " + TextSound.baseTempo);
 
-        TextSound.userBaseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
-        System.out.println("Frequency: " + TextSound.userBaseFrequency);
+        TextSound.baseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
+        System.out.println("Frequency: " + TextSound.baseFrequency);
 
         TextSound.perWord = wordCheckBox.isSelected();
         TextSound.perChar = characterCheckBox.isSelected();
@@ -664,9 +663,8 @@ public class Main extends JFrame {
         defaultComboBoxModel2.addElement("0.0625");
         defaultComboBoxModel2.addElement("0.03125");
         defaultComboBoxModel2.addElement("0.015625");
-        defaultComboBoxModel2.addElement("1.00");
         setDuration.setModel(defaultComboBoxModel2);
-        setDuration.setSelectedIndex(1);
+        setDuration.setSelectedIndex(0);
         panel2.add(setDuration, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setOctaves = new JSlider();
         setOctaves.setMaximum(10);
@@ -695,8 +693,8 @@ public class Main extends JFrame {
         defaultComboBoxModel3.addElement("180");
         defaultComboBoxModel3.addElement("220");
         setTempo.setModel(defaultComboBoxModel3);
-        setTempo.setRequestFocusEnabled(true);
-        setTempo.setSelectedIndex(6);
+        setTempo.setRequestFocusEnabled(false);
+        setTempo.setSelectedIndex(11);
         panel2.add(setTempo, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label1 = new JLabel();
         label1.setText("Octave Range:");

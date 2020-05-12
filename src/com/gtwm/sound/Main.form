@@ -43,9 +43,8 @@
                 <item value="0.0625"/>
                 <item value="0.03125"/>
                 <item value="0.015625"/>
-                <item value="1.00"/>
               </model>
-              <selectedIndex value="1"/>
+              <selectedIndex value="0"/>
             </properties>
           </component>
           <component id="c24ed" class="javax.swing.JSlider" binding="setOctaves">
@@ -84,8 +83,8 @@
                 <item value="180"/>
                 <item value="220"/>
               </model>
-              <requestFocusEnabled value="true"/>
-              <selectedIndex value="6"/>
+              <requestFocusEnabled value="false"/>
+              <selectedIndex value="11"/>
             </properties>
           </component>
           <component id="876cf" class="javax.swing.JLabel">
