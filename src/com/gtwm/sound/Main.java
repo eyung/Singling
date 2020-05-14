@@ -94,7 +94,7 @@ public class Main extends JFrame {
 
         List<SenseMap.Mapping> tempList = new ArrayList<>();
 
-        // Preload database
+        // Load database files
         try {
             // Update splash screen
             g.drawString("Loading databases...", splashx, splashy + 20);
@@ -111,7 +111,7 @@ public class Main extends JFrame {
                         try {
                             if (allItems == null) {
                                 allItems = myParser.csvtoSenseMap(p.toString());
-                                System.out.println("Initializing database using: " + p.toString());
+                                System.out.println("Reading " + p.toString());
                             } else {
                                 allItems.addAll(myParser.csvtoSenseMap(p.toString()));
                                 System.out.println("Reading " + p.toString());
@@ -144,7 +144,7 @@ public class Main extends JFrame {
                 }
             }
 
-            //System.out.println(tempList.toString());
+            System.out.println(tempList.size() + " words were processed.");
 
             // Write final results in file for error logging
             FileWriter writer = new FileWriter("resultlist.txt");
