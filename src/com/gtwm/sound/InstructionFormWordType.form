@@ -28,41 +28,19 @@
             </constraints>
             <properties/>
           </component>
-          <component id="ecbb5" class="javax.swing.JComboBox" binding="incrementDuration">
+          <component id="31be7" class="javax.swing.JSpinner" binding="incrementDuration">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <model>
-                <item value="1.00"/>
-                <item value="0.50"/>
-                <item value="0.25"/>
-                <item value="0.125"/>
-                <item value="0.0625"/>
-                <item value="0.03125"/>
-                <item value="0.015625"/>
-              </model>
               <visible value="false"/>
             </properties>
           </component>
-          <component id="29291" class="javax.swing.JComboBox" binding="incrementOctave">
+          <component id="86e7a" class="javax.swing.JSpinner" binding="incrementOctave">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <model>
-                <item value="0"/>
-                <item value="1"/>
-                <item value="2"/>
-                <item value="3"/>
-                <item value="4"/>
-                <item value="5"/>
-                <item value="6"/>
-                <item value="7"/>
-                <item value="8"/>
-                <item value="9"/>
-                <item value="10"/>
-              </model>
               <visible value="false"/>
             </properties>
           </component>
@@ -74,7 +52,7 @@
               <visible value="false"/>
             </properties>
           </component>
-          <component id="8a862" class="javax.swing.JComboBox" binding="incrementFrequency">
+          <component id="2392f" class="javax.swing.JSpinner" binding="incrementFrequency">
             <constraints>
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>

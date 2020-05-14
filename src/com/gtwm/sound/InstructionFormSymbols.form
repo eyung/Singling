@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.gtwm.sound.InstructionFormPunctuation">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.gtwm.sound.InstructionFormSymbols">
   <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="2" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="48" y="54" width="950" height="297"/>
+      <xy x="48" y="54" width="950" height="303"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -89,6 +89,248 @@
             <item value="|"/>
             <item value="}"/>
             <item value="~"/>
+            <item value="¢"/>
+            <item value="£"/>
+            <item value="¤"/>
+            <item value="¥"/>
+            <item value="₹"/>
+            <item value="¦"/>
+            <item value="§"/>
+            <item value="¨"/>
+            <item value="©"/>
+            <item value="ª"/>
+            <item value="«"/>
+            <item value="¬"/>
+            <item value="®"/>
+            <item value="¯"/>
+            <item value="°"/>
+            <item value="±"/>
+            <item value="²"/>
+            <item value="³"/>
+            <item value="´"/>
+            <item value="µ"/>
+            <item value="¶"/>
+            <item value="·"/>
+            <item value="¸"/>
+            <item value="¹"/>
+            <item value="º"/>
+            <item value="»"/>
+            <item value="¼"/>
+            <item value="½"/>
+            <item value="¾"/>
+            <item value="¿"/>
+            <item value="À"/>
+            <item value="Á"/>
+            <item value="Â"/>
+            <item value="Ã"/>
+            <item value="Ä"/>
+            <item value="Å"/>
+            <item value="Æ"/>
+            <item value="Ç"/>
+            <item value="È"/>
+            <item value="É"/>
+            <item value="Ê"/>
+            <item value="Ë"/>
+            <item value="Ì"/>
+            <item value="Í"/>
+            <item value="Î"/>
+            <item value="Ï"/>
+            <item value="Ð"/>
+            <item value="Ñ"/>
+            <item value="Ò"/>
+            <item value="Ó"/>
+            <item value="Ô"/>
+            <item value="Õ"/>
+            <item value="Ö"/>
+            <item value="×"/>
+            <item value="Ø"/>
+            <item value="Ù"/>
+            <item value="Ú"/>
+            <item value="Û"/>
+            <item value="Ü"/>
+            <item value="Ý"/>
+            <item value="Þ"/>
+            <item value="ß"/>
+            <item value="à"/>
+            <item value="á"/>
+            <item value="â"/>
+            <item value="ã"/>
+            <item value="ä"/>
+            <item value="å"/>
+            <item value="æ"/>
+            <item value="ç"/>
+            <item value="è"/>
+            <item value="é"/>
+            <item value="ê"/>
+            <item value="ë"/>
+            <item value="ì"/>
+            <item value="í"/>
+            <item value="î"/>
+            <item value="ï"/>
+            <item value="ð"/>
+            <item value="ñ"/>
+            <item value="ò"/>
+            <item value="ó"/>
+            <item value="ô"/>
+            <item value="õ"/>
+            <item value="ö"/>
+            <item value="÷"/>
+            <item value="ø"/>
+            <item value="ù"/>
+            <item value="ú"/>
+            <item value="û"/>
+            <item value="ü"/>
+            <item value="ý"/>
+            <item value="þ"/>
+            <item value="ÿ"/>
+            <item value="Œ"/>
+            <item value="œ"/>
+            <item value="Š"/>
+            <item value="š"/>
+            <item value="Ÿ"/>
+            <item value="ƒ"/>
+            <item value="ˆ"/>
+            <item value="˜"/>
+            <item value="Α"/>
+            <item value="Β"/>
+            <item value="Γ"/>
+            <item value="Δ"/>
+            <item value="Ε"/>
+            <item value="Ζ"/>
+            <item value="Η"/>
+            <item value="Θ"/>
+            <item value="Ι"/>
+            <item value="Κ"/>
+            <item value="Λ"/>
+            <item value="Μ"/>
+            <item value="Ν"/>
+            <item value="Ξ"/>
+            <item value="Ο"/>
+            <item value="Π"/>
+            <item value="Ρ"/>
+            <item value="Σ"/>
+            <item value="Τ"/>
+            <item value="Υ"/>
+            <item value="Φ"/>
+            <item value="Χ"/>
+            <item value="Ψ"/>
+            <item value="Ω"/>
+            <item value="α"/>
+            <item value="β"/>
+            <item value="γ"/>
+            <item value="δ"/>
+            <item value="ε"/>
+            <item value="ζ"/>
+            <item value="η"/>
+            <item value="θ"/>
+            <item value="ι"/>
+            <item value="κ"/>
+            <item value="λ"/>
+            <item value="μ"/>
+            <item value="ν"/>
+            <item value="ξ"/>
+            <item value="ο"/>
+            <item value="π"/>
+            <item value="ρ"/>
+            <item value="ς"/>
+            <item value="σ"/>
+            <item value="τ"/>
+            <item value="υ"/>
+            <item value="φ"/>
+            <item value="χ"/>
+            <item value="ψ"/>
+            <item value="ω"/>
+            <item value="ϑ"/>
+            <item value="ϒ"/>
+            <item value="ϖ"/>
+            <item value="–"/>
+            <item value="—"/>
+            <item value="‘"/>
+            <item value="’"/>
+            <item value="‚"/>
+            <item value="“"/>
+            <item value="”"/>
+            <item value="„"/>
+            <item value="†"/>
+            <item value="‡"/>
+            <item value="‰"/>
+            <item value="‹"/>
+            <item value="›"/>
+            <item value="•"/>
+            <item value="…"/>
+            <item value="′"/>
+            <item value="″"/>
+            <item value="‾"/>
+            <item value="⁄"/>
+            <item value="ℑ"/>
+            <item value="ℜ"/>
+            <item value="™"/>
+            <item value="ℵ"/>
+            <item value="←"/>
+            <item value="↑"/>
+            <item value="→"/>
+            <item value="↓"/>
+            <item value="↔"/>
+            <item value="↵"/>
+            <item value="⇐"/>
+            <item value="⇑"/>
+            <item value="⇒"/>
+            <item value="⇓"/>
+            <item value="⇔"/>
+            <item value="◄"/>
+            <item value="►"/>
+            <item value="▲"/>
+            <item value="▼"/>
+            <item value="∀"/>
+            <item value="∂"/>
+            <item value="∃"/>
+            <item value="∅"/>
+            <item value="∇"/>
+            <item value="∈"/>
+            <item value="∉"/>
+            <item value="∋"/>
+            <item value="∏"/>
+            <item value="∑"/>
+            <item value="−"/>
+            <item value="∗"/>
+            <item value="√"/>
+            <item value="∝"/>
+            <item value="∞"/>
+            <item value="∠"/>
+            <item value="∧"/>
+            <item value="∨"/>
+            <item value="∩"/>
+            <item value="∪"/>
+            <item value="∫"/>
+            <item value="∴"/>
+            <item value="∼"/>
+            <item value="≅"/>
+            <item value="≈"/>
+            <item value="≠"/>
+            <item value="≡"/>
+            <item value="≤"/>
+            <item value="≥"/>
+            <item value="⊂"/>
+            <item value="⊃"/>
+            <item value="⊄"/>
+            <item value="⊆"/>
+            <item value="⊇"/>
+            <item value="⊕"/>
+            <item value="⊗"/>
+            <item value="⊥"/>
+            <item value="⋅"/>
+            <item value="⌈"/>
+            <item value="⌉"/>
+            <item value="⌊"/>
+            <item value="⌋"/>
+            <item value="〈"/>
+            <item value="〉"/>
+            <item value="◊"/>
+            <item value="♠"/>
+            <item value="♣"/>
+            <item value="♥"/>
+            <item value="♦"/>
+            <item value=","/>
           </model>
         </properties>
       </component>
@@ -261,41 +503,19 @@
             </constraints>
             <properties/>
           </component>
-          <component id="1f8b2" class="javax.swing.JComboBox" binding="incrementDuration">
+          <component id="7a3de" class="javax.swing.JSpinner" binding="incrementDuration">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <model>
-                <item value="1.00"/>
-                <item value="0.50"/>
-                <item value="0.25"/>
-                <item value="0.125"/>
-                <item value="0.0625"/>
-                <item value="0.03125"/>
-                <item value="0.015625"/>
-              </model>
               <visible value="false"/>
             </properties>
           </component>
-          <component id="81381" class="javax.swing.JComboBox" binding="incrementOctave">
+          <component id="a5e1" class="javax.swing.JSpinner" binding="incrementOctave">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <model>
-                <item value="0"/>
-                <item value="1"/>
-                <item value="2"/>
-                <item value="3"/>
-                <item value="4"/>
-                <item value="5"/>
-                <item value="6"/>
-                <item value="7"/>
-                <item value="8"/>
-                <item value="9"/>
-                <item value="10"/>
-              </model>
               <visible value="false"/>
             </properties>
           </component>
@@ -307,7 +527,7 @@
               <visible value="false"/>
             </properties>
           </component>
-          <component id="87671" class="javax.swing.JComboBox" binding="incrementFrequency">
+          <component id="27a14" class="javax.swing.JSpinner" binding="incrementFrequency">
             <constraints>
               <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>

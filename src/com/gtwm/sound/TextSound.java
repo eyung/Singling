@@ -85,6 +85,9 @@ public class TextSound {
 	// Instrument default
 	static String baseInstrument;
 
+	// Volume
+	static double volume;
+
 	// Default note operation
 	enum noteOperationType { LEXNAMEFREQ, STATICFREQ, MUTE }
 	static noteOperationType defaultNoteOperation = noteOperationType.LEXNAMEFREQ;
@@ -121,11 +124,11 @@ public class TextSound {
 	static List<Queue.Instruction> instructions = new ArrayList<>();
 
 	// Keeping track of how many categories a word falls under
-	static int lexCount;
+	static int lexCount = 0;
 
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
-				1.0, 5.0), TEMPO(100, 1000), LETTER_ORDERING(0.0,3.0);
+				1.0, 10.0), TEMPO(40, 220), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383);
 		Setting(double min, double max) {
 			if (min == 0) {
 				// Don't allow absolute zero as a min otherwise will never
@@ -410,8 +413,6 @@ public class TextSound {
 
 				double[] wordValues = convertToArr.toDoubleArr(item.getValue());
 
-				lexCount = 0;
-
 				for (double thisValue : wordValues) {
 					//System.out.println(thisValue);
 
@@ -510,7 +511,7 @@ public class TextSound {
 						//noteLength = 1/64f;
 					//}
 
-					// Mash notes together if word has more than one category
+					// Combine notes together as a harmony if word has more than one category
 					if (wordValues.length > 1) {
 						// Convert freq to MIDI music string using reference note and frequency A4 440hz
 						double tempNote;
@@ -548,6 +549,7 @@ public class TextSound {
 					soundString.deleteCharAt(soundString.length()-1);
 				}
 
+				lexCount = 0;
 			}
 		}
 	}
@@ -645,7 +647,7 @@ public class TextSound {
 
 		switch (i.soundMod) {
 			case TEMPO:
-
+				Setting settingTempo = Setting.TEMPO;
 				if (lexCount <= 0) {
 					if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
 						tempo = Double.parseDouble(i.soundModValue);
@@ -655,27 +657,31 @@ public class TextSound {
 						//baseTempo = tempo;
 						//soundString.append("T" + (int) tempo + " ");
 					}
+					tempo = settingTempo.keepInRange(tempo);
 					baseTempo = tempo;
 					soundString.append("T" + (int) tempo + " ");
 				}
 				break;
 
 			case NOTEDURATION:
-
+				Setting settingNoteDuration = Setting.NOTE_LENGTH;
 				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+					noteLength = settingNoteDuration.keepInRange(noteLength);
 					noteLength = Double.parseDouble(i.soundModValue);
 				} else {
+					noteLength = settingNoteDuration.keepInRange(noteLength);
 					noteLength += Double.parseDouble(i.soundModValue);
 					baseNoteLength = noteLength;
 				}
-
 				break;
 
 			case OCTAVE:
-
+				Setting settingOctaves = Setting.OCTAVES;
 				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+					octaves = settingOctaves.keepInRange(octaves);
 					octaves = Double.parseDouble(i.soundModValue);
 				} else {
+					octaves = settingOctaves.keepInRange(octaves);
 					octaves += Double.parseDouble(i.soundModValue);
 				}
 				baseOctaves = octaves;
@@ -689,8 +695,11 @@ public class TextSound {
 				break;
 
 			case VOLUME:
+				Setting settingVolume = Setting.VOLUME;
 				if (lexCount <= 0) {
-					soundString.append("X[Volume]=" + i.soundModValue + " ");
+					volume = Double.parseDouble(i.soundModValue);
+					volume = settingVolume.keepInRange(volume);
+					soundString.append("X[Volume]=" + volume + " ");
 				}
 				break;
 
@@ -699,13 +708,24 @@ public class TextSound {
 				break;
 
 			case FREQUENCY:
+				//if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+				//	frequency = Double.parseDouble(i.soundModValue);
+				//} else {
+				//	frequency += Double.parseDouble(i.soundModValue);
+				//	baseFrequency = frequency;
+				//}
+				Setting settingsFrequency = Setting.BASE_FREQUENCY;
+				double midiNoteNumber = Double.parseDouble(i.soundModValue);
+
 				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
-					frequency = Double.parseDouble(i.soundModValue);
+					frequency = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
+					frequency = settingsFrequency.keepInRange(frequency);
 				} else {
-					frequency += Double.parseDouble(i.soundModValue);
+					double tempFreq = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
+					frequency += tempFreq;
+					frequency = settingsFrequency.keepInRange(frequency);
 					baseFrequency = frequency;
 				}
-
 				//System.out.println("Change freq to: " + i.soundModValue);
 				break;
 		}

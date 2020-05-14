@@ -21,21 +21,30 @@ public class InstructionFormWordLength extends JDialog {
     private JComboBox setPercussion;
     private JSpinner setLength;
     private JSpinner incrementTempo;
-    private JComboBox incrementDuration;
-    private JComboBox incrementOctave;
+    private JSpinner incrementDuration;
+    private JSpinner incrementOctave;
     private JSpinner incrementVolume;
     private JPanel incrementPanel;
     private JPanel setPanel;
     private JComboBox setChangeMode;
     private JComboBox setSoundModBy;
     private JComboBox setFrequency;
-    private JComboBox incrementFrequency;
+    private JSpinner incrementFrequency;
 
     boolean instructionCheck = true;
 
     public InstructionFormWordLength() {
 
+        // Set swing models for the input controls
+        setTempo.setModel(InstructionFormModels.modelSetTempo);
+        setOctave.setModel(InstructionFormModels.modelSetOctave);
+        setDuration.setModel(InstructionFormModels.modelSetNoteDuration);
+        setInstrument.setModel(InstructionFormModels.modelSetInstrument);
+        setFrequency.setModel(InstructionFormModels.modelSetFrequency);
         incrementTempo.setModel(InstructionFormModels.modelIncrementTempo);
+        incrementOctave.setModel(InstructionFormModels.modelIncrementOctave);
+        incrementDuration.setModel(InstructionFormModels.modelIncrementNoteDuration);
+        incrementFrequency.setModel(InstructionFormModels.modelIncrementFrequency);
 
         setContentPane(contentPane);
         setModal(true);
@@ -82,16 +91,16 @@ public class InstructionFormWordLength extends JDialog {
                             instruction.setSoundModValue(String.valueOf(incrementTempo.getValue()));
                             break;
                         case NOTEDURATION:
-                            instruction.setSoundModValue(String.valueOf(incrementDuration.getSelectedItem()));
+                            instruction.setSoundModValue(String.valueOf(incrementDuration.getValue()));
                             break;
                         case OCTAVE:
-                            instruction.setSoundModValue(String.valueOf(incrementOctave.getSelectedItem()));
+                            instruction.setSoundModValue(String.valueOf(incrementOctave.getValue()));
                             break;
                         case VOLUME:
                             instruction.setSoundModValue(String.valueOf(incrementVolume.getValue()));
                             break;
                         case FREQUENCY:
-                            instruction.setSoundModValue(String.valueOf(incrementFrequency.getSelectedItem()));
+                            instruction.setSoundModValue(String.valueOf(incrementFrequency.getValue()));
                             break;
                     }
                 }
@@ -369,11 +378,17 @@ public class InstructionFormWordLength extends JDialog {
         setPanel.add(setPercussion, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setFrequency = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel6 = new DefaultComboBoxModel();
-        defaultComboBoxModel6.addElement("16");
-        defaultComboBoxModel6.addElement("32");
-        defaultComboBoxModel6.addElement("64");
-        defaultComboBoxModel6.addElement("128");
-        defaultComboBoxModel6.addElement("256");
+        defaultComboBoxModel6.addElement("50");
+        defaultComboBoxModel6.addElement("51");
+        defaultComboBoxModel6.addElement("52");
+        defaultComboBoxModel6.addElement("53");
+        defaultComboBoxModel6.addElement("54");
+        defaultComboBoxModel6.addElement("55");
+        defaultComboBoxModel6.addElement("56");
+        defaultComboBoxModel6.addElement("57");
+        defaultComboBoxModel6.addElement("58");
+        defaultComboBoxModel6.addElement("59");
+        defaultComboBoxModel6.addElement("60");
         setFrequency.setModel(defaultComboBoxModel6);
         setFrequency.setVisible(false);
         setPanel.add(setFrequency, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -402,45 +417,23 @@ public class InstructionFormWordLength extends JDialog {
         contentPane.add(incrementPanel, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         incrementTempo = new JSpinner();
         incrementPanel.add(incrementTempo, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        incrementDuration = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel9 = new DefaultComboBoxModel();
-        defaultComboBoxModel9.addElement("1.00");
-        defaultComboBoxModel9.addElement("0.50");
-        defaultComboBoxModel9.addElement("0.25");
-        defaultComboBoxModel9.addElement("0.125");
-        defaultComboBoxModel9.addElement("0.0625");
-        defaultComboBoxModel9.addElement("0.03125");
-        defaultComboBoxModel9.addElement("0.015625");
-        incrementDuration.setModel(defaultComboBoxModel9);
+        incrementDuration = new JSpinner();
         incrementDuration.setVisible(false);
         incrementPanel.add(incrementDuration, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        incrementOctave = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel10 = new DefaultComboBoxModel();
-        defaultComboBoxModel10.addElement("0");
-        defaultComboBoxModel10.addElement("1");
-        defaultComboBoxModel10.addElement("2");
-        defaultComboBoxModel10.addElement("3");
-        defaultComboBoxModel10.addElement("4");
-        defaultComboBoxModel10.addElement("5");
-        defaultComboBoxModel10.addElement("6");
-        defaultComboBoxModel10.addElement("7");
-        defaultComboBoxModel10.addElement("8");
-        defaultComboBoxModel10.addElement("9");
-        defaultComboBoxModel10.addElement("10");
-        incrementOctave.setModel(defaultComboBoxModel10);
+        incrementOctave = new JSpinner();
         incrementOctave.setVisible(false);
         incrementPanel.add(incrementOctave, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         incrementVolume = new JSpinner();
         incrementVolume.setVisible(false);
         incrementPanel.add(incrementVolume, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        incrementFrequency = new JComboBox();
+        incrementFrequency = new JSpinner();
         incrementFrequency.setVisible(false);
         incrementPanel.add(incrementFrequency, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setChangeMode = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel11 = new DefaultComboBoxModel();
-        defaultComboBoxModel11.addElement("SET");
-        defaultComboBoxModel11.addElement("INCREMENT");
-        setChangeMode.setModel(defaultComboBoxModel11);
+        final DefaultComboBoxModel defaultComboBoxModel9 = new DefaultComboBoxModel();
+        defaultComboBoxModel9.addElement("SET");
+        defaultComboBoxModel9.addElement("INCREMENT");
+        setChangeMode.setModel(defaultComboBoxModel9);
         contentPane.add(setChangeMode, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
@@ -455,13 +448,13 @@ public class InstructionFormWordLength extends JDialog {
         buttonCancel.setText("Cancel");
         panel2.add(buttonCancel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setSoundModBy = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel12 = new DefaultComboBoxModel();
-        defaultComboBoxModel12.addElement("TEMPO");
-        defaultComboBoxModel12.addElement("NOTEDURATION");
-        defaultComboBoxModel12.addElement("OCTAVE");
-        defaultComboBoxModel12.addElement("VOLUME");
-        defaultComboBoxModel12.addElement("FREQUENCY");
-        setSoundModBy.setModel(defaultComboBoxModel12);
+        final DefaultComboBoxModel defaultComboBoxModel10 = new DefaultComboBoxModel();
+        defaultComboBoxModel10.addElement("TEMPO");
+        defaultComboBoxModel10.addElement("NOTEDURATION");
+        defaultComboBoxModel10.addElement("OCTAVE");
+        defaultComboBoxModel10.addElement("VOLUME");
+        defaultComboBoxModel10.addElement("FREQUENCY");
+        setSoundModBy.setModel(defaultComboBoxModel10);
         setSoundModBy.setVisible(false);
         contentPane.add(setSoundModBy, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }

@@ -25,13 +25,10 @@ public class Main extends JFrame {
     private JComboBox setDuration;
     private JSlider setOctaves;
     private JComboBox setTempo;
-    private JButton btnGetDB;
-    private JButton btnType;
     private JList<Queue.Instruction> list1;
     private JButton btnRemoveInstruction;
     private JComboBox btnAddInstruction;
     private JPanel panelInstructions;
-    private JTextField tfDBpath;
     private JComboBox setFrequency;
     private JRadioButton lexnamesRadioButton;
     private JRadioButton staticRadioButton;
@@ -80,7 +77,7 @@ public class Main extends JFrame {
             System.out.println("g is null");
             return;
         }
-        g.drawString("DLC TextSound ver 0.1", splashx, splashy - 20);
+        g.drawString("DLC Singling ver 0.1", splashx, splashy - 20);
         g.drawString("Starting up...", splashx, splashy);
         splash.update();
 
@@ -124,8 +121,6 @@ public class Main extends JFrame {
                         }
                     });
 
-            //tfDBpath.setText("OK");
-
             // True if duplicate found in database
             boolean dupeCheck;
 
@@ -168,37 +163,6 @@ public class Main extends JFrame {
         // Load user preferences
         //loadSettings(this.textArea1, TextSound.prefsFile);
 
-        // Can remove (??)
-        btnLoadText.addActionListener(new
-
-                                              ActionListener() {
-                                                  @Override
-                                                  public void actionPerformed(ActionEvent e) {
-
-                                                      // Handle open button action
-                                                      if (e.getSource() == btnLoadText) {
-                                                          //File workingDirectory = new File(System.getProperty("user.dir"));
-                                                          fc.setCurrentDirectory(workingDirectory);
-
-                                                          int returnVal = fc.showOpenDialog(panel1);
-
-                                                          if (returnVal == JFileChooser.APPROVE_OPTION) {
-                                                              File file = fc.getSelectedFile();
-                                                              //This is where a real application would open the file.
-                                                              try {
-                                                                  inputText = TextSound.loadFile(file.getAbsolutePath());
-                                                                  outFilename = file.getAbsoluteFile() + ".mid";
-                                                              } catch (Exception ex) {
-                                                                  ex.printStackTrace();
-                                                              }
-                                                              textArea1.setText(inputText);
-                                                          } else {
-                                                              System.out.println("Open command cancelled by user.");
-                                                          }
-                                                      }
-                                                  }
-                                              });
-
         btnProcess.addActionListener(new
 
                                              ActionListener() {
@@ -234,39 +198,6 @@ public class Main extends JFrame {
                                                      }
                                                  }
                                              });
-
-        // Safe to delete
-        btnGetDB.addActionListener(new
-
-                                           ActionListener() {
-                                               @Override
-                                               public void actionPerformed(ActionEvent e) {
-
-                                                   // Handle open button action
-                                                   if (e.getSource() == btnGetDB) {
-                                                       File workingDirectory = new File(System.getProperty("user.dir"));
-                                                       fc.setCurrentDirectory(workingDirectory);
-
-                                                       int returnVal = fc.showOpenDialog(panel1);
-
-                                                       if (returnVal == JFileChooser.APPROVE_OPTION) {
-                                                           File file = fc.getSelectedFile();
-                                                           //This is where a real application would open the file.
-                                                           try {
-                                                               //csvparser myParser = new csvparser();
-                                                               TextSound.items = myParser.csvtoSenseMap(file.getPath());
-                                                               tfDBpath.setText(file.getPath());
-                                                           } catch (Exception ex) {
-                                                               ex.printStackTrace();
-                                                               tfDBpath.setText("File not found or unsupported file type");
-                                                           }
-
-                                                       } else {
-                                                           System.out.println("Open command cancelled by user.");
-                                                       }
-                                                   }
-                                               }
-                                           });
 
         btnRemoveInstruction.addActionListener(new
 
@@ -306,9 +237,9 @@ public class Main extends JFrame {
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
-                                                            } else if (btnAddInstruction.getSelectedItem() == "PUNCTUATION") {
-                                                                InstructionFormPunctuation dialog = new InstructionFormPunctuation();
-                                                                dialog.setTitle("Transformation: Punctuation");
+                                                            } else if (btnAddInstruction.getSelectedItem() == "SYMBOLS") {
+                                                                InstructionFormSymbols dialog = new InstructionFormSymbols();
+                                                                dialog.setTitle("Transformation: Symbols");
                                                                 dialog.pack();
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
@@ -646,7 +577,7 @@ public class Main extends JFrame {
         panel1.setLayout(new GridLayoutManager(3, 3, new Insets(20, 20, 20, 20), -1, -1, true, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(9, 4, new Insets(0, 50, 0, 50), -1, -1));
-        panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(250, 500), null, 0, false));
+        panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(150, 500), null, 0, false));
         setInstrument = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("PIANO");
@@ -788,27 +719,15 @@ public class Main extends JFrame {
         label8.setText("Stream Mode:");
         panel2.add(label8, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
-        panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(500, 500), null, 0, false));
+        panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         textArea1 = new JTextArea();
         textArea1.setEditable(true);
         textArea1.setLineWrap(true);
         textArea1.setWrapStyleWord(true);
         scrollPane1.setViewportView(textArea1);
         final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        tfDBpath = new JTextField();
-        tfDBpath.setEditable(false);
-        tfDBpath.setVisible(false);
-        panel3.add(tfDBpath, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        btnGetDB = new JButton();
-        btnGetDB.setText("...");
-        btnGetDB.setVisible(false);
-        panel3.add(btnGetDB, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 3, false));
-        btnLoadText = new JButton();
-        btnLoadText.setText("Load file");
-        btnLoadText.setVisible(false);
-        panel3.add(btnLoadText, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(5, 5), null, 0, false));
         final JPanel panel4 = new JPanel();
         panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -836,7 +755,7 @@ public class Main extends JFrame {
         defaultComboBoxModel5.addElement("WORDTYPE");
         defaultComboBoxModel5.addElement("WORDLENGTH");
         defaultComboBoxModel5.addElement("LEXNAME");
-        defaultComboBoxModel5.addElement("PUNCTUATION");
+        defaultComboBoxModel5.addElement("SYMBOLS");
         defaultComboBoxModel5.addElement("CHARACTER");
         btnAddInstruction.setModel(defaultComboBoxModel5);
         panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

@@ -122,11 +122,17 @@
             </constraints>
             <properties>
               <model>
-                <item value="16"/>
-                <item value="32"/>
-                <item value="64"/>
-                <item value="128"/>
-                <item value="256"/>
+                <item value="50"/>
+                <item value="51"/>
+                <item value="52"/>
+                <item value="53"/>
+                <item value="54"/>
+                <item value="55"/>
+                <item value="56"/>
+                <item value="57"/>
+                <item value="58"/>
+                <item value="59"/>
+                <item value="60"/>
               </model>
               <visible value="false"/>
             </properties>
@@ -182,41 +188,19 @@
             </constraints>
             <properties/>
           </component>
-          <component id="8ee8f" class="javax.swing.JComboBox" binding="incrementDuration">
+          <component id="5fbeb" class="javax.swing.JSpinner" binding="incrementDuration">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <model>
-                <item value="1.00"/>
-                <item value="0.50"/>
-                <item value="0.25"/>
-                <item value="0.125"/>
-                <item value="0.0625"/>
-                <item value="0.03125"/>
-                <item value="0.015625"/>
-              </model>
               <visible value="false"/>
             </properties>
           </component>
-          <component id="dacce" class="javax.swing.JComboBox" binding="incrementOctave">
+          <component id="b12ef" class="javax.swing.JSpinner" binding="incrementOctave">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <model>
-                <item value="0"/>
-                <item value="1"/>
-                <item value="2"/>
-                <item value="3"/>
-                <item value="4"/>
-                <item value="5"/>
-                <item value="6"/>
-                <item value="7"/>
-                <item value="8"/>
-                <item value="9"/>
-                <item value="10"/>
-              </model>
               <visible value="false"/>
             </properties>
           </component>
@@ -228,7 +212,7 @@
               <visible value="false"/>
             </properties>
           </component>
-          <component id="cf72f" class="javax.swing.JComboBox" binding="incrementFrequency">
+          <component id="dedb3" class="javax.swing.JSpinner" binding="incrementFrequency">
             <constraints>
               <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
