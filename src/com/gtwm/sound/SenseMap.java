@@ -134,6 +134,7 @@ class csvparser {
         parserSettings.getFormat().setLineSeparator("\n");
         parserSettings.setProcessor(rowProcessor);
         parserSettings.setHeaderExtractionEnabled(false);
+        parserSettings.getFormat().setComment('|');
 
         CsvParser parser = new CsvParser(parserSettings);
         parser.parse(getReader(filePath));
@@ -142,7 +143,7 @@ class csvparser {
         List<SenseMap.Mapping> beans = rowProcessor.getBeans();
 
         //for (SenseMap.Mapping bean : beans) {
-            //System.out.println(bean.getKey() + ", " + bean.getType() + ", " + bean.getValue());
+        //  System.out.println(bean.getKey() + ", " + bean.getType() + ", " + bean.getValue());
         //}
 
         return beans;
