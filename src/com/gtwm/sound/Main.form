@@ -218,7 +218,7 @@
               <text value="Scope:"/>
             </properties>
           </component>
-          <component id="6a46d" class="javax.swing.JCheckBox" binding="wordCheckBox" default-binding="true">
+          <component id="f368b" class="javax.swing.JRadioButton" binding="wordRadioButton" default-binding="true">
             <constraints>
               <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
@@ -227,7 +227,7 @@
               <text value="Word"/>
             </properties>
           </component>
-          <component id="9d2e1" class="javax.swing.JCheckBox" binding="characterCheckBox" default-binding="true">
+          <component id="6baf8" class="javax.swing.JRadioButton" binding="characterRadioButton" default-binding="true">
             <constraints>
               <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
             </constraints>
@@ -302,7 +302,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Start"/>
+              <text value="Convert"/>
             </properties>
           </component>
         </children>
@@ -356,9 +356,9 @@
             <properties>
               <model>
                 <item value=""/>
-                <item value="WORDTYPE"/>
-                <item value="WORDLENGTH"/>
-                <item value="LEXNAME"/>
+                <item value="WORD_TYPE"/>
+                <item value="WORD_LENGTH"/>
+                <item value="WORD_CATEGORY"/>
                 <item value="SYMBOLS"/>
                 <item value="CHARACTER"/>
               </model>
@@ -385,6 +385,10 @@
     <group name="setStreamMode">
       <member id="7522a"/>
       <member id="e4a6f"/>
+    </group>
+    <group name="setScope">
+      <member id="f368b"/>
+      <member id="6baf8"/>
     </group>
   </buttonGroups>
 </form>

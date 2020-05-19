@@ -35,6 +35,7 @@ public class InstructionFormCharacter extends JDialog {
     public InstructionFormCharacter() {
 
         // Set swing models for the input controls
+        setSoundModBy.setModel(InstructionFormModels.modelSetSoundBy);
         setTempo.setModel(InstructionFormModels.modelSetTempo);
         setOctave.setModel(InstructionFormModels.modelSetOctave);
         setDuration.setModel(InstructionFormModels.modelSetNoteDuration);
@@ -63,7 +64,7 @@ public class InstructionFormCharacter extends JDialog {
                         case TEMPO:
                             instruction.setSoundModValue(String.valueOf(setTempo.getSelectedItem()));
                             break;
-                        case NOTEDURATION:
+                        case NOTE_DURATION:
                             instruction.setSoundModValue(String.valueOf(setDuration.getSelectedItem()));
                             break;
                         case OCTAVE:
@@ -78,7 +79,7 @@ public class InstructionFormCharacter extends JDialog {
                         case PERCUSSION:
                             instruction.setSoundModValue(String.valueOf(setPercussion.getSelectedItem()));
                             break;
-                        case FREQUENCY:
+                        case MIDI_NOTE:
                             instruction.setSoundModValue(String.valueOf(setFrequency.getSelectedItem()));
                             break;
                     }
@@ -89,7 +90,7 @@ public class InstructionFormCharacter extends JDialog {
                         case TEMPO:
                             instruction.setSoundModValue(String.valueOf(incrementTempo.getValue()));
                             break;
-                        case NOTEDURATION:
+                        case NOTE_DURATION:
                             instruction.setSoundModValue(String.valueOf(incrementDuration.getValue()));
                             break;
                         case OCTAVE:
@@ -98,7 +99,7 @@ public class InstructionFormCharacter extends JDialog {
                         case VOLUME:
                             instruction.setSoundModValue(String.valueOf(incrementVolume.getValue()));
                             break;
-                        case FREQUENCY:
+                        case MIDI_NOTE:
                             instruction.setSoundModValue(String.valueOf(incrementFrequency.getValue()));
                             break;
                     }
@@ -162,7 +163,7 @@ public class InstructionFormCharacter extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
-                } else if (setSoundModTo.getSelectedItem() == "NOTEDURATION") {
+                } else if (setSoundModTo.getSelectedItem() == "NOTE_DURATION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(true);
                     setOctave.setVisible(false);
@@ -202,7 +203,7 @@ public class InstructionFormCharacter extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(true);
                     setFrequency.setVisible(false);
-                } else if (setSoundModTo.getSelectedItem() == "FREQUENCY") {
+                } else if (setSoundModTo.getSelectedItem() == "MIDI_NOTE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
@@ -224,7 +225,7 @@ public class InstructionFormCharacter extends JDialog {
                     incrementOctave.setVisible(false);
                     incrementVolume.setVisible(false);
                     incrementFrequency.setVisible(false);
-                } else if (setSoundModBy.getSelectedItem() == "NOTEDURATION") {
+                } else if (setSoundModBy.getSelectedItem() == "NOTE_DURATION") {
                     incrementTempo.setVisible(false);
                     incrementDuration.setVisible(true);
                     incrementOctave.setVisible(false);
@@ -242,7 +243,7 @@ public class InstructionFormCharacter extends JDialog {
                     incrementOctave.setVisible(false);
                     incrementVolume.setVisible(true);
                     incrementFrequency.setVisible(false);
-                } else if (setSoundModBy.getSelectedItem() == "FREQUENCY") {
+                } else if (setSoundModBy.getSelectedItem() == "MIDI_NOTE") {
                     incrementTempo.setVisible(false);
                     incrementDuration.setVisible(false);
                     incrementOctave.setVisible(false);
@@ -323,11 +324,11 @@ public class InstructionFormCharacter extends JDialog {
         setSoundModTo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel3 = new DefaultComboBoxModel();
         defaultComboBoxModel3.addElement("TEMPO");
-        defaultComboBoxModel3.addElement("NOTEDURATION");
+        defaultComboBoxModel3.addElement("NOTE_DURATION");
         defaultComboBoxModel3.addElement("OCTAVE");
         defaultComboBoxModel3.addElement("INSTRUMENT");
         defaultComboBoxModel3.addElement("VOLUME");
-        defaultComboBoxModel3.addElement("FREQUENCY");
+        defaultComboBoxModel3.addElement("MIDI_NOTE");
         setSoundModTo.setModel(defaultComboBoxModel3);
         panel1.add(setSoundModTo, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setSoundModBy = new JComboBox();
@@ -336,7 +337,6 @@ public class InstructionFormCharacter extends JDialog {
         defaultComboBoxModel4.addElement("NOTEDURATION");
         defaultComboBoxModel4.addElement("OCTAVE");
         defaultComboBoxModel4.addElement("VOLUME");
-        defaultComboBoxModel4.addElement("FREQUENCY");
         setSoundModBy.setModel(defaultComboBoxModel4);
         setSoundModBy.setVisible(false);
         panel1.add(setSoundModBy, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

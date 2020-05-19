@@ -220,7 +220,7 @@ public class TextSound {
 		// Decreasing frequency of use in English
 		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
 
-		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
+		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input + " ");
 		System.out.println(ss);
 		Player player = new Player();
 		File file = new File(output);
@@ -262,7 +262,7 @@ public class TextSound {
 				//}
 
 				if (perWord) {
-					processWord(items, lastWord, soundString, true);
+					sonifyWord(items, lastWord, soundString, true);
 				}
 
   				lastWordLength = lastWord.length();
@@ -366,7 +366,7 @@ public class TextSound {
 
 				// Character
 				if (perChar) {
-					processChar(lastWord, soundString, charNum, ch);
+					sonifyCharacter(lastWord, soundString, charNum, ch);
 				}
 
 			}
@@ -376,7 +376,7 @@ public class TextSound {
 		return soundString.toString();
 	}
 
-	public static void streamText(StringBuilder lastWord) {
+	public static void streamText(StringBuilder lastWord, String scope, char ch, int charNum) {
 		StreamingPlayer streamingPlayer = new StreamingPlayer();
 		StringBuilder soundString = new StringBuilder();
 
@@ -384,7 +384,11 @@ public class TextSound {
 
 		soundString.append( (int) tempo + " I[" + instrument + "] " );
 
-		processWord(items, lastWord, soundString, false);
+		if (scope == "word") {
+			sonifyWord(items, lastWord, soundString, false);
+		} else if (scope == "character"); {
+			sonifyCharacter(lastWord, soundString, charNum, ch);
+		}
 
 		//soundString.append("R/" + String.format("%f", theRestLength) + " ");
 		System.out.println(soundString);
@@ -404,7 +408,7 @@ public class TextSound {
 		}
 	}*/
 
-	public static void processWord(List<SenseMap.Mapping> items, StringBuilder lastWord, StringBuilder soundString, boolean doNoteGap) {
+	public static void sonifyWord(List<SenseMap.Mapping> items, StringBuilder lastWord, StringBuilder soundString, boolean doNoteGap) {
 		// Lookup database
 		for (SenseMap.Mapping item : items) {
 
@@ -554,7 +558,7 @@ public class TextSound {
 		}
 	}
 
-	public static void processChar(StringBuilder lastWord, StringBuilder soundString, double charNum, char ch) {
+	public static void sonifyCharacter(StringBuilder lastWord, StringBuilder soundString, double charNum, char ch) {
 		double targetOctave = Math.ceil((charNum / 26d) * octaves); //26
 		frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
@@ -663,7 +667,7 @@ public class TextSound {
 				}
 				break;
 
-			case NOTEDURATION:
+			case NOTE_DURATION:
 				Setting settingNoteDuration = Setting.NOTE_LENGTH;
 				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
 					noteLength = settingNoteDuration.keepInRange(noteLength);
@@ -671,8 +675,8 @@ public class TextSound {
 				} else {
 					noteLength = settingNoteDuration.keepInRange(noteLength);
 					noteLength += Double.parseDouble(i.soundModValue);
-					baseNoteLength = noteLength;
 				}
+				baseNoteLength = noteLength;
 				break;
 
 			case OCTAVE:
@@ -707,7 +711,7 @@ public class TextSound {
 				soundString.append("V9 [" + i.soundModValue + "]q V0 ");
 				break;
 
-			case FREQUENCY:
+			case MIDI_NOTE:
 				//if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
 				//	frequency = Double.parseDouble(i.soundModValue);
 				//} else {

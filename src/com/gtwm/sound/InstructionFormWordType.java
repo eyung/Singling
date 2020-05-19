@@ -35,6 +35,7 @@ public class InstructionFormWordType extends JDialog {
     public InstructionFormWordType() {
 
         // Set swing models for the input controls
+        setSoundModBy.setModel(InstructionFormModels.modelSetSoundBy);
         setTempo.setModel(InstructionFormModels.modelSetTempo);
         setOctave.setModel(InstructionFormModels.modelSetOctave);
         setDuration.setModel(InstructionFormModels.modelSetNoteDuration);
@@ -63,7 +64,7 @@ public class InstructionFormWordType extends JDialog {
                         case TEMPO:
                             instruction.setSoundModValue(String.valueOf(setTempo.getSelectedItem()));
                             break;
-                        case NOTEDURATION:
+                        case NOTE_DURATION:
                             instruction.setSoundModValue(String.valueOf(setDuration.getSelectedItem()));
                             break;
                         case OCTAVE:
@@ -78,7 +79,7 @@ public class InstructionFormWordType extends JDialog {
                         case PERCUSSION:
                             instruction.setSoundModValue(String.valueOf(setPercussion.getSelectedItem()));
                             break;
-                        case FREQUENCY:
+                        case MIDI_NOTE:
                             instruction.setSoundModValue(String.valueOf(setFrequency.getSelectedItem()));
                             break;
                     }
@@ -89,7 +90,7 @@ public class InstructionFormWordType extends JDialog {
                         case TEMPO:
                             instruction.setSoundModValue(String.valueOf(incrementTempo.getValue()));
                             break;
-                        case NOTEDURATION:
+                        case NOTE_DURATION:
                             instruction.setSoundModValue(String.valueOf(incrementDuration.getValue()));
                             break;
                         case OCTAVE:
@@ -98,7 +99,7 @@ public class InstructionFormWordType extends JDialog {
                         case VOLUME:
                             instruction.setSoundModValue(String.valueOf(incrementVolume.getValue()));
                             break;
-                        case FREQUENCY:
+                        case MIDI_NOTE:
                             instruction.setSoundModValue(String.valueOf(incrementFrequency.getValue()));
                             break;
                     }
@@ -160,7 +161,7 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
-                } else if (setSoundModTo.getSelectedItem() == "NOTEDURATION") {
+                } else if (setSoundModTo.getSelectedItem() == "NOTE_DURATION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(true);
                     setOctave.setVisible(false);
@@ -200,7 +201,7 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(true);
                     setFrequency.setVisible(false);
-                } else if (setSoundModTo.getSelectedItem() == "FREQUENCY") {
+                } else if (setSoundModTo.getSelectedItem() == "MIDI_NOTE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
@@ -222,7 +223,7 @@ public class InstructionFormWordType extends JDialog {
                     incrementOctave.setVisible(false);
                     incrementVolume.setVisible(false);
                     incrementFrequency.setVisible(false);
-                } else if (setSoundModBy.getSelectedItem() == "NOTEDURATION") {
+                } else if (setSoundModBy.getSelectedItem() == "NOTE_DURATION") {
                     incrementTempo.setVisible(false);
                     incrementDuration.setVisible(true);
                     incrementOctave.setVisible(false);
@@ -240,7 +241,7 @@ public class InstructionFormWordType extends JDialog {
                     incrementOctave.setVisible(false);
                     incrementVolume.setVisible(true);
                     incrementFrequency.setVisible(false);
-                } else if (setSoundModBy.getSelectedItem() == "FREQUENCY") {
+                } else if (setSoundModBy.getSelectedItem() == "MIDI_NOTE") {
                     incrementTempo.setVisible(false);
                     incrementDuration.setVisible(false);
                     incrementOctave.setVisible(false);
@@ -408,11 +409,11 @@ public class InstructionFormWordType extends JDialog {
         setSoundModTo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel7 = new DefaultComboBoxModel();
         defaultComboBoxModel7.addElement("TEMPO");
-        defaultComboBoxModel7.addElement("NOTEDURATION");
+        defaultComboBoxModel7.addElement("NOTE_DURATION");
         defaultComboBoxModel7.addElement("OCTAVE");
         defaultComboBoxModel7.addElement("INSTRUMENT");
         defaultComboBoxModel7.addElement("VOLUME");
-        defaultComboBoxModel7.addElement("FREQUENCY");
+        defaultComboBoxModel7.addElement("MIDI_NOTE");
         setSoundModTo.setModel(defaultComboBoxModel7);
         contentPane.add(setSoundModTo, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setType = new JComboBox();
@@ -421,6 +422,8 @@ public class InstructionFormWordType extends JDialog {
         defaultComboBoxModel8.addElement("v");
         defaultComboBoxModel8.addElement("a");
         defaultComboBoxModel8.addElement("r");
+        defaultComboBoxModel8.addElement("m");
+        defaultComboBoxModel8.addElement("s");
         setType.setModel(defaultComboBoxModel8);
         contentPane.add(setType, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setChangeMode = new JComboBox();

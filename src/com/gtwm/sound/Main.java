@@ -33,8 +33,8 @@ public class Main extends JFrame {
     private JRadioButton lexnamesRadioButton;
     private JRadioButton staticRadioButton;
     private JRadioButton muteRadioButton;
-    private JCheckBox characterCheckBox;
-    private JCheckBox wordCheckBox;
+    private JRadioButton characterRadioButton;
+    private JRadioButton wordRadioButton;
     private JRadioButton onRadioButton;
     private JRadioButton offRadioButton;
 
@@ -147,11 +147,11 @@ public class Main extends JFrame {
             System.out.println(tempList.size() + " words were processed.");
 
             // Write final results in file for error logging
-            FileWriter writer = new FileWriter("resultlist.txt");
-            for (SenseMap.Mapping str : tempList) {
-                writer.write(str + System.lineSeparator());
-            }
-            writer.close();
+            //FileWriter writer = new FileWriter("resultlist.txt");
+            //for (SenseMap.Mapping str : tempList) {
+            //    writer.write(str + System.lineSeparator());
+            //}
+            //writer.close();
 
             TextSound.items = tempList;
 
@@ -216,23 +216,23 @@ public class Main extends JFrame {
                                                     ActionListener() {
                                                         @Override
                                                         public void actionPerformed(ActionEvent e) {
-                                                            if (btnAddInstruction.getSelectedItem() == "WORDTYPE") {
+                                                            if (btnAddInstruction.getSelectedItem() == "WORD_TYPE") {
                                                                 InstructionFormWordType dialog = new InstructionFormWordType();
                                                                 dialog.setTitle("Transformation: Word Type");
                                                                 dialog.pack();
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
-                                                            } else if (btnAddInstruction.getSelectedItem() == "WORDLENGTH") {
+                                                            } else if (btnAddInstruction.getSelectedItem() == "WORD_LENGTH") {
                                                                 InstructionFormWordLength dialog = new InstructionFormWordLength();
                                                                 dialog.setTitle("Transformation: Word Length");
                                                                 dialog.pack();
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
-                                                            } else if (btnAddInstruction.getSelectedItem() == "LEXNAME") {
+                                                            } else if (btnAddInstruction.getSelectedItem() == "WORD_CATEGORY") {
                                                                 InstructionFormWordValue dialog = new InstructionFormWordValue();
-                                                                dialog.setTitle("Transformation: Lexname");
+                                                                dialog.setTitle("Transformation: Word Category");
                                                                 dialog.pack();
                                                                 dialog.setLocationRelativeTo(panelInstructions);
                                                                 dialog.setVisible(true);
@@ -255,23 +255,23 @@ public class Main extends JFrame {
                                                         }
                                                     });
 
-        characterCheckBox.addActionListener(new
+        characterRadioButton.addActionListener(new
 
-                                                    ActionListener() {
-                                                        @Override
-                                                        public void actionPerformed(ActionEvent actionEvent) {
-                                                            TextSound.perChar = !TextSound.perChar;
-                                                        }
-                                                    });
+                                                       ActionListener() {
+                                                           @Override
+                                                           public void actionPerformed(ActionEvent actionEvent) {
+                                                               TextSound.perChar = !TextSound.perChar;
+                                                           }
+                                                       });
 
-        wordCheckBox.addActionListener(new
+        wordRadioButton.addActionListener(new
 
-                                               ActionListener() {
-                                                   @Override
-                                                   public void actionPerformed(ActionEvent actionEvent) {
-                                                       TextSound.perWord = !TextSound.perWord;
-                                                   }
-                                               });
+                                                  ActionListener() {
+                                                      @Override
+                                                      public void actionPerformed(ActionEvent actionEvent) {
+                                                          TextSound.perWord = !TextSound.perWord;
+                                                      }
+                                                  });
     }
 
     public static void listAddInstruction(DefaultListModel thisModel, Queue.Instruction thisInstruction) {
@@ -283,22 +283,22 @@ public class Main extends JFrame {
         int wordLen = 0;
         int lastWordLen;
         StringBuilder currentWord = new StringBuilder();
-        String lastWord;
+        //String lastWord;
+        String cursor;
 
         @Override
         public void insertUpdate(DocumentEvent e) {
             try {
-                String a = e.getDocument().getText(e.getOffset(), e.getLength());
-                if (!a.equals(" ") && !a.equals("\n")) {
-                    currentWord.append(a);
+                cursor = e.getDocument().getText(e.getOffset(), e.getLength());
+                if (!cursor.equals(" ") && !cursor.equals("\n")) {
+                    currentWord.append(cursor);
                     wordLen++;
+                }
+                if (onRadioButton.isSelected()) {
+                    streamIt(e);
                 }
             } catch (BadLocationException ex) {
                 ex.printStackTrace();
-            }
-            //System.out.println(wordLen);
-            if (onRadioButton.isSelected()) {
-                streamIt(e);
             }
         }
 
@@ -309,38 +309,53 @@ public class Main extends JFrame {
                 wordLen--;
             }
             //System.out.println(wordLen);
-            //printIt(e);
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
-            //printIt(e);
         }
 
         private void streamIt(DocumentEvent e) {
             DocumentEvent.EventType type = e.getType();
             try {
                 String a = e.getDocument().getText(e.getOffset(), e.getLength());
-                if (type == DocumentEvent.EventType.INSERT) {
-                    if (a.equals(" ") || a.equals("\n")) {
-                        //System.out.println(e.getDocument().getText(e.getOffset(), wordLen));
 
+                if (type == DocumentEvent.EventType.INSERT) {
+                    if (wordRadioButton.isSelected()) {
+                        if (a.equals(" ") || a.equals("\n")) {
+                            //System.out.println(e.getDocument().getText(e.getOffset(), wordLen));
+
+                            try {
+                                // Get initial settings from user inputs
+                                setBaseValues();
+                                // Process text
+                                TextSound.streamText(currentWord, "word", 'x', 0);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+
+                            //lastWord = currentWord.toString();
+                            currentWord.setLength(0);
+                            lastWordLen = wordLen;
+                            wordLen = 0;
+                            //System.out.println(lastWord);
+                        }
+                    } else if (characterRadioButton.isSelected()) {
                         try {
                             // Get initial settings from user inputs
                             setBaseValues();
-
-                            // Process text
-                            TextSound.streamText(currentWord);
+                            char ch = cursor.charAt(0);
+                            char upperCh = Character.toUpperCase(ch);
+                            int charNum = TextSound.orderings.get(TextSound.ordering).indexOf(upperCh) + 1;
+                            if (!Character.isWhitespace(ch)) {
+                                // Process text
+                                TextSound.streamText(currentWord, "character", ch, charNum);
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-
-                        lastWord = currentWord.toString();
-                        currentWord.setLength(0);
-                        lastWordLen = wordLen;
-                        wordLen = 0;
-                        //System.out.println(lastWord);
                     }
+
                 }
             } catch (BadLocationException ex) {
                 ex.printStackTrace();
@@ -394,8 +409,8 @@ public class Main extends JFrame {
         TextSound.baseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
         System.out.println("Frequency: " + TextSound.baseFrequency);
 
-        TextSound.perWord = wordCheckBox.isSelected();
-        TextSound.perChar = characterCheckBox.isSelected();
+        TextSound.perWord = wordRadioButton.isSelected();
+        TextSound.perChar = characterRadioButton.isSelected();
 
         if (lexnamesRadioButton.isSelected()) {
             TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;
@@ -404,6 +419,9 @@ public class Main extends JFrame {
         } else if (muteRadioButton.isSelected()) {
             TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
         }
+
+        TextSound.orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        TextSound.orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
     }
 
     private static void createAndShowGUI() {
@@ -700,13 +718,13 @@ public class Main extends JFrame {
         final JLabel label7 = new JLabel();
         label7.setText("Scope:");
         panel2.add(label7, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        wordCheckBox = new JCheckBox();
-        wordCheckBox.setSelected(true);
-        wordCheckBox.setText("Word");
-        panel2.add(wordCheckBox, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
-        characterCheckBox = new JCheckBox();
-        characterCheckBox.setText("Character");
-        panel2.add(characterCheckBox, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        wordRadioButton = new JRadioButton();
+        wordRadioButton.setSelected(true);
+        wordRadioButton.setText("Word");
+        panel2.add(wordRadioButton, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        characterRadioButton = new JRadioButton();
+        characterRadioButton.setText("Character");
+        panel2.add(characterRadioButton, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         onRadioButton = new JRadioButton();
         onRadioButton.setSelected(false);
         onRadioButton.setText("On");
@@ -732,7 +750,7 @@ public class Main extends JFrame {
         panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         btnProcess = new JButton();
-        btnProcess.setText("Start");
+        btnProcess.setText("Convert");
         panel4.add(btnProcess, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label9 = new JLabel();
         label9.setText("Base Settings");
@@ -752,9 +770,9 @@ public class Main extends JFrame {
         btnAddInstruction = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
         defaultComboBoxModel5.addElement("");
-        defaultComboBoxModel5.addElement("WORDTYPE");
-        defaultComboBoxModel5.addElement("WORDLENGTH");
-        defaultComboBoxModel5.addElement("LEXNAME");
+        defaultComboBoxModel5.addElement("WORD_TYPE");
+        defaultComboBoxModel5.addElement("WORD_LENGTH");
+        defaultComboBoxModel5.addElement("WORD_CATEGORY");
         defaultComboBoxModel5.addElement("SYMBOLS");
         defaultComboBoxModel5.addElement("CHARACTER");
         btnAddInstruction.setModel(defaultComboBoxModel5);
@@ -773,6 +791,9 @@ public class Main extends JFrame {
         buttonGroup = new ButtonGroup();
         buttonGroup.add(onRadioButton);
         buttonGroup.add(offRadioButton);
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(wordRadioButton);
+        buttonGroup.add(characterRadioButton);
     }
 
     /**

@@ -192,11 +192,11 @@
         <properties>
           <model>
             <item value="TEMPO"/>
-            <item value="NOTEDURATION"/>
+            <item value="NOTE_DURATION"/>
             <item value="OCTAVE"/>
             <item value="INSTRUMENT"/>
             <item value="VOLUME"/>
-            <item value="FREQUENCY"/>
+            <item value="MIDI_NOTE"/>
           </model>
         </properties>
       </component>
@@ -210,6 +210,8 @@
             <item value="v"/>
             <item value="a"/>
             <item value="r"/>
+            <item value="m"/>
+            <item value="s"/>
           </model>
         </properties>
       </component>
