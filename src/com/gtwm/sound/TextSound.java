@@ -220,7 +220,7 @@ public class TextSound {
 		// Decreasing frequency of use in English
 		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
 
-		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input + " ");
+		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 		System.out.println(ss);
 		Player player = new Player();
 		File file = new File(output);
@@ -376,7 +376,7 @@ public class TextSound {
 		return soundString.toString();
 	}
 
-	public static void streamText(StringBuilder lastWord, String scope, char ch, int charNum) {
+	public static void streamText(StringBuilder lastWord, boolean isWord, char ch, int charNum) {
 		StreamingPlayer streamingPlayer = new StreamingPlayer();
 		StringBuilder soundString = new StringBuilder();
 
@@ -384,9 +384,9 @@ public class TextSound {
 
 		soundString.append( (int) tempo + " I[" + instrument + "] " );
 
-		if (scope == "word") {
+		if (isWord) {
 			sonifyWord(items, lastWord, soundString, false);
-		} else if (scope == "character"); {
+		} else {
 			sonifyCharacter(lastWord, soundString, charNum, ch);
 		}
 
@@ -417,6 +417,7 @@ public class TextSound {
 
 				double[] wordValues = convertToArr.toDoubleArr(item.getValue());
 
+				// Iterate through list of lexnames for each word
 				for (double thisValue : wordValues) {
 					//System.out.println(thisValue);
 
@@ -541,7 +542,7 @@ public class TextSound {
 						theNoteGap = theNoteGap * 0.5;
 					}
 
-					// Insert at end of note soundstring: Note + Resting gap
+					// Insert at end of musicstring: Note + Resting gap
 					soundString.append("R/" + String.format("%f", noteGap) + " ");
 
 					// Reset to base settings

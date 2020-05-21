@@ -81,6 +81,7 @@ public class Main extends JFrame {
         g.drawString("Starting up...", splashx, splashy);
         splash.update();
 
+        // Set model for instructions panel
         list1.setModel(model);
         textModel = this.textArea1;
 
@@ -147,11 +148,11 @@ public class Main extends JFrame {
             System.out.println(tempList.size() + " words were processed.");
 
             // Write final results in file for error logging
-            //FileWriter writer = new FileWriter("resultlist.txt");
-            //for (SenseMap.Mapping str : tempList) {
-            //    writer.write(str + System.lineSeparator());
-            //}
-            //writer.close();
+            FileWriter writer = new FileWriter("resultlist.txt");
+            for (SenseMap.Mapping str : tempList) {
+                writer.write(str + System.lineSeparator());
+            }
+            writer.close();
 
             TextSound.items = tempList;
 
@@ -329,7 +330,7 @@ public class Main extends JFrame {
                                 // Get initial settings from user inputs
                                 setBaseValues();
                                 // Process text
-                                TextSound.streamText(currentWord, "word", 'x', 0);
+                                TextSound.streamText(currentWord, true, 'x', 0);
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
@@ -349,7 +350,7 @@ public class Main extends JFrame {
                             int charNum = TextSound.orderings.get(TextSound.ordering).indexOf(upperCh) + 1;
                             if (!Character.isWhitespace(ch)) {
                                 // Process text
-                                TextSound.streamText(currentWord, "character", ch, charNum);
+                                TextSound.streamText(currentWord, false, ch, charNum);
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -659,48 +660,15 @@ public class Main extends JFrame {
         panel2.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label5 = new JLabel();
         label5.setText("Frequency:");
+        label5.setVisible(false);
         panel2.add(label5, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setFrequency = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel4 = new DefaultComboBoxModel();
-        defaultComboBoxModel4.addElement("110");
-        defaultComboBoxModel4.addElement("111");
-        defaultComboBoxModel4.addElement("112");
-        defaultComboBoxModel4.addElement("113");
-        defaultComboBoxModel4.addElement("114");
-        defaultComboBoxModel4.addElement("115");
-        defaultComboBoxModel4.addElement("116");
-        defaultComboBoxModel4.addElement("117");
-        defaultComboBoxModel4.addElement("118");
-        defaultComboBoxModel4.addElement("119");
-        defaultComboBoxModel4.addElement("120");
-        defaultComboBoxModel4.addElement("121");
-        defaultComboBoxModel4.addElement("122");
-        defaultComboBoxModel4.addElement("123");
-        defaultComboBoxModel4.addElement("124");
-        defaultComboBoxModel4.addElement("125");
-        defaultComboBoxModel4.addElement("126");
-        defaultComboBoxModel4.addElement("127");
+        defaultComboBoxModel4.addElement("13289.75");
         defaultComboBoxModel4.addElement("128");
-        defaultComboBoxModel4.addElement("129");
-        defaultComboBoxModel4.addElement("130");
-        defaultComboBoxModel4.addElement("131");
-        defaultComboBoxModel4.addElement("132");
-        defaultComboBoxModel4.addElement("133");
-        defaultComboBoxModel4.addElement("134");
-        defaultComboBoxModel4.addElement("135");
-        defaultComboBoxModel4.addElement("136");
-        defaultComboBoxModel4.addElement("137");
-        defaultComboBoxModel4.addElement("138");
-        defaultComboBoxModel4.addElement("139");
-        defaultComboBoxModel4.addElement("140");
-        defaultComboBoxModel4.addElement("141");
-        defaultComboBoxModel4.addElement("142");
-        defaultComboBoxModel4.addElement("143");
-        defaultComboBoxModel4.addElement("144");
-        defaultComboBoxModel4.addElement("145");
-        defaultComboBoxModel4.addElement("146");
         setFrequency.setModel(defaultComboBoxModel4);
-        setFrequency.setSelectedIndex(18);
+        setFrequency.setSelectedIndex(1);
+        setFrequency.setVisible(false);
         panel2.add(setFrequency, new GridConstraints(5, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         lexnamesRadioButton = new JRadioButton();
         lexnamesRadioButton.setSelected(true);
