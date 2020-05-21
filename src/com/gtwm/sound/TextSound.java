@@ -88,6 +88,14 @@ public class TextSound {
 	// Volume
 	static double volume;
 
+	// Attack
+	static int attack;
+	static int baseAttack = 64;
+
+	// Decay
+	static int decay;
+	static int baseDecay = 64;
+
 	// Default note operation
 	enum noteOperationType { LEXNAMEFREQ, STATICFREQ, MUTE }
 	static noteOperationType defaultNoteOperation = noteOperationType.LEXNAMEFREQ;
@@ -128,7 +136,7 @@ public class TextSound {
 
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
-				1.0, 10.0), TEMPO(40, 220), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383);
+				1.0, 10.0), TEMPO(40, 220), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383), ATTACK(0, 127);
 		Setting(double min, double max) {
 			if (min == 0) {
 				// Don't allow absolute zero as a min otherwise will never
@@ -518,16 +526,18 @@ public class TextSound {
 
 					// Combine notes together as a harmony if word has more than one category
 					if (wordValues.length > 1) {
-						// Convert freq to MIDI music string using reference note and frequency A4 440hz
 						double tempNote;
 						int musicNote;
+						// Convert freq to MIDI music string using reference note and frequency A4 440hz
 						tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
 						musicNote = (int) Math.rint(tempNote);
-						soundString.append("[" + musicNote + "]" + "/" + noteLength + "+");
+						// Note + Duration + Attack + Decay
+						soundString.append("[" + musicNote + "]" + "/" + noteLength + "a" + attack + "d" + decay + "+");
 						System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
 					} else {
 						// Convert freq to music string and append to sound string
-						soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength + "+"); // Note (and duration)
+						// Note + Duration + Attack + Decay
+						soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength + "a" + attack + "d" + decay + "+");
 						System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 					}
 
@@ -633,6 +643,10 @@ public class TextSound {
 		} else {
 			soundString.append("/" + String.format("%f", noteLength));
 		}
+
+		// Attack + Decay
+		soundString.append("a" + attack + "d" + decay);
+
 		double theNoteGap = noteGap;
 		if (theNoteGap > 0.2) {
 			theNoteGap = theNoteGap / lastWord.length();
@@ -733,6 +747,18 @@ public class TextSound {
 				}
 				//System.out.println("Change freq to: " + i.soundModValue);
 				break;
+
+			case ATTACK:
+				Setting settingsAttack = Setting.ATTACK;
+				attack = Integer.parseInt(i.soundModValue);
+				attack = (int) settingsAttack.keepInRange(attack);
+				break;
+
+			case DECAY:
+				Setting settingsDecay = Setting.ATTACK;
+				decay = Integer.parseInt(i.soundModValue);
+				decay = (int) settingsDecay.keepInRange(decay);
+				break;
 		}
 		return soundString;
 	}
@@ -743,6 +769,8 @@ public class TextSound {
 		instrument = baseInstrument;
 		octaves = baseOctaves;
 		tempo = baseTempo;
+		attack = baseAttack;
+		decay = baseDecay;
 	}
 }
 

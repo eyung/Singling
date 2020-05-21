@@ -29,7 +29,8 @@ public class InstructionFormWordType extends JDialog {
     private JComboBox setSoundModBy;
     private JComboBox setFrequency;
     private JSpinner incrementFrequency;
-    private JComboBox setAttack;
+    private JSlider setAttack;
+    private JSlider setDecay;
 
     boolean instructionCheck = true;
 
@@ -86,7 +87,10 @@ public class InstructionFormWordType extends JDialog {
                             instruction.setSoundModValue(String.valueOf(setFrequency.getSelectedItem()));
                             break;
                         case ATTACK:
-                            instruction.setSoundModValue(String.valueOf(setAttack.getSelectedItem()));
+                            instruction.setSoundModValue(String.valueOf(setAttack.getValue()));
+                            break;
+                        case DECAY:
+                            instruction.setSoundModValue(String.valueOf(setDecay.getValue()));
                             break;
                     }
                 } else if (instruction.changeMode == Queue.Instruction.ChangeModes.INCREMENT) {
@@ -111,7 +115,7 @@ public class InstructionFormWordType extends JDialog {
                     }
                 }
 
-                //TODO Check against duplicate instruction
+                // Check against duplicate instruction
                 for (Queue.Instruction i : TextSound.instructions) {
                     if (i.getModValue() == instruction.getModValue() && i.getSoundMod() == instruction.getSoundMod()) {
                         //System.out.println("already exist   ");
@@ -129,6 +133,9 @@ public class InstructionFormWordType extends JDialog {
                             "Duplicate instruction.",
                             JOptionPane.WARNING_MESSAGE);
                 }
+
+                // Reset to first selection
+                setSoundModTo.setSelectedIndex(0);
 
                 onOK();
             }
@@ -167,6 +174,8 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "NOTE_DURATION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(true);
@@ -175,6 +184,8 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "OCTAVE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -183,6 +194,8 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "INSTRUMENT") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -191,6 +204,8 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "VOLUME") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -199,6 +214,8 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(true);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PERCUSSION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -207,6 +224,8 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(true);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "MIDI_NOTE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -215,6 +234,28 @@ public class InstructionFormWordType extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(true);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
+                } else if (setSoundModTo.getSelectedItem() == "ATTACK") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(false);
+                    setOctave.setVisible(false);
+                    setInstrument.setVisible(false);
+                    setVolume.setVisible(false);
+                    setPercussion.setVisible(false);
+                    setFrequency.setVisible(false);
+                    setAttack.setVisible(true);
+                    setDecay.setVisible(false);
+                } else if (setSoundModTo.getSelectedItem() == "DECAY") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(false);
+                    setOctave.setVisible(false);
+                    setInstrument.setVisible(false);
+                    setVolume.setVisible(false);
+                    setPercussion.setVisible(false);
+                    setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(true);
                 }
                 InstructionFormWordType.super.pack();
             }
@@ -332,7 +373,7 @@ public class InstructionFormWordType extends JDialog {
         incrementFrequency.setVisible(false);
         incrementPanel.add(incrementFrequency, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setPanel = new JPanel();
-        setPanel.setLayout(new GridLayoutManager(8, 1, new Insets(0, 0, 0, 0), -1, -1));
+        setPanel.setLayout(new GridLayoutManager(9, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(setPanel, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         setTempo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
@@ -412,9 +453,12 @@ public class InstructionFormWordType extends JDialog {
         setFrequency.setModel(defaultComboBoxModel6);
         setFrequency.setVisible(false);
         setPanel.add(setFrequency, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        setAttack = new JComboBox();
+        setAttack = new JSlider();
         setAttack.setVisible(false);
         setPanel.add(setAttack, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setDecay = new JSlider();
+        setDecay.setVisible(false);
+        setPanel.add(setDecay, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setSoundModTo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel7 = new DefaultComboBoxModel();
         defaultComboBoxModel7.addElement("TEMPO");

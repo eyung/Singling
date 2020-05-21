@@ -30,6 +30,8 @@ public class InstructionFormWordLength extends JDialog {
     private JComboBox setSoundModBy;
     private JComboBox setFrequency;
     private JSpinner incrementFrequency;
+    private JSlider setAttack;
+    private JSlider setDecay;
 
     boolean instructionCheck = true;
 
@@ -85,6 +87,12 @@ public class InstructionFormWordLength extends JDialog {
                         case MIDI_NOTE:
                             instruction.setSoundModValue(String.valueOf(setFrequency.getSelectedItem()));
                             break;
+                        case ATTACK:
+                            instruction.setSoundModValue(String.valueOf(setAttack.getValue()));
+                            break;
+                        case DECAY:
+                            instruction.setSoundModValue(String.valueOf(setDecay.getValue()));
+                            break;
                     }
                 } else if (instruction.changeMode == Queue.Instruction.ChangeModes.INCREMENT) {
                     instruction.setSoundMod(Queue.Instruction.SoundMods.valueOf(String.valueOf(setSoundModBy.getSelectedItem())));
@@ -127,6 +135,9 @@ public class InstructionFormWordLength extends JDialog {
                             JOptionPane.WARNING_MESSAGE);
                 }
 
+                // Reset to first selection
+                setSoundModTo.setSelectedIndex(0);
+
                 onOK();
             }
         });
@@ -163,6 +174,8 @@ public class InstructionFormWordLength extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "NOTE_DURATION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(true);
@@ -171,6 +184,8 @@ public class InstructionFormWordLength extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "OCTAVE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -179,6 +194,8 @@ public class InstructionFormWordLength extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "INSTRUMENT") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -187,6 +204,8 @@ public class InstructionFormWordLength extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "VOLUME") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -195,6 +214,8 @@ public class InstructionFormWordLength extends JDialog {
                     setVolume.setVisible(true);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PERCUSSION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -203,6 +224,8 @@ public class InstructionFormWordLength extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(true);
                     setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "MIDI_NOTE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -211,6 +234,28 @@ public class InstructionFormWordLength extends JDialog {
                     setVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(true);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
+                } else if (setSoundModTo.getSelectedItem() == "ATTACK") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(false);
+                    setOctave.setVisible(false);
+                    setInstrument.setVisible(false);
+                    setVolume.setVisible(false);
+                    setPercussion.setVisible(false);
+                    setFrequency.setVisible(false);
+                    setAttack.setVisible(true);
+                    setDecay.setVisible(false);
+                } else if (setSoundModTo.getSelectedItem() == "DECAY") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(false);
+                    setOctave.setVisible(false);
+                    setInstrument.setVisible(false);
+                    setVolume.setVisible(false);
+                    setPercussion.setVisible(false);
+                    setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(true);
                 }
                 InstructionFormWordLength.super.pack();
             }
