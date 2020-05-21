@@ -35,6 +35,7 @@ public class InstructionFormCharacter extends JDialog {
     public InstructionFormCharacter() {
 
         // Set swing models for the input controls
+        setSoundModTo.setModel(InstructionFormModels.modelSetSoundTo);
         setSoundModBy.setModel(InstructionFormModels.modelSetSoundBy);
         setTempo.setModel(InstructionFormModels.modelSetTempo);
         setOctave.setModel(InstructionFormModels.modelSetOctave);

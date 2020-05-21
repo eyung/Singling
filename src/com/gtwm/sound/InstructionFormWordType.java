@@ -29,17 +29,20 @@ public class InstructionFormWordType extends JDialog {
     private JComboBox setSoundModBy;
     private JComboBox setFrequency;
     private JSpinner incrementFrequency;
+    private JComboBox setAttack;
 
     boolean instructionCheck = true;
 
     public InstructionFormWordType() {
 
         // Set swing models for the input controls
+        setSoundModTo.setModel(InstructionFormModels.modelSetSoundTo);
         setSoundModBy.setModel(InstructionFormModels.modelSetSoundBy);
         setTempo.setModel(InstructionFormModels.modelSetTempo);
         setOctave.setModel(InstructionFormModels.modelSetOctave);
         setDuration.setModel(InstructionFormModels.modelSetNoteDuration);
         setInstrument.setModel(InstructionFormModels.modelSetInstrument);
+        setAttack.setModel(InstructionFormModels.modelSetAttack);
         setFrequency.setModel(InstructionFormModels.modelSetFrequency);
         incrementTempo.setModel(InstructionFormModels.modelIncrementTempo);
         incrementOctave.setModel(InstructionFormModels.modelIncrementOctave);
@@ -81,6 +84,9 @@ public class InstructionFormWordType extends JDialog {
                             break;
                         case MIDI_NOTE:
                             instruction.setSoundModValue(String.valueOf(setFrequency.getSelectedItem()));
+                            break;
+                        case ATTACK:
+                            instruction.setSoundModValue(String.valueOf(setAttack.getSelectedItem()));
                             break;
                     }
                 } else if (instruction.changeMode == Queue.Instruction.ChangeModes.INCREMENT) {
@@ -326,7 +332,7 @@ public class InstructionFormWordType extends JDialog {
         incrementFrequency.setVisible(false);
         incrementPanel.add(incrementFrequency, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setPanel = new JPanel();
-        setPanel.setLayout(new GridLayoutManager(7, 1, new Insets(0, 0, 0, 0), -1, -1));
+        setPanel.setLayout(new GridLayoutManager(8, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(setPanel, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         setTempo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
@@ -405,7 +411,10 @@ public class InstructionFormWordType extends JDialog {
         defaultComboBoxModel6.addElement("256");
         setFrequency.setModel(defaultComboBoxModel6);
         setFrequency.setVisible(false);
-        setPanel.add(setFrequency, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setPanel.add(setFrequency, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setAttack = new JComboBox();
+        setAttack.setVisible(false);
+        setPanel.add(setAttack, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setSoundModTo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel7 = new DefaultComboBoxModel();
         defaultComboBoxModel7.addElement("TEMPO");
