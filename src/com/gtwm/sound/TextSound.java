@@ -234,22 +234,27 @@ public class TextSound {
 		// Decreasing frequency of use in English
 		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
 
-		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
-		Pattern pattern = new Pattern(ss);
-		System.out.println(ss);
-		Player player = new Player();
-		MidiFileManager midiFileManager = new MidiFileManager();
+		//String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
+
+		Pattern pattern = new Pattern();
+		pattern.setInstrument(instrument);
+		pattern.setTempo((int)tempo);
+		String ss = processString(input, pattern);
+		System.out.println("Pattern = " + ss);
+
 		File file = new File(output);
+		MidiFileManager midiFileManager = new MidiFileManager();
 		midiFileManager.savePatternToMidi(pattern, file);
-		//player.saveMidi(ss, file);
+
+		Player player = new Player();
 		player.play(ss);
-		//player.close();
+		player.getManagedPlayer().finish();
 	}
 
 	/**
 	 * Turn the input string into a sound string that can be played by jFugue
 	 */
-	private static String processString(String input) {
+	private static String processString(String input, Pattern pattern) {
 		StringBuilder soundString = new StringBuilder();
 		// For debugging / printout purposes
 		StringBuilder lastSentence = new StringBuilder();
@@ -396,12 +401,15 @@ public class TextSound {
 	public static void streamText(StringBuilder lastWord, boolean isWord, char ch, int charNum) {
 		//StreamingPlayer streamingPlayer = new StreamingPlayer();
 		try {
-			RealtimePlayer streamingPlayer = new RealtimePlayer();
+			RealtimePlayer realtimePlayer = new RealtimePlayer();
 			StringBuilder soundString = new StringBuilder();
 
 			resetSettings();
 
-			soundString.append( (int) tempo + " I[" + instrument + "] " );
+			//soundString.append( (int) tempo + " I[" + instrument + "] " );
+			Pattern pattern = new Pattern();
+			pattern.setTempo((int)tempo);
+			pattern.setInstrument(instrument);
 
 			if (isWord) {
 				sonifyWord(items, lastWord, soundString, false);
@@ -409,12 +417,16 @@ public class TextSound {
 				sonifyCharacter(lastWord, soundString, charNum, ch);
 			}
 
+			pattern = pattern.add(soundString.toString());
+
 			//soundString.append("R/" + String.format("%f", theRestLength) + " ");
-			System.out.println("Staccato: " + soundString);
-			//streamingPlayer.stream(soundString.toString());
-			streamingPlayer.play("T" + soundString);
-			streamingPlayer.close();
-		} catch (MidiUnavailableException e) {
+			System.out.println("Staccato: " + pattern);
+
+			//realtimePlayer.stream(soundString.toString());
+			//realtimePlayer.play("T" + soundString);
+			realtimePlayer.play(pattern);
+			realtimePlayer.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -636,28 +648,26 @@ public class TextSound {
 			frequency = frequency / 2;
 		}
 
-		//soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
-		//System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 		// Convert freq to MIDI music string using reference note and frequency A4 440hz
-		double tempNote;
-		int musicNote;
-		tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
-		musicNote = (int) Math.rint(tempNote);
-		soundString.append("m" + frequency + "/" + noteLength + " ");
-		System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
+		//double tempNote;
+		//int musicNote;
+		//tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
+		//musicNote = (int) Math.rint(tempNote);
+		soundString.append("m" + frequency + "/" + noteLength);
+		System.out.println("Convert frequency: " + frequency + ", note length: " + noteLength);
 
 		// Testing
 		System.out.println("Frequency for " + lastWord + "=" + charNum +
 				" normalized to octave "
 				+ octaves + ", top frequency " + topFrequency + ": " +
 				frequency);
-		if (Character.isUpperCase(ch)) {
+		//if (Character.isUpperCase(ch)) {
 			//System.out.println("notelength: " + noteLength);
-			soundString.append("/" + String.format("%f", noteLength * 4)); // If it's an uppercase letter increase note length
+			//soundString.append("/" + String.format("%f", noteLength * 4)); // If it's an uppercase letter increase note length
 			//System.out.println("soundString: " + soundString);
-		} else {
-			soundString.append("/" + String.format("%f", noteLength));
-		}
+		//} else {
+			//soundString.append("/" + String.format("%f", noteLength));
+		//}
 
 		// Attack + Decay
 		soundString.append("a" + attack + "d" + decay);
