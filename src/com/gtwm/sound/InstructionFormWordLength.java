@@ -352,7 +352,7 @@ public class InstructionFormWordLength extends JDialog {
         contentPane = new JPanel();
         contentPane.setLayout(new GridLayoutManager(2, 7, new Insets(10, 10, 10, 10), -1, -1));
         setPanel = new JPanel();
-        setPanel.setLayout(new GridLayoutManager(7, 2, new Insets(0, 0, 0, 0), -1, -1));
+        setPanel.setLayout(new GridLayoutManager(9, 2, new Insets(0, 0, 0, 0), -1, -1));
         setPanel.setVisible(true);
         contentPane.add(setPanel, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         setTempo = new JComboBox();
@@ -439,6 +439,12 @@ public class InstructionFormWordLength extends JDialog {
         setFrequency.setModel(defaultComboBoxModel6);
         setFrequency.setVisible(false);
         setPanel.add(setFrequency, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setAttack = new JSlider();
+        setAttack.setVisible(false);
+        setPanel.add(setAttack, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setDecay = new JSlider();
+        setDecay.setVisible(false);
+        setPanel.add(setDecay, new GridConstraints(8, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setOperator = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel7 = new DefaultComboBoxModel();
         defaultComboBoxModel7.addElement("EQUALTO");

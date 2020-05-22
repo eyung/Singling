@@ -17,14 +17,20 @@
 
 package com.gtwm.sound;
 
+import org.jfugue.midi.MidiFileManager;
+import org.jfugue.pattern.Pattern;
+import org.jfugue.player.Player;
+import org.jfugue.*;
+import org.jfugue.realtime.RealtimePlayer;
+
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Sequence;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.regex.Pattern;
-
-import org.jfugue.*;
+import java.util.regex.*;
 
 
 /**
@@ -229,12 +235,15 @@ public class TextSound {
 		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
 
 		String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
+		Pattern pattern = new Pattern(ss);
 		System.out.println(ss);
 		Player player = new Player();
+		MidiFileManager midiFileManager = new MidiFileManager();
 		File file = new File(output);
-		player.saveMidi(ss, file);
+		midiFileManager.savePatternToMidi(pattern, file);
+		//player.saveMidi(ss, file);
 		player.play(ss);
-		player.close();
+		//player.close();
 	}
 
 	/**
@@ -285,7 +294,7 @@ public class TextSound {
 				// Last character of word is a punctuation
 				//String lastCharString = String.valueOf(input.charAt((charIndex-1)));
 				//if (Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(input.charAt(charIndex-1)))) {
-				if (Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
+				if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
 				//	System.out.println("last char: " + lastCharString);
 				//	if (lastCharString.equals(".")) {
 				//		System.out.println("period");
@@ -385,23 +394,29 @@ public class TextSound {
 	}
 
 	public static void streamText(StringBuilder lastWord, boolean isWord, char ch, int charNum) {
-		StreamingPlayer streamingPlayer = new StreamingPlayer();
-		StringBuilder soundString = new StringBuilder();
+		//StreamingPlayer streamingPlayer = new StreamingPlayer();
+		try {
+			RealtimePlayer streamingPlayer = new RealtimePlayer();
+			StringBuilder soundString = new StringBuilder();
 
-		resetSettings();
+			resetSettings();
 
-		soundString.append( (int) tempo + " I[" + instrument + "] " );
+			soundString.append( (int) tempo + " I[" + instrument + "] " );
 
-		if (isWord) {
-			sonifyWord(items, lastWord, soundString, false);
-		} else {
-			sonifyCharacter(lastWord, soundString, charNum, ch);
+			if (isWord) {
+				sonifyWord(items, lastWord, soundString, false);
+			} else {
+				sonifyCharacter(lastWord, soundString, charNum, ch);
+			}
+
+			//soundString.append("R/" + String.format("%f", theRestLength) + " ");
+			System.out.println("Staccato: " + soundString);
+			//streamingPlayer.stream(soundString.toString());
+			streamingPlayer.play("T" + soundString);
+			streamingPlayer.close();
+		} catch (MidiUnavailableException e) {
+			e.printStackTrace();
 		}
-
-		//soundString.append("R/" + String.format("%f", theRestLength) + " ");
-		System.out.println(soundString);
-		streamingPlayer.stream(soundString.toString());
-		streamingPlayer.close();
 	}
 
 	/*private static void changeSetting() {
@@ -525,21 +540,21 @@ public class TextSound {
 					//}
 
 					// Combine notes together as a harmony if word has more than one category
-					if (wordValues.length > 1) {
+					//if (wordValues.length > 1) {
 						double tempNote;
 						int musicNote;
 						// Convert freq to MIDI music string using reference note and frequency A4 440hz
 						tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
 						musicNote = (int) Math.rint(tempNote);
 						// Note + Duration + Attack + Decay
-						soundString.append("[" + musicNote + "]" + "/" + noteLength + "a" + attack + "d" + decay + "+");
+						soundString.append("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "+");
 						System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
-					} else {
+					//} else {
 						// Convert freq to music string and append to sound string
 						// Note + Duration + Attack + Decay
-						soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength + "a" + attack + "d" + decay + "+");
-						System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
-					}
+					//	soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength + "a" + attack + "d" + decay + "+");
+					//	System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
+					//}
 
 					lexCount++;
 				}
@@ -621,15 +636,15 @@ public class TextSound {
 			frequency = frequency / 2;
 		}
 
-		soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
-		System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
+		//soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency));
+		//System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
 		// Convert freq to MIDI music string using reference note and frequency A4 440hz
-		//double tempNote;
-		//int musicNote;
-		//tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
-		//musicNote = (int) Math.rint(tempNote);
-		//soundString.append("[" + musicNote + "]" + "/" + noteLength + " ");
-		//System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
+		double tempNote;
+		int musicNote;
+		tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
+		musicNote = (int) Math.rint(tempNote);
+		soundString.append("m" + frequency + "/" + noteLength + " ");
+		System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
 
 		// Testing
 		System.out.println("Frequency for " + lastWord + "=" + charNum +
