@@ -356,6 +356,7 @@ public class InstructionFormWordValue extends JDialog {
         contentPane.add(setChangeMode, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setValue = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
+        defaultComboBoxModel2.addElement("0");
         defaultComboBoxModel2.addElement("1");
         defaultComboBoxModel2.addElement("2");
         defaultComboBoxModel2.addElement("3");
@@ -402,6 +403,10 @@ public class InstructionFormWordValue extends JDialog {
         defaultComboBoxModel2.addElement("44");
         defaultComboBoxModel2.addElement("45");
         defaultComboBoxModel2.addElement("46");
+        defaultComboBoxModel2.addElement("47");
+        defaultComboBoxModel2.addElement("48");
+        defaultComboBoxModel2.addElement("49");
+        defaultComboBoxModel2.addElement("50");
         setValue.setModel(defaultComboBoxModel2);
         contentPane.add(setValue, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();

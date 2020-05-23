@@ -25,6 +25,7 @@
         </constraints>
         <properties>
           <model>
+            <item value="0"/>
             <item value="1"/>
             <item value="2"/>
             <item value="3"/>
@@ -71,6 +72,10 @@
             <item value="44"/>
             <item value="45"/>
             <item value="46"/>
+            <item value="47"/>
+            <item value="48"/>
+            <item value="49"/>
+            <item value="50"/>
           </model>
         </properties>
       </component>

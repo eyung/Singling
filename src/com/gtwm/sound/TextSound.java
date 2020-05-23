@@ -20,17 +20,13 @@ package com.gtwm.sound;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
-import org.jfugue.*;
 import org.jfugue.realtime.RealtimePlayer;
 
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Sequence;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.regex.*;
 
 
 /**
@@ -53,8 +49,6 @@ public class TextSound {
 	//static String inputFile;
 	static String prefsFile = "usersettings";
 
-	static String instrument;
-
 	static List<String> orderings = new ArrayList<String>();
 
 	static List<SenseMap.Mapping> items;
@@ -62,7 +56,10 @@ public class TextSound {
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
 	// change throughout the generation
-	//
+
+	// Instrument
+	static String instrument;
+
 	// How long to hold each note for
 	static double noteLength; // /1 = whole note (semibreve). /0.25 = crotchet
 	static double baseNoteLength;
@@ -77,7 +74,6 @@ public class TextSound {
 
 	// Lowest note that can be played
 	static double baseFrequency; // 128 Hz = Octave below middle C
-	static double userBaseFrequency;
 	static double frequency;
 
 	// Octave range in which to place notes
@@ -112,6 +108,8 @@ public class TextSound {
 
 	// Which letter ordering (defined above) to use, zero indexed
 	static int ordering = 1;
+
+	static double patternCurrentTime = 0;
 
 	// Initial setting type
 	//static Setting setting = Setting.TEMPO;
@@ -237,25 +235,30 @@ public class TextSound {
 		//String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 
 		Pattern pattern = new Pattern();
+		pattern.setVoice(0);
 		pattern.setInstrument(instrument);
 		pattern.setTempo((int)tempo);
-		String ss = processString(input, pattern);
-		System.out.println("Pattern = " + ss);
+		patternCurrentTime = 0;
+
+		//String ss = processString(input, pattern);
+		//System.out.println("Pattern = " + ss);
+		pattern = processString(input, pattern);
 
 		File file = new File(output);
 		MidiFileManager midiFileManager = new MidiFileManager();
 		midiFileManager.savePatternToMidi(pattern, file);
 
 		Player player = new Player();
-		player.play(ss);
+		//player.play(ss);
+		player.play(pattern);
 		player.getManagedPlayer().finish();
 	}
 
 	/**
 	 * Turn the input string into a sound string that can be played by jFugue
 	 */
-	private static String processString(String input, Pattern pattern) {
-		StringBuilder soundString = new StringBuilder();
+	private static Pattern processString(String input, Pattern pattern) {
+		//StringBuilder soundString = new StringBuilder();
 		// For debugging / printout purposes
 		StringBuilder lastSentence = new StringBuilder();
 		// To allow word properties to influence sound
@@ -284,17 +287,24 @@ public class TextSound {
 				//}
 
 				if (perWord) {
-					sonifyWord(items, lastWord, soundString, true);
+					//sonifyWord(items, lastWord, soundString, true);
+					sonifyWord(items, lastWord, pattern, true);
 				}
 
   				lastWordLength = lastWord.length();
 				lastWord.setLength(0);
-				soundString.append("R/" + String.format("%f", theRestLength) + " ");
+				//soundString.append("R/" + String.format("%f", theRestLength) + " ");
+				pattern.add("R/" + String.format("%f", theRestLength) + " ");
+				patternCurrentTime += theRestLength;
 
 				if (charString.equals("\n")) {
 					// An extra rest on newlines
-					soundString.append("R/" + String.format("%f", restLength) + " ");
+					//soundString.append("R/" + String.format("%f", restLength) + " ");
+					pattern.add("R/" + String.format("%f", restLength) + " ");
+					patternCurrentTime += restLength;
 				}
+
+				patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
 
 				// Last character of word is a punctuation
 				//String lastCharString = String.valueOf(input.charAt((charIndex-1)));
@@ -307,102 +317,31 @@ public class TextSound {
 					lastSentence.setLength(0);
 				}
 
-				// Highlight text as it plays - possibly using JFugue's StreamingPlayer API
-				/*try {
-					Main.highlighter.removeAllHighlights();
-					Main.highlighter.addHighlight(charIndex-lastWordLength, charIndex, Main.painter);
-				} catch (BadLocationException e) {
-					e.printStackTrace();
-				}*/
-
-/*				if (settingChangers.contains(charString)) {
-					changeSetting();
-				} */
-
-				/*else if (!Character.isWhitespace(ch)) {
-					// punctuation
-					System.out.println("PUNCUTATION: " + ch); //testing
-					int ascii = (int) ch;
-					boolean increase = (ascii % 2 == 0);
-					// Stop things getting too slow - see switch statement below
-					if (!setting.getDirection()) {
-						increase = !increase;
-					}
-					lastSentence.setLength(0);
-					// Factor can be in the range 0.5..2: can half or double the
-					// existing value at the most
-					double factor = 1 + (ascii / 127d);
-					if (!increase) {
-						factor = 1 / factor;
-					}
-					switch (setting) {
-					case NOTE_LENGTH:
-						noteLength = setting.keepInRange(noteLength * factor);
-						break;
-					case ARPEGGIATE_GAP:
-						double oldNoteGap = noteGap;
-						noteGap = setting.keepInRange(noteGap * factor);
-						// Stop things getting too slow if we're staying on the
-						// slowest. Start to speed up again
-						//*
-						  if ((oldNoteGap == noteGap) && (noteGap ==
-						  setting.keepInRange(99999d))) { noteGap =
-						  setting.keepInRange(0d); System.out .println(
-						  "Reached largest note gap, reversing direction of travel. Gap = "
-						  + noteGap); //directionOfTravel = !directionOfTravel;
-
-						  }
-						  //*
-						break;
-					case REST_LENGTH:
-						restLength = setting.keepInRange(restLength * factor);
-						break;
-					case BASE_FREQUENCY:
-						baseFrequency = setting.keepInRange(baseFrequency * factor);
-						break;
-					case OCTAVES:
-						octaves = setting.keepInRange(octaves * factor);
-						break;
-					case TEMPO:
-						double oldTempo = tempo;
-						tempo = setting.keepInRange(tempo * factor);
-						soundString.append("T" + (int) tempo + " ");
-						break;
-					case LETTER_ORDERING:
-						ordering += 1;
-						if (ordering > (orderings.size() - 1)) {
-							ordering = 0;
-						}
-						System.out.println("Changing letter ordering to " + orderings.get(ordering));
-						// Only change letter ordering once, then move on to something else
-						changeSetting();
-						break;
-					default:
-						throw new IllegalStateException("Setting " + setting + " is not handled");
-					}
-				}*/
-
 			} else {
 
 				lastWord.append(upperCh);
 
 				// Character
 				if (perChar) {
-					sonifyCharacter(lastWord, soundString, charNum, ch);
+					//sonifyCharacter(lastWord, soundString, charNum, ch);
+					sonifyCharacter(lastWord, pattern, charNum, ch);
 				}
 
 			}
 		}
 
-		System.out.println(soundString.toString());
-		return soundString.toString();
+		//System.out.println(soundString.toString());
+		//return soundString.toString();
+		System.out.println(pattern.toString());
+		return pattern;
 	}
 
-	public static void streamText(StringBuilder lastWord, boolean isWord, char ch, int charNum) {
+	public static void streamText(RealtimePlayer realtimePlayer, StringBuilder lastWord, boolean isWord, char ch, int charNum) {
 		//StreamingPlayer streamingPlayer = new StreamingPlayer();
 		try {
-			RealtimePlayer realtimePlayer = new RealtimePlayer();
+			//RealtimePlayer realtimePlayer = new RealtimePlayer();
 			StringBuilder soundString = new StringBuilder();
+			//double patternTimeStamp = 0;
 
 			resetSettings();
 
@@ -410,11 +349,14 @@ public class TextSound {
 			Pattern pattern = new Pattern();
 			pattern.setTempo((int)tempo);
 			pattern.setInstrument(instrument);
+			patternCurrentTime = 0;
 
 			if (isWord) {
-				sonifyWord(items, lastWord, soundString, false);
+				//sonifyWord(items, lastWord, soundString, false);
+				sonifyWord(items, lastWord, pattern,false);
 			} else {
-				sonifyCharacter(lastWord, soundString, charNum, ch);
+				//sonifyCharacter(lastWord, soundString, charNum, ch);
+				sonifyCharacter(lastWord, pattern, charNum, ch);
 			}
 
 			pattern = pattern.add(soundString.toString());
@@ -425,25 +367,13 @@ public class TextSound {
 			//realtimePlayer.stream(soundString.toString());
 			//realtimePlayer.play("T" + soundString);
 			realtimePlayer.play(pattern);
-			realtimePlayer.close();
+			//realtimePlayer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/*private static void changeSetting() {
-		int newSettingNum = setting.ordinal() + 1;
-		if (newSettingNum >= allSettings.size()) {
-			newSettingNum = 0;
-		}
-		for (Setting testSetting : allSettings) {
-			if (testSetting.ordinal() == newSettingNum) {
-				setting = testSetting;
-			}
-		}
-	}*/
-
-	public static void sonifyWord(List<SenseMap.Mapping> items, StringBuilder lastWord, StringBuilder soundString, boolean doNoteGap) {
+	public static void sonifyWord(List<SenseMap.Mapping> items, StringBuilder lastWord, Pattern pattern, boolean doNoteGap) {
 		// Lookup database
 		for (SenseMap.Mapping item : items) {
 
@@ -456,14 +386,23 @@ public class TextSound {
 				for (double thisValue : wordValues) {
 					//System.out.println(thisValue);
 
+					// Set voice
+					if (wordValues.length > 1) {
+						// Skip Voice channel 9 as that is for percussion instruments
+						if (lexCount == 9) {
+							lexCount++;
+						}
+						pattern.add("V" + lexCount + " @" + patternCurrentTime);
+					}
+
 					// Word value + 1 because it starts at 0 in the database
-					double targetOctave = Math.ceil(((thisValue+1) / 45d) * octaves); //26
+					double targetOctave = Math.ceil(((thisValue + 1) / 45d) * octaves); //26
 					frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
 					switch (defaultNoteOperation) {
 						case LEXNAMEFREQ:
 							//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
-							frequency = (thisValue+1) * baseFrequency;
+							frequency = (thisValue + 1) * baseFrequency;
 							break;
 						case STATICFREQ:
 							// If we want a default tone, leave freq as static
@@ -483,7 +422,7 @@ public class TextSound {
 							SenseMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
 							for (SenseMap.Type m : wordtypes) {
 								if (m != null && m.toString().equals(i.modValue)) {
-									applyMod(i, soundString);
+									applyMod(i, pattern);
 								}
 							}
 
@@ -491,17 +430,17 @@ public class TextSound {
 							switch (i.getModOperator()) {
 								case EQUALTO:
 									if (Integer.parseInt(i.getModValue()) == lastWord.length()) {
-										applyMod(i, soundString);
+										applyMod(i, pattern);
 									}
 									break;
 								case LARGERTHAN:
 									if (Integer.parseInt(i.getModValue()) < lastWord.length()) {
-										applyMod(i, soundString);
+										applyMod(i, pattern);
 									}
 									break;
 								case LESSTHAN:
 									if (Integer.parseInt(i.getModValue()) > lastWord.length()) {
-										applyMod(i, soundString);
+										applyMod(i, pattern);
 									}
 									break;
 							}
@@ -510,13 +449,13 @@ public class TextSound {
 							//double[] lexnames = convertToArr.toDoubleArr(item.getValue() + 1);
 							//for (double n : lexnames) {
 							//	if (n == Double.parseDouble(i.modValue)) {
-									//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+							//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
 							//		applyMod(i, soundString);
 							//	}
 							//}
 							if (thisValue == Double.parseDouble(i.modValue)) {
-							//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-								applyMod(i, soundString);
+								//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+								applyMod(i, pattern);
 							}
 
 						} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
@@ -525,7 +464,7 @@ public class TextSound {
 							//for (String n : punctuations) {
 							if (item.getKey().equals(i.modValue)) {
 								//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-								applyMod(i, soundString);
+								applyMod(i, pattern);
 							}
 							//}
 						}
@@ -546,11 +485,6 @@ public class TextSound {
 							+ octaves + ", top frequency " + topFrequency + ": " +
 							frequency);
 
-					// If word is in multiple lexname categories then set duration to
-					//if (wordValues.length>1) {
-						//noteLength = 1/64f;
-					//}
-
 					// Combine notes together as a harmony if word has more than one category
 					//if (wordValues.length > 1) {
 						double tempNote;
@@ -559,7 +493,9 @@ public class TextSound {
 						tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
 						musicNote = (int) Math.rint(tempNote);
 						// Note + Duration + Attack + Decay
-						soundString.append("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "+");
+						//soundString.append("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "+");
+						frequency = Math.round(frequency * 100.0) / 100.0;
+						pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
 						System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
 					//} else {
 						// Convert freq to music string and append to sound string
@@ -580,23 +516,31 @@ public class TextSound {
 					}
 
 					// Insert at end of musicstring: Note + Resting gap
-					soundString.append("R/" + String.format("%f", noteGap) + " ");
+					//soundString.append("R/" + String.format("%f", noteGap) + " ");
+					pattern.add("R/" + String.format("%f", noteGap) + " ");
 
 					// Reset to base settings
 					resetSettings();
-					soundString.append("I[" + instrument + "] ");
+					pattern.add("I[" + instrument + "] ");
+					pattern.add("V0");
+					//pattern.setInstrument(instrument);
 				} else if (!doNoteGap) {
 					//
 					//soundString.append(" ");
-					soundString.deleteCharAt(soundString.length()-1);
+					//soundString.deleteCharAt(soundString.length()-1);
+					//pattern.
 				}
+
+				patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
+				patternCurrentTime += noteLength + noteGap;
+				//System.out.println("Current time in pattern: " + patternTimeStamp);
 
 				lexCount = 0;
 			}
 		}
 	}
 
-	public static void sonifyCharacter(StringBuilder lastWord, StringBuilder soundString, double charNum, char ch) {
+	public static void sonifyCharacter(StringBuilder lastWord, Pattern pattern, double charNum, char ch) {
 		double targetOctave = Math.ceil((charNum / 26d) * octaves); //26
 		frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
@@ -622,9 +566,9 @@ public class TextSound {
 			if (i.mod == Queue.Instruction.Mods.CHARACTER) {
 				//System.out.println("AEIOUaeiou".indexOf(ch));
 				if (i.modValue.equals("vowels") && "AEIOUaeiou".indexOf(ch) != -1) {
-					applyMod(i, soundString);
+					applyMod(i, pattern);
 				} else if (i.modValue.equals("consonants") && "AEIOUaeiou".indexOf(ch) < 0) {
-					applyMod(i, soundString);
+					applyMod(i, pattern);
 				}
 
 			} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
@@ -633,7 +577,7 @@ public class TextSound {
 				//for (String n : punctuations) {
 				if (ch == i.modValue.charAt(0)) {
 					//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-					applyMod(i, soundString);
+					applyMod(i, pattern);
 				}
 				//}
 			}
@@ -653,8 +597,9 @@ public class TextSound {
 		//int musicNote;
 		//tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
 		//musicNote = (int) Math.rint(tempNote);
-		soundString.append("m" + frequency + "/" + noteLength);
-		System.out.println("Convert frequency: " + frequency + ", note length: " + noteLength);
+		//soundString.append("m" + frequency + "/" + noteLength);
+		pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay);
+		//System.out.println("Convert frequency: " + frequency + ", note length: " + noteLength);
 
 		// Testing
 		System.out.println("Frequency for " + lastWord + "=" + charNum +
@@ -670,7 +615,8 @@ public class TextSound {
 		//}
 
 		// Attack + Decay
-		soundString.append("a" + attack + "d" + decay);
+		//soundString.append("a" + attack + "d" + decay);
+		//pattern.add("a" + attack + "d" + decay);
 
 		double theNoteGap = noteGap;
 		if (theNoteGap > 0.2) {
@@ -678,21 +624,23 @@ public class TextSound {
 		} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
 			theNoteGap = theNoteGap * 0.5;
 		}
-		soundString.append("+R/" + String.format("%f", noteGap) + " "); // Note + Resting gap
+		//soundString.append("+R/" + String.format("%f", noteGap) + " "); // Note + Resting gap
+		pattern.add("+R/" + String.format("%f", noteGap) + " "); // Note + Resting gap
 
 		// Reset to base settings
 		resetSettings();
-		soundString.append("I[" + instrument + "] ");
+		//soundString.append("I[" + instrument + "] ");
+		pattern.add("I[" + instrument + "] ");
 	}
 
-	private static StringBuilder applyMod(Queue.Instruction i, StringBuilder soundString) {
+	private static Pattern applyMod(Queue.Instruction i, Pattern pattern) {
 		// Allow sound instructions to be played, if notes are set to mute in default settings
 		if (defaultNoteOperation == noteOperationType.MUTE) { noteLength = baseNoteLength; }
 
 		switch (i.soundMod) {
 			case TEMPO:
 				Setting settingTempo = Setting.TEMPO;
-				if (lexCount <= 0) {
+				//if (lexCount <= 0) {
 					if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
 						tempo = Double.parseDouble(i.soundModValue);
 						//soundString.append("T" + (int) tempo + " ");
@@ -703,8 +651,9 @@ public class TextSound {
 					}
 					tempo = settingTempo.keepInRange(tempo);
 					baseTempo = tempo;
-					soundString.append("T" + (int) tempo + " ");
-				}
+					//soundString.append("T" + (int) tempo + " ");
+					pattern.setTempo((int)tempo);
+				//}
 				break;
 
 			case NOTE_DURATION:
@@ -732,23 +681,26 @@ public class TextSound {
 				break;
 
 			case INSTRUMENT:
-				if (lexCount <= 0) {
-					instrument = i.soundModValue;
-					soundString.append("I[" + instrument + "] ");
-				}
+				//if (lexCount <= 0) {
+				//	instrument = i.soundModValue;
+				//	soundString.append("I[" + instrument + "] ");
+				//}
+				//pattern.setInstrument(i.soundModValue);
+				pattern.add("I[" + i.soundModValue + "] ");
 				break;
 
 			case VOLUME:
 				Setting settingVolume = Setting.VOLUME;
-				if (lexCount <= 0) {
+				//if (lexCount <= 0) {
 					volume = Double.parseDouble(i.soundModValue);
 					volume = settingVolume.keepInRange(volume);
-					soundString.append("X[Volume]=" + volume + " ");
-				}
+					//soundString.append("X[Volume]=" + volume + " ");
+					pattern.add("X[Volume]=" + volume + " ");
+				//}
 				break;
 
 			case PERCUSSION:
-				soundString.append("V9 [" + i.soundModValue + "]q V0 ");
+				//soundString.append("V9 [" + i.soundModValue + "]q V0 ");
 				break;
 
 			case MIDI_NOTE:
@@ -785,7 +737,7 @@ public class TextSound {
 				decay = (int) settingsDecay.keepInRange(decay);
 				break;
 		}
-		return soundString;
+		return pattern;
 	}
 
 	private static void resetSettings() {

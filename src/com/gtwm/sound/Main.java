@@ -2,7 +2,9 @@ package com.gtwm.sound;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import org.jfugue.realtime.RealtimePlayer;
 
+import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -64,6 +66,9 @@ public class Main extends JFrame {
     final int splashx = 100;
     final int splashy = 450;
 
+    // For streaming
+    static RealtimePlayer realtimePlayer;
+
     public Main() {
 
         // Load splash
@@ -85,14 +90,12 @@ public class Main extends JFrame {
         list1.setModel(model);
         textModel = this.textArea1;
 
+        // Add docomentListener to input text panel
         textArea1.getDocument().addDocumentListener(documentListener);
 
+        // Initializing things
         JFileChooser fc = new JFileChooser();
         csvparser myParser = new csvparser();
-
-        //highlighter = this.textArea1.getHighlighter();
-        //painter = new DefaultHighlighter.DefaultHighlightPainter(Color.pink);
-
         List<SenseMap.Mapping> tempList = new ArrayList<>();
 
         // Load database files
@@ -112,11 +115,10 @@ public class Main extends JFrame {
                         try {
                             if (allItems == null) {
                                 allItems = myParser.csvtoSenseMap(p.toString());
-                                System.out.println("Reading " + p.toString());
                             } else {
                                 allItems.addAll(myParser.csvtoSenseMap(p.toString()));
-                                System.out.println("Reading " + p.toString());
                             }
+                            System.out.println("Reading " + p.toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -273,6 +275,24 @@ public class Main extends JFrame {
                                                           TextSound.perWord = !TextSound.perWord;
                                                       }
                                                   });
+
+        onRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    realtimePlayer = new RealtimePlayer();
+                } catch (MidiUnavailableException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        offRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                realtimePlayer.close();
+            }
+        });
     }
 
     public static void listAddInstruction(DefaultListModel thisModel, Queue.Instruction thisInstruction) {
@@ -330,7 +350,7 @@ public class Main extends JFrame {
                                 // Get initial settings from user inputs
                                 setBaseValues();
                                 // Process text
-                                TextSound.streamText(currentWord, true, 'x', 0);
+                                TextSound.streamText(realtimePlayer, currentWord, true, 'x', 0);
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
@@ -350,7 +370,7 @@ public class Main extends JFrame {
                             int charNum = TextSound.orderings.get(TextSound.ordering).indexOf(upperCh) + 1;
                             if (!Character.isWhitespace(ch)) {
                                 // Process text
-                                TextSound.streamText(currentWord, false, ch, charNum);
+                                TextSound.streamText(realtimePlayer, currentWord, false, ch, charNum);
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -600,8 +620,132 @@ public class Main extends JFrame {
         setInstrument = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("PIANO");
+        defaultComboBoxModel1.addElement("BRIGHT_ACOUSTIC");
+        defaultComboBoxModel1.addElement("ELECTRIC_GRAND");
+        defaultComboBoxModel1.addElement("HONKEY_TONK");
+        defaultComboBoxModel1.addElement("ELECTRIC_PIANO");
+        defaultComboBoxModel1.addElement("ELECTRIC_PIANO2");
+        defaultComboBoxModel1.addElement("HARPISCHORD");
+        defaultComboBoxModel1.addElement("CLAVINET");
+        defaultComboBoxModel1.addElement("CELESTA");
+        defaultComboBoxModel1.addElement("GLOCKENSPIEL");
+        defaultComboBoxModel1.addElement("MUSIC_BOX");
+        defaultComboBoxModel1.addElement("VIBRAPHONE");
+        defaultComboBoxModel1.addElement("MARIMBA");
+        defaultComboBoxModel1.addElement("XYLOPHONE");
+        defaultComboBoxModel1.addElement("TUBULAR_BELLS");
+        defaultComboBoxModel1.addElement("DULCIMER");
+        defaultComboBoxModel1.addElement("DRAWBAR_ORGAN");
+        defaultComboBoxModel1.addElement("PERCUSSIVE_ORGAN");
+        defaultComboBoxModel1.addElement("ROCK_ORGAN");
+        defaultComboBoxModel1.addElement("CHURCH_ORGAN");
+        defaultComboBoxModel1.addElement("REED_ORGAN");
+        defaultComboBoxModel1.addElement("ACCORIDAN");
+        defaultComboBoxModel1.addElement("HARMONICA");
+        defaultComboBoxModel1.addElement("TANGO_ACCORDIAN");
         defaultComboBoxModel1.addElement("GUITAR");
+        defaultComboBoxModel1.addElement("STEEL_STRING_GUITAR");
+        defaultComboBoxModel1.addElement("ELECTRIC_JAZZ_GUITAR");
+        defaultComboBoxModel1.addElement("ELECTRIC_CLEAN_GUITAR");
+        defaultComboBoxModel1.addElement("ELECTRIC_MUTED_GUITAR");
+        defaultComboBoxModel1.addElement("OVERDRIVEN_GUITAR");
+        defaultComboBoxModel1.addElement("DISTORTION_GUITAR");
+        defaultComboBoxModel1.addElement("GUITAR_HARMONICS");
+        defaultComboBoxModel1.addElement("ACOUSTIC_BASS");
+        defaultComboBoxModel1.addElement("ELECTRIC_BASS_FINGER");
+        defaultComboBoxModel1.addElement("ELECTRIC_BASS_PICK");
+        defaultComboBoxModel1.addElement("FRETLESS_BASS");
+        defaultComboBoxModel1.addElement("SLAP_BASS_1");
+        defaultComboBoxModel1.addElement("SLAP_BASS_2");
+        defaultComboBoxModel1.addElement("SYNTH_BASS_1");
+        defaultComboBoxModel1.addElement("SYNTH_BASS_2");
+        defaultComboBoxModel1.addElement("VIOLIN");
+        defaultComboBoxModel1.addElement("VIOLA");
+        defaultComboBoxModel1.addElement("CELLO");
+        defaultComboBoxModel1.addElement("CONTRABASS");
+        defaultComboBoxModel1.addElement("TREMOLO_STRINGS");
+        defaultComboBoxModel1.addElement("PIZZICATO_STRINGS");
+        defaultComboBoxModel1.addElement("ORCHESTRAL_STRINGS");
+        defaultComboBoxModel1.addElement("TIMPANI");
+        defaultComboBoxModel1.addElement("STRING_ENSEMBLE_1");
+        defaultComboBoxModel1.addElement("STRING_ENSEMBLE_2");
+        defaultComboBoxModel1.addElement("SYNTH_STRINGS_1");
+        defaultComboBoxModel1.addElement("SYNTH_STRINGS_2");
+        defaultComboBoxModel1.addElement("CHOIR_AAHS");
+        defaultComboBoxModel1.addElement("VOICE_OOHS");
+        defaultComboBoxModel1.addElement("SYNTH_VOICE");
+        defaultComboBoxModel1.addElement("ORCHESTRA_HIT");
+        defaultComboBoxModel1.addElement("TRUMPET");
+        defaultComboBoxModel1.addElement("TROMBONE");
+        defaultComboBoxModel1.addElement("TUBA");
+        defaultComboBoxModel1.addElement("MUTED_TRUMPET");
+        defaultComboBoxModel1.addElement("FRENCH_HORN");
+        defaultComboBoxModel1.addElement("BRASS_SECTION");
+        defaultComboBoxModel1.addElement("SYNTHBRASS_1");
+        defaultComboBoxModel1.addElement("SOPRANO_SAX");
+        defaultComboBoxModel1.addElement("ALTO_SAX");
+        defaultComboBoxModel1.addElement("TENOR_SAX");
+        defaultComboBoxModel1.addElement("BARITONE_SAX");
+        defaultComboBoxModel1.addElement("OBOE");
+        defaultComboBoxModel1.addElement("ENGLISH_HORN");
+        defaultComboBoxModel1.addElement("BASSOON");
+        defaultComboBoxModel1.addElement("CLARINET");
+        defaultComboBoxModel1.addElement("PICCOLO");
+        defaultComboBoxModel1.addElement("FLUTE");
+        defaultComboBoxModel1.addElement("RECORDER");
+        defaultComboBoxModel1.addElement("PAN_FLUTE");
+        defaultComboBoxModel1.addElement("BLOWN_BOTTLE");
+        defaultComboBoxModel1.addElement("SKAKUHACHI");
+        defaultComboBoxModel1.addElement("WHISTLE");
+        defaultComboBoxModel1.addElement("OCARINA");
+        defaultComboBoxModel1.addElement("LEAD_SQUARE");
+        defaultComboBoxModel1.addElement("LEAD_SAWTOOTH");
+        defaultComboBoxModel1.addElement("LEAD_CALLIOPE");
+        defaultComboBoxModel1.addElement("LEAD_CHIFF");
+        defaultComboBoxModel1.addElement("LEAD_CHARANG");
+        defaultComboBoxModel1.addElement("LEAD_VOICE");
+        defaultComboBoxModel1.addElement("LEAD_FIFTHS");
+        defaultComboBoxModel1.addElement("LEAD_BASSLEAD");
+        defaultComboBoxModel1.addElement("PAD_NEW_AGE");
+        defaultComboBoxModel1.addElement("PAD_WARM");
+        defaultComboBoxModel1.addElement("PAD_POLYSYNTH");
+        defaultComboBoxModel1.addElement("PAD_CHOIR");
+        defaultComboBoxModel1.addElement("PAD_BOWED");
+        defaultComboBoxModel1.addElement("PAD_METALLIC");
+        defaultComboBoxModel1.addElement("PAD_HALO");
+        defaultComboBoxModel1.addElement("PAD_SWEEP");
+        defaultComboBoxModel1.addElement("FX_RAIN");
+        defaultComboBoxModel1.addElement("FX_SOUNDTRACK");
+        defaultComboBoxModel1.addElement("FX_CRYSTAL");
+        defaultComboBoxModel1.addElement("FX_ATMOSPHERE");
+        defaultComboBoxModel1.addElement("FX_BRIGHTNESS");
+        defaultComboBoxModel1.addElement("FX_GOBLINS");
+        defaultComboBoxModel1.addElement("FX_ECHOES");
+        defaultComboBoxModel1.addElement("FX_SCI-FI");
+        defaultComboBoxModel1.addElement("SITAR");
+        defaultComboBoxModel1.addElement("BANJO");
+        defaultComboBoxModel1.addElement("SHAMISEN");
+        defaultComboBoxModel1.addElement("KOTO");
+        defaultComboBoxModel1.addElement("KALIMBA");
+        defaultComboBoxModel1.addElement("BAGPIPE");
+        defaultComboBoxModel1.addElement("FIDDLE");
+        defaultComboBoxModel1.addElement("SHANAI");
         defaultComboBoxModel1.addElement("TINKLE_BELL");
+        defaultComboBoxModel1.addElement("AGOGO");
+        defaultComboBoxModel1.addElement("STEEL_DRUMS");
+        defaultComboBoxModel1.addElement("WOODBLOCK");
+        defaultComboBoxModel1.addElement("TAIKO_DRUM");
+        defaultComboBoxModel1.addElement("MELODIC_TOM");
+        defaultComboBoxModel1.addElement("SYNTH_DRUM");
+        defaultComboBoxModel1.addElement("REVERSE_CYMBAL");
+        defaultComboBoxModel1.addElement("GUITAR_FRET_NOISE");
+        defaultComboBoxModel1.addElement("BREATH_NOISE");
+        defaultComboBoxModel1.addElement("SEASHORE");
+        defaultComboBoxModel1.addElement("BIRD_TWEET");
+        defaultComboBoxModel1.addElement("TELEPHONE_RING");
+        defaultComboBoxModel1.addElement("HELICOPTER");
+        defaultComboBoxModel1.addElement("APPLAUSE");
+        defaultComboBoxModel1.addElement("GUNSHOT");
         setInstrument.setModel(defaultComboBoxModel1);
         panel2.add(setInstrument, new GridConstraints(0, 1, 2, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setDuration = new JComboBox();
@@ -613,6 +757,7 @@ public class Main extends JFrame {
         defaultComboBoxModel2.addElement("0.0625");
         defaultComboBoxModel2.addElement("0.03125");
         defaultComboBoxModel2.addElement("0.015625");
+        defaultComboBoxModel2.addElement("0.0078125");
         setDuration.setModel(defaultComboBoxModel2);
         setDuration.setSelectedIndex(0);
         panel2.add(setDuration, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
@@ -644,7 +789,7 @@ public class Main extends JFrame {
         defaultComboBoxModel3.addElement("220");
         setTempo.setModel(defaultComboBoxModel3);
         setTempo.setRequestFocusEnabled(false);
-        setTempo.setSelectedIndex(11);
+        setTempo.setSelectedIndex(0);
         panel2.add(setTempo, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label1 = new JLabel();
         label1.setText("Octave Range:");
