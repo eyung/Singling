@@ -183,7 +183,7 @@
               <paintTicks value="true"/>
               <paintTrack value="true"/>
               <snapToTicks value="false"/>
-              <value value="2"/>
+              <value value="10"/>
               <valueIsAdjusting value="true"/>
             </properties>
           </component>
@@ -478,6 +478,19 @@
             </constraints>
             <properties>
               <text value="Stream Mode:"/>
+            </properties>
+          </component>
+          <component id="4de54" class="javax.swing.JComboBox" binding="setOrdering">
+            <constraints>
+              <grid row="6" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="Mayzner"/>
+                <item value="Typesetters"/>
+                <item value="Oxford Dictionary"/>
+              </model>
+              <visible value="false"/>
             </properties>
           </component>
         </children>

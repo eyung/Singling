@@ -41,6 +41,7 @@ public class Main extends JFrame {
     private JRadioButton wordRadioButton;
     private JRadioButton onRadioButton;
     private JRadioButton offRadioButton;
+    private JComboBox setOrdering;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -275,6 +276,8 @@ public class Main extends JFrame {
                                                            @Override
                                                            public void actionPerformed(ActionEvent actionEvent) {
                                                                TextSound.perChar = !TextSound.perChar;
+
+                                                               setOrdering.setVisible(true);
                                                            }
                                                        });
 
@@ -284,6 +287,8 @@ public class Main extends JFrame {
                                                       @Override
                                                       public void actionPerformed(ActionEvent actionEvent) {
                                                           TextSound.perWord = !TextSound.perWord;
+
+                                                          setOrdering.setVisible(false);
                                                       }
                                                   });
 
@@ -452,8 +457,10 @@ public class Main extends JFrame {
             TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
         }
 
-        TextSound.orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        TextSound.orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
         TextSound.orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
+        TextSound.orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
+        TextSound.ordering = setOrdering.getSelectedIndex();
     }
 
     private static void createAndShowGUI() {
@@ -779,7 +786,7 @@ public class Main extends JFrame {
         setOctaves.setPaintTicks(true);
         setOctaves.setPaintTrack(true);
         setOctaves.setSnapToTicks(false);
-        setOctaves.setValue(2);
+        setOctaves.setValue(10);
         setOctaves.setValueIsAdjusting(true);
         panel2.add(setOctaves, new GridConstraints(3, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setTempo = new JComboBox();
@@ -987,6 +994,14 @@ public class Main extends JFrame {
         final JLabel label8 = new JLabel();
         label8.setText("Stream Mode:");
         panel2.add(label8, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        setOrdering = new JComboBox();
+        final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
+        defaultComboBoxModel5.addElement("Mayzner");
+        defaultComboBoxModel5.addElement("Typesetters");
+        defaultComboBoxModel5.addElement("Oxford Dictionary");
+        setOrdering.setModel(defaultComboBoxModel5);
+        setOrdering.setVisible(false);
+        panel2.add(setOrdering, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         textArea1 = new JTextArea();
@@ -1019,14 +1034,14 @@ public class Main extends JFrame {
         btnRemoveInstruction.setToolTipText("Alt+Del");
         panelInstructions.add(btnRemoveInstruction, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(2, 2), null, 0, false));
         btnAddInstruction = new JComboBox();
-        final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
-        defaultComboBoxModel5.addElement("");
-        defaultComboBoxModel5.addElement("WORD_TYPE");
-        defaultComboBoxModel5.addElement("WORD_LENGTH");
-        defaultComboBoxModel5.addElement("WORD_CATEGORY");
-        defaultComboBoxModel5.addElement("SYMBOLS");
-        defaultComboBoxModel5.addElement("CHARACTER");
-        btnAddInstruction.setModel(defaultComboBoxModel5);
+        final DefaultComboBoxModel defaultComboBoxModel6 = new DefaultComboBoxModel();
+        defaultComboBoxModel6.addElement("");
+        defaultComboBoxModel6.addElement("WORD_TYPE");
+        defaultComboBoxModel6.addElement("WORD_LENGTH");
+        defaultComboBoxModel6.addElement("WORD_CATEGORY");
+        defaultComboBoxModel6.addElement("SYMBOLS");
+        defaultComboBoxModel6.addElement("CHARACTER");
+        btnAddInstruction.setModel(defaultComboBoxModel6);
         panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label10 = new JLabel();
         label10.setText("Transformation");

@@ -106,7 +106,7 @@ public class TextSound {
 	static boolean perWord;
 
 	// Which letter ordering (defined above) to use, zero indexed
-	static int ordering = 1;
+	static int ordering;
 
 	static double patternCurrentTime = 0;
 
@@ -754,6 +754,7 @@ public class TextSound {
 		tempo = baseTempo;
 		attack = baseAttack;
 		decay = baseDecay;
+		//ordering =
 	}
 }
 
