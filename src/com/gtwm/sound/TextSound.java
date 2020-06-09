@@ -558,6 +558,11 @@ public class TextSound {
 				break;
 		}
 
+		// Set frequency of punctuations/symbols to user defined base frequency
+		if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
+			frequency = baseFrequency;
+		}
+
 		// Go through the instructions queue
 		for (Queue.Instruction i : instructions) {
 
