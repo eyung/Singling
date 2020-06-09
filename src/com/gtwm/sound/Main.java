@@ -12,11 +12,13 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
+import java.util.zip.ZipInputStream;
 
 public class Main extends JFrame {
     private JButton btnLoadText;
@@ -57,7 +59,7 @@ public class Main extends JFrame {
     static Preferences prefs = Preferences.userNodeForPackage(Main.class);
 
     // Storing database words and values to list item
-    List<SenseMap.Mapping> allItems;
+    List<WordMap.Mapping> allItems;
 
     //static Highlighter highlighter;
     //static HighlightPainter painter;
@@ -82,7 +84,7 @@ public class Main extends JFrame {
             System.out.println("g is null");
             return;
         }
-        g.drawString("DLC Singling ver 0.1", splashx, splashy - 20);
+        g.drawString("DLC Singling ver 0.2", splashx, splashy - 20);
         g.drawString("Starting up...", splashx, splashy);
         splash.update();
 
@@ -96,7 +98,7 @@ public class Main extends JFrame {
         // Initializing things
         JFileChooser fc = new JFileChooser();
         csvparser myParser = new csvparser();
-        List<SenseMap.Mapping> tempList = new ArrayList<>();
+        List<WordMap.Mapping> tempList = new ArrayList<>();
 
         // Load database files
         try {
@@ -106,6 +108,15 @@ public class Main extends JFrame {
 
             //Load test database
             //allItems = myParser.csvtoSenseMap(workingDirectory.toString() + "/db/test.csv");
+
+            //TODO Read all csv database files when compiled as .jar file
+
+            //ClassLoader classLoader = getClass().getClassLoader();
+            //File file = new File(classLoader.getResource("splash.gif").getFile());
+            //System.out.println("File found: " + file);
+
+            URL testurl = Main.class.getClassLoader().getResource("/db");
+            System.out.println("File found: " + testurl);
 
             // Load all database files in directory 'db'
             Files.walk(Paths.get(workingDirectory.toString() + "/db/"))
@@ -129,9 +140,9 @@ public class Main extends JFrame {
 
             // To find words that belong to multiple word categories
             // Loop through the database, add to word type and value if key is found
-            for (SenseMap.Mapping i : allItems) {
+            for (WordMap.Mapping i : allItems) {
                 dupeCheck = false;
-                for (SenseMap.Mapping j : tempList) {
+                for (WordMap.Mapping j : tempList) {
                     if (j.getKey().equalsIgnoreCase(i.getKey())) {
                         //if (j.toString().equalsIgnoreCase(i.toString())) {
                         //System.out.println("Exists already: " + j.getKey());
@@ -150,11 +161,11 @@ public class Main extends JFrame {
             System.out.println(tempList.size() + " words were processed.");
 
             // Write final results in file for error logging
-            FileWriter writer = new FileWriter("resultlist.txt");
-            for (SenseMap.Mapping str : tempList) {
-                writer.write(str + System.lineSeparator());
-            }
-            writer.close();
+            //FileWriter writer = new FileWriter("resultlist.txt");
+            //for (WordMap.Mapping str : tempList) {
+            //    writer.write(str + System.lineSeparator());
+            //}
+            //writer.close();
 
             TextSound.items = tempList;
 
@@ -575,7 +586,7 @@ public class Main extends JFrame {
         menuBar.add(fileMenu);
 
         // Frame
-        JFrame frame = new JFrame("TextSound");
+        JFrame frame = new JFrame("Singling v0.2");
         frame.setJMenuBar(menuBar);
         frame.setContentPane(new Main().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -759,7 +770,7 @@ public class Main extends JFrame {
         defaultComboBoxModel2.addElement("0.015625");
         defaultComboBoxModel2.addElement("0.0078125");
         setDuration.setModel(defaultComboBoxModel2);
-        setDuration.setSelectedIndex(0);
+        setDuration.setSelectedIndex(1);
         panel2.add(setDuration, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setOctaves = new JSlider();
         setOctaves.setMaximum(10);
@@ -789,7 +800,7 @@ public class Main extends JFrame {
         defaultComboBoxModel3.addElement("220");
         setTempo.setModel(defaultComboBoxModel3);
         setTempo.setRequestFocusEnabled(false);
-        setTempo.setSelectedIndex(0);
+        setTempo.setSelectedIndex(11);
         panel2.add(setTempo, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label1 = new JLabel();
         label1.setText("Octave Range:");

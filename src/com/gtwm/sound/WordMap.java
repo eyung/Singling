@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SenseMap {
+public class WordMap {
 
     enum Type { n, v, a, r, m, p, s }
 
@@ -125,10 +125,10 @@ public class SenseMap {
 
 class csvparser {
 
-    public List<SenseMap.Mapping> csvtoSenseMap(final String filePath) throws IOException {
+    public List<WordMap.Mapping> csvtoSenseMap(final String filePath) throws IOException {
 
         // BeanListProcessor converts each parsed row to an instance of a given class, then stores each instance into a list.
-        BeanListProcessor<SenseMap.Mapping> rowProcessor = new BeanListProcessor<SenseMap.Mapping>(SenseMap.Mapping.class);
+        BeanListProcessor<WordMap.Mapping> rowProcessor = new BeanListProcessor<WordMap.Mapping>(WordMap.Mapping.class);
 
         CsvParserSettings parserSettings = new CsvParserSettings();
         parserSettings.getFormat().setLineSeparator("\n");
@@ -140,7 +140,7 @@ class csvparser {
         parser.parse(getReader(filePath));
 
         // The BeanListProcessor provides a list of objects extracted from the input.
-        List<SenseMap.Mapping> beans = rowProcessor.getBeans();
+        List<WordMap.Mapping> beans = rowProcessor.getBeans();
 
         //for (SenseMap.Mapping bean : beans) {
         //  System.out.println(bean.getKey() + ", " + bean.getType() + ", " + bean.getValue());

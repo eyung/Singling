@@ -51,7 +51,7 @@ public class TextSound {
 
 	static List<String> orderings = new ArrayList<String>();
 
-	static List<SenseMap.Mapping> items;
+	static List<WordMap.Mapping> items;
 
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
@@ -68,9 +68,8 @@ public class TextSound {
 	//static double noteGap = 0.0001; // 1 / 32d; // 1/32 = good default, 0 = no
 	static double noteGap = 1/32d;
 
-	// gap (chords)
 	// How long to pause when a rest (space etc.) is encountered
-	static double restLength = 1 / 8d; // 1/8 = good default
+	static double restLength = 1 / 16d; // 1/8 = good default
 
 	// Lowest note that can be played
 	static double baseFrequency; // 128 Hz = Octave below middle C
@@ -225,12 +224,12 @@ public class TextSound {
 		//}
 
 		// Each ordering gives a different character
-		// Alphabetic
-		orderings.add("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		// Increasing order of scrabble scores
-		//orderings.add("AEILNORSTUDGBCMPFHVWYKJXQZ");
-		// Decreasing frequency of use in English
+		// Mayzner's
+		orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
+		// standard order frequency used by typesetters (https://en.wikipedia.org/wiki/Letter_frequency)
 		orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
+		// letter frequency based upon Oxford dictionary (https://languages.oup.com/)
+		orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
 
 		//String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 
@@ -373,9 +372,9 @@ public class TextSound {
 		}
 	}
 
-	public static void sonifyWord(List<SenseMap.Mapping> items, StringBuilder lastWord, Pattern pattern, boolean doNoteGap) {
+	public static void sonifyWord(List<WordMap.Mapping> items, StringBuilder lastWord, Pattern pattern, boolean doNoteGap) {
 		// Lookup database
-		for (SenseMap.Mapping item : items) {
+		for (WordMap.Mapping item : items) {
 
 			// Match
 			if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
@@ -408,8 +407,9 @@ public class TextSound {
 							// If we want a default tone, leave freq as static
 							break;
 						case MUTE:
-							// If we want a mute tone, set duration of each note to be 0
-							noteLength = 0;
+							// Mute tone
+							//noteLength = 0;
+							pattern.add(":CE(935,0)");
 							break;
 					}
 
@@ -419,8 +419,8 @@ public class TextSound {
 						// The main logic part of the program
 						// Make changes based on user instructions
 						if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
-							SenseMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
-							for (SenseMap.Type m : wordtypes) {
+							WordMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
+							for (WordMap.Type m : wordtypes) {
 								if (m != null && m.toString().equals(i.modValue)) {
 									applyMod(i, pattern);
 								}
@@ -553,8 +553,8 @@ public class TextSound {
 				// If we want a default tone, leave freq as static
 				break;
 			case MUTE:
-				// If we want a mute tone, set duration of each note to be 0
-				noteLength = 0;
+				// Mute tone
+				pattern.add(":CE(935,0)");
 				break;
 		}
 
@@ -618,12 +618,12 @@ public class TextSound {
 		//soundString.append("a" + attack + "d" + decay);
 		//pattern.add("a" + attack + "d" + decay);
 
-		double theNoteGap = noteGap;
-		if (theNoteGap > 0.2) {
-			theNoteGap = theNoteGap / lastWord.length();
-		} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
-			theNoteGap = theNoteGap * 0.5;
-		}
+		//double theNoteGap = noteGap;
+		//if (theNoteGap > 0.2) {
+		//	theNoteGap = theNoteGap / lastWord.length();
+		//} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
+		//	theNoteGap = theNoteGap * 0.5;
+		//}
 		//soundString.append("+R/" + String.format("%f", noteGap) + " "); // Note + Resting gap
 		pattern.add("+R/" + String.format("%f", noteGap) + " "); // Note + Resting gap
 
@@ -634,8 +634,8 @@ public class TextSound {
 	}
 
 	private static Pattern applyMod(Queue.Instruction i, Pattern pattern) {
-		// Allow sound instructions to be played, if notes are set to mute in default settings
-		if (defaultNoteOperation == noteOperationType.MUTE) { noteLength = baseNoteLength; }
+		// Allow sound instructions to be played if notes are set to mute in default settings
+		if (defaultNoteOperation == noteOperationType.MUTE) { pattern.add(":CE(935,10200)"); }
 
 		switch (i.soundMod) {
 			case TEMPO:
@@ -695,7 +695,8 @@ public class TextSound {
 					volume = Double.parseDouble(i.soundModValue);
 					volume = settingVolume.keepInRange(volume);
 					//soundString.append("X[Volume]=" + volume + " ");
-					pattern.add("X[Volume]=" + volume + " ");
+					//pattern.add("X[Volume]=" + volume + " ");
+					pattern.add(":CE(935," + volume + ")");
 				//}
 				break;
 
@@ -809,12 +810,12 @@ class convertToArr {
 		return arr;
 	}
 
-	static SenseMap.Type[] toTypeArr(String inString) {
+	static WordMap.Type[] toTypeArr(String inString) {
 		String[] tokens = inString.split(",");
-		SenseMap.Type[] arr = new SenseMap.Type[tokens.length];
+		WordMap.Type[] arr = new WordMap.Type[tokens.length];
 		int i=0;
 		for (String st : tokens) {
-			arr[i++] = SenseMap.Type.valueOf(st);
+			arr[i++] = WordMap.Type.valueOf(st);
 		}
 		return arr;
 	}
