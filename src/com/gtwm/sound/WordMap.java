@@ -25,14 +25,22 @@ public class WordMap {
         @Parsed(index = 2)
         String wordValue;
 
+        @Parsed(index = 3)
+        String wordSentimentPos;
+
+        @Parsed(index = 4)
+        String wordSentimentNeg;
+
         public Mapping() {
 
         }
 
-        public Mapping(String x, String y, String z) {
+        public Mapping(String x, String y, String z, String a, String b) {
             this.wordKey = x;
             this.wordType = y;
             this.wordValue = z;
+            this.wordSentimentPos = a;
+            this.wordSentimentNeg = b;
         }
 
         public void setKey(String thisKey) {
@@ -91,11 +99,25 @@ public class WordMap {
             wordValue = res.toString();
         }
 
+        public void setSentimentPos(String thisSentimentPos) {
+            wordSentimentPos = thisSentimentPos;
+        }
+
+        public String getSentimentPos() { return wordSentimentPos; }
+
+        public void setSentimentNeg(String thisSentimentNeg) {
+            wordSentimentNeg = thisSentimentNeg;
+        }
+
+        public String getSentimentNeg() { return wordSentimentNeg; }
+
         public String toString() {
             return "Word{" +
                     " key=" + wordKey +
                     " type=" + wordType +
                     " value=" + wordValue +
+                    " sentimentpos=" + wordSentimentPos +
+                    " sentimentneg=" + wordSentimentNeg +
                     '}'+"\n";
         }
 
@@ -135,6 +157,7 @@ class csvparser {
         parserSettings.setProcessor(rowProcessor);
         parserSettings.setHeaderExtractionEnabled(false);
         parserSettings.getFormat().setComment('|');
+        parserSettings.setNullValue("NULL");
 
         CsvParser parser = new CsvParser(parserSettings);
         parser.parse(getReader(filePath));
