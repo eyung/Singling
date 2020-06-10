@@ -558,9 +558,10 @@ public class TextSound {
 				break;
 		}
 
-		// Set frequency of punctuations/symbols to user defined base frequency
+		// Set frequency of punctuations/symbols to frequency of lexname = 46
 		if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
-			frequency = baseFrequency;
+			targetOctave = Math.ceil((46/45d) * octaves); //26
+			frequency = 46 * baseFrequency;
 		}
 
 		// Go through the instructions queue
