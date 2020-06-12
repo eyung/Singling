@@ -120,7 +120,7 @@ public class TextSound {
 
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
-				1.0, 10.0), TEMPO(40, 220), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383), ATTACK(0, 127);
+				1.0, 10.0), TEMPO(40, 400), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383), ATTACK(0, 127);
 		Setting(double min, double max) {
 			if (min == 0) {
 				// Don't allow absolute zero as a min otherwise will never
