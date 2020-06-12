@@ -49,10 +49,6 @@ public class TextSound {
 	//static String inputFile;
 	static String prefsFile = "usersettings";
 
-	static List<String> orderings = new ArrayList<String>();
-
-	static List<WordMap.Mapping> items;
-
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
 	// change throughout the generation
@@ -107,30 +103,15 @@ public class TextSound {
 
 	// Which letter ordering (defined above) to use, zero indexed
 	static int ordering;
+	static List<String> orderings = new ArrayList<String>();
+
+	static Pattern pattern;
 
 	static double patternCurrentTime = 0;
-
-	// Initial setting type
-	//static Setting setting = Setting.TEMPO;
-    //static Setting setting = Setting.NOTE_LENGTH;
-
-	//static EnumSet<Setting> allSettings = EnumSet.allOf(Setting.class);
-
-	// Characters which prompt a change of setting type
-	//static String settingChangers = ".";
-
-	// Even characters increase setting values, odd characters decrease.
-	// This swaps that behaviour
-	//static boolean tempoDirection = false;
-
-	// could use these to change and revert - opening bracket changes,
-	// closing changes the same setting in the opposite direction
-	//static String containers = "(){}[]<>\"\"";
-
-	// Print out each paragraph as we play (causes a pause each time)
-	//static boolean follow = false;
 	
 	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
+
+	static List<WordMap.Mapping> items;
 
 	static List<Queue.Instruction> instructions = new ArrayList<>();
 
@@ -213,7 +194,7 @@ public class TextSound {
 		return inBuilder.toString();
 	}
 
-	public static void runStuff(String input, String output) throws Exception{
+	public static void runStuff() throws Exception{
 
 		// Reset initial settings
 		resetSettings();
@@ -233,7 +214,7 @@ public class TextSound {
 
 		//String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
 
-		Pattern pattern = new Pattern();
+		pattern = new Pattern();
 		pattern.setVoice(0);
 		pattern.setInstrument(instrument);
 		pattern.setTempo((int)tempo);
@@ -241,16 +222,33 @@ public class TextSound {
 
 		//String ss = processString(input, pattern);
 		//System.out.println("Pattern = " + ss);
-		pattern = processString(input, pattern);
+		//pattern = processString(input, pattern);
 
-		File file = new File(output);
-		MidiFileManager midiFileManager = new MidiFileManager();
-		midiFileManager.savePatternToMidi(pattern, file);
+		//File file = new File(output);
+		//MidiFileManager midiFileManager = new MidiFileManager();
+		//midiFileManager.savePatternToMidi(pattern, file);
+
+		//Player player = new Player();
+		//player.play(ss);
+		//player.play(pattern);
+		//player.getManagedPlayer().finish();
+	}
+
+	public static void doPlay(String input) {
+		pattern = processString(input, pattern);
 
 		Player player = new Player();
 		//player.play(ss);
 		player.play(pattern);
 		player.getManagedPlayer().finish();
+	}
+
+	public static void doSaveAsMidi(String input, String output) throws Exception{
+		pattern = processString(input, pattern);
+
+		File file = new File(output);
+		MidiFileManager midiFileManager = new MidiFileManager();
+		midiFileManager.savePatternToMidi(pattern, file);
 	}
 
 	/**

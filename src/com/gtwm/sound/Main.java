@@ -2,6 +2,7 @@ package com.gtwm.sound;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
 
 import javax.sound.midi.MidiUnavailableException;
@@ -18,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
-import java.util.zip.ZipInputStream;
 
 public class Main extends JFrame {
     private JButton btnLoadText;
@@ -32,7 +32,7 @@ public class Main extends JFrame {
     private JList<Queue.Instruction> list1;
     private JButton btnRemoveInstruction;
     private JComboBox btnAddInstruction;
-    private JPanel panelInstructions;
+    private JPanel panelTransformationInputs;
     private JComboBox setFrequency;
     private JRadioButton lexnamesRadioButton;
     private JRadioButton staticRadioButton;
@@ -42,6 +42,11 @@ public class Main extends JFrame {
     private JRadioButton onRadioButton;
     private JRadioButton offRadioButton;
     private JComboBox setOrdering;
+    private JButton btnPlay;
+    private JPanel panelSettings;
+    private JPanel panelTextInput;
+    private JPanel panelTransformations;
+    private JPanel panelProcessBtns;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -116,8 +121,8 @@ public class Main extends JFrame {
             //File file = new File(classLoader.getResource("splash.gif").getFile());
             //System.out.println("File found: " + file);
 
-            URL testurl = Main.class.getClassLoader().getResource("/db");
-            System.out.println("File found: " + testurl);
+            //URL testurl = Main.class.getClassLoader().getResource("/db");
+            //System.out.println("File found: " + testurl);
 
             // Load all database files in directory 'db'
             Files.walk(Paths.get(workingDirectory.toString() + "/db/"))
@@ -202,7 +207,8 @@ public class Main extends JFrame {
                                                                      setBaseValues();
 
                                                                      // Process text
-                                                                     TextSound.runStuff(textArea1.getText(), outFilename);
+                                                                     TextSound.runStuff();
+                                                                     TextSound.doSaveAsMidi(textArea1.getText(), outFilename);
                                                                  } catch (Exception ex) {
                                                                      ex.printStackTrace();
                                                                  }
@@ -214,6 +220,27 @@ public class Main extends JFrame {
                                                  }
                                              });
 
+        btnPlay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle open button action
+                if (e.getSource() == btnPlay) {
+                    if (textArea1.getLineCount() > 0) {
+                        try {
+                            // Get initial settings from user inputs
+                            setBaseValues();
+
+                            // Process text
+                            TextSound.runStuff();
+                            TextSound.doPlay(textArea1.getText());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+
         btnRemoveInstruction.addActionListener(new
 
                                                        ActionListener() {
@@ -224,6 +251,7 @@ public class Main extends JFrame {
                                                                model.removeElement(selectedInstruction);
                                                            }
                                                        });
+
         btnRemoveInstruction.setMnemonic(KeyEvent.VK_DELETE);
 
         btnAddInstruction.addActionListener(new
@@ -235,35 +263,35 @@ public class Main extends JFrame {
                                                                 InstructionFormWordType dialog = new InstructionFormWordType();
                                                                 dialog.setTitle("Transformation: Word Type");
                                                                 dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             } else if (btnAddInstruction.getSelectedItem() == "WORD_LENGTH") {
                                                                 InstructionFormWordLength dialog = new InstructionFormWordLength();
                                                                 dialog.setTitle("Transformation: Word Length");
                                                                 dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             } else if (btnAddInstruction.getSelectedItem() == "WORD_CATEGORY") {
                                                                 InstructionFormWordValue dialog = new InstructionFormWordValue();
                                                                 dialog.setTitle("Transformation: Word Category");
                                                                 dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             } else if (btnAddInstruction.getSelectedItem() == "SYMBOLS") {
                                                                 InstructionFormSymbols dialog = new InstructionFormSymbols();
                                                                 dialog.setTitle("Transformation: Symbols");
                                                                 dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             } else if (btnAddInstruction.getSelectedItem() == "CHARACTER") {
                                                                 InstructionFormCharacter dialog = new InstructionFormCharacter();
                                                                 dialog.setTitle("Transformation: Character");
                                                                 dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelInstructions);
+                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             }
@@ -309,6 +337,7 @@ public class Main extends JFrame {
                 realtimePlayer.close();
             }
         });
+
     }
 
     public static void listAddInstruction(DefaultListModel thisModel, Queue.Instruction thisInstruction) {
@@ -621,10 +650,10 @@ public class Main extends JFrame {
      */
     private void $$$setupUI$$$() {
         panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(3, 3, new Insets(20, 20, 20, 20), -1, -1, true, false));
-        final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(9, 4, new Insets(0, 50, 0, 50), -1, -1));
-        panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(150, 500), null, 0, false));
+        panel1.setLayout(new GridLayoutManager(2, 3, new Insets(20, 20, 20, 20), -1, -1));
+        panelSettings = new JPanel();
+        panelSettings.setLayout(new GridLayoutManager(8, 4, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panelSettings, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(100, 500), null, 0, false));
         setInstrument = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("PIANO");
@@ -755,7 +784,7 @@ public class Main extends JFrame {
         defaultComboBoxModel1.addElement("APPLAUSE");
         defaultComboBoxModel1.addElement("GUNSHOT");
         setInstrument.setModel(defaultComboBoxModel1);
-        panel2.add(setInstrument, new GridConstraints(0, 1, 2, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(setInstrument, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setDuration = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
         defaultComboBoxModel2.addElement("1.00");
@@ -768,7 +797,7 @@ public class Main extends JFrame {
         defaultComboBoxModel2.addElement("0.0078125");
         setDuration.setModel(defaultComboBoxModel2);
         setDuration.setSelectedIndex(1);
-        panel2.add(setDuration, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(setDuration, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setOctaves = new JSlider();
         setOctaves.setMaximum(10);
         setOctaves.setOrientation(0);
@@ -778,7 +807,7 @@ public class Main extends JFrame {
         setOctaves.setSnapToTicks(false);
         setOctaves.setValue(10);
         setOctaves.setValueIsAdjusting(true);
-        panel2.add(setOctaves, new GridConstraints(3, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(setOctaves, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setTempo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel3 = new DefaultComboBoxModel();
         defaultComboBoxModel3.addElement("40");
@@ -798,23 +827,23 @@ public class Main extends JFrame {
         setTempo.setModel(defaultComboBoxModel3);
         setTempo.setRequestFocusEnabled(false);
         setTempo.setSelectedIndex(11);
-        panel2.add(setTempo, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(setTempo, new GridConstraints(3, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label1 = new JLabel();
         label1.setText("Octave Range:");
-        panel2.add(label1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label2 = new JLabel();
         label2.setText("Tempo (BPS):");
-        panel2.add(label2, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(label2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label3 = new JLabel();
         label3.setText("Note Duration:");
-        panel2.add(label3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(label3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label4 = new JLabel();
         label4.setText("Instrument:");
-        panel2.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label5 = new JLabel();
         label5.setText("Fundamental Frequency:");
         label5.setVisible(true);
-        panel2.add(label5, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(label5, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setFrequency = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel4 = new DefaultComboBoxModel();
         defaultComboBoxModel4.addElement("13289.75");
@@ -949,41 +978,41 @@ public class Main extends JFrame {
         setFrequency.setModel(defaultComboBoxModel4);
         setFrequency.setSelectedIndex(80);
         setFrequency.setVisible(true);
-        panel2.add(setFrequency, new GridConstraints(5, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(setFrequency, new GridConstraints(4, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         lexnamesRadioButton = new JRadioButton();
         lexnamesRadioButton.setSelected(true);
         lexnamesRadioButton.setText("Overtone");
-        panel2.add(lexnamesRadioButton, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(lexnamesRadioButton, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         staticRadioButton = new JRadioButton();
         staticRadioButton.setText("Static");
-        panel2.add(staticRadioButton, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(staticRadioButton, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         muteRadioButton = new JRadioButton();
         muteRadioButton.setText("Mute");
-        panel2.add(muteRadioButton, new GridConstraints(7, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(muteRadioButton, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label6 = new JLabel();
         label6.setText("Default Note Behaviour:");
-        panel2.add(label6, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(label6, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label7 = new JLabel();
         label7.setText("Scope:");
-        panel2.add(label7, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(label7, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         wordRadioButton = new JRadioButton();
         wordRadioButton.setSelected(true);
         wordRadioButton.setText("Word");
-        panel2.add(wordRadioButton, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(wordRadioButton, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         characterRadioButton = new JRadioButton();
         characterRadioButton.setText("Character");
-        panel2.add(characterRadioButton, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(characterRadioButton, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         onRadioButton = new JRadioButton();
         onRadioButton.setSelected(false);
         onRadioButton.setText("On");
-        panel2.add(onRadioButton, new GridConstraints(8, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(onRadioButton, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         offRadioButton = new JRadioButton();
         offRadioButton.setSelected(true);
         offRadioButton.setText("Off");
-        panel2.add(offRadioButton, new GridConstraints(8, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        panelSettings.add(offRadioButton, new GridConstraints(7, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         final JLabel label8 = new JLabel();
         label8.setText("Stream Mode:");
-        panel2.add(label8, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(label8, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         setOrdering = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel5 = new DefaultComboBoxModel();
         defaultComboBoxModel5.addElement("Mayzner");
@@ -991,51 +1020,57 @@ public class Main extends JFrame {
         defaultComboBoxModel5.addElement("Oxford Dictionary");
         setOrdering.setModel(defaultComboBoxModel5);
         setOrdering.setVisible(false);
-        panel2.add(setOrdering, new GridConstraints(6, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelSettings.add(setOrdering, new GridConstraints(5, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label9 = new JLabel();
+        label9.setText("Base Settings");
+        panel1.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelTextInput = new JPanel();
+        panelTextInput.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panelTextInput, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(300, -1), new Dimension(300, 500), null, 0, false));
+        panelProcessBtns = new JPanel();
+        panelProcessBtns.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panelTextInput.add(panelProcessBtns, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        btnPlay = new JButton();
+        btnPlay.setText("Play");
+        panelProcessBtns.add(btnPlay, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btnProcess = new JButton();
+        btnProcess.setText("Convert to MIDI");
+        panelProcessBtns.add(btnProcess, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        panelProcessBtns.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
-        panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panelTextInput.add(scrollPane1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         textArea1 = new JTextArea();
         textArea1.setEditable(true);
         textArea1.setLineWrap(true);
         textArea1.setWrapStyleWord(true);
         scrollPane1.setViewportView(textArea1);
-        final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel1.add(panel3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JPanel panel4 = new JPanel();
-        panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel1.add(panel4, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        btnProcess = new JButton();
-        btnProcess.setText("Convert");
-        panel4.add(btnProcess, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label9 = new JLabel();
-        label9.setText("Base Settings");
-        panel1.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelTransformations = new JPanel();
+        panelTransformations.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panelTransformations, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(150, -1), new Dimension(200, 500), null, 0, false));
         final JScrollPane scrollPane2 = new JScrollPane();
-        panel1.add(scrollPane2, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panelTransformations.add(scrollPane2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         list1 = new JList();
         list1.setBackground(new Color(-1));
         scrollPane2.setViewportView(list1);
-        panelInstructions = new JPanel();
-        panelInstructions.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
-        panel1.add(panelInstructions, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panelTransformationInputs = new JPanel();
+        panelTransformationInputs.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panelTransformations.add(panelTransformationInputs, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         btnRemoveInstruction = new JButton();
         btnRemoveInstruction.setText("-");
         btnRemoveInstruction.setToolTipText("Alt+Del");
-        panelInstructions.add(btnRemoveInstruction, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(2, 2), null, 0, false));
+        panelTransformationInputs.add(btnRemoveInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(2, 2), null, 0, false));
         btnAddInstruction = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel6 = new DefaultComboBoxModel();
-        defaultComboBoxModel6.addElement("");
+        defaultComboBoxModel6.addElement("Transformation:");
         defaultComboBoxModel6.addElement("WORD_TYPE");
         defaultComboBoxModel6.addElement("WORD_LENGTH");
         defaultComboBoxModel6.addElement("WORD_CATEGORY");
         defaultComboBoxModel6.addElement("SYMBOLS");
         defaultComboBoxModel6.addElement("CHARACTER");
         btnAddInstruction.setModel(defaultComboBoxModel6);
-        panelInstructions.add(btnAddInstruction, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label10 = new JLabel();
-        label10.setText("Transformation");
-        panelInstructions.add(label10, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btnAddInstruction.setToolTipText("Transformation");
+        panelTransformationInputs.add(btnAddInstruction, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label2.setLabelFor(setTempo);
         label3.setLabelFor(setDuration);
         label4.setLabelFor(setInstrument);
