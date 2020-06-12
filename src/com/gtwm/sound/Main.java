@@ -432,20 +432,10 @@ public class Main extends JFrame {
 
     private void setBaseValues() {
         TextSound.baseInstrument = String.valueOf(setInstrument.getSelectedItem());
-        System.out.println("Instrument: " + TextSound.baseInstrument);
-
         TextSound.baseNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
-        System.out.println("Note Length: " + TextSound.baseNoteLength);
-
         TextSound.baseOctaves = Double.valueOf(setOctaves.getValue());
-        System.out.println("Octaves: " + TextSound.baseOctaves);
-
         TextSound.baseTempo = Double.parseDouble(String.valueOf(setTempo.getSelectedItem()));
-        System.out.println("Tempo: " + TextSound.baseTempo);
-
         TextSound.baseFrequency = Double.parseDouble(String.valueOf(setFrequency.getSelectedItem()));
-        System.out.println("Frequency: " + TextSound.baseFrequency);
-
         TextSound.perWord = wordRadioButton.isSelected();
         TextSound.perChar = characterRadioButton.isSelected();
 

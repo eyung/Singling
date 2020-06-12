@@ -343,6 +343,7 @@ public class TextSound {
 			//double patternTimeStamp = 0;
 
 			resetSettings();
+			System.out.println(ordering);
 
 			//soundString.append( (int) tempo + " I[" + instrument + "] " );
 			Pattern pattern = new Pattern();
