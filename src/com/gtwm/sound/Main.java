@@ -4,6 +4,14 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
+import simplenlg.features.Feature;
+import simplenlg.features.Tense;
+import simplenlg.framework.InflectedWordElement;
+import simplenlg.framework.LexicalCategory;
+import simplenlg.framework.NLGFactory;
+import simplenlg.framework.WordElement;
+import simplenlg.lexicon.Lexicon;
+import simplenlg.realiser.english.Realiser;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
@@ -74,8 +82,12 @@ public class Main extends JFrame {
     final int splashx = 100;
     final int splashy = 450;
 
-    // For streaming
+    // For streaming text to notes in real-time
     static RealtimePlayer realtimePlayer;
+
+    final Lexicon lexicon = Lexicon.getDefaultLexicon();
+    final NLGFactory nlgFactory = new NLGFactory(lexicon);
+    final Realiser realiser = new Realiser(lexicon);
 
     public Main() {
 
@@ -142,36 +154,64 @@ public class Main extends JFrame {
                     });
 
             // True if duplicate found in database
-            boolean dupeCheck;
+            boolean isFound;
 
-            // To find words that belong to multiple word categories
-            // Loop through the database, add to word type and value if key is found
             for (WordMap.Mapping i : allItems) {
-                dupeCheck = false;
+                isFound = false;
+
+                // To find words that belong to multiple lexnames,
+                // loop through the database, add to word type and value if key is found
                 for (WordMap.Mapping j : tempList) {
                     if (j.getKey().equalsIgnoreCase(i.getKey())) {
-                        //if (j.toString().equalsIgnoreCase(i.toString())) {
-                        //System.out.println("Exists already: " + j.getKey());
 
                         j.addType(i.wordType);
                         j.addValue(i.wordValue);
 
-                        dupeCheck = true;
+                        isFound = true;
                     }
                 }
-                if (!dupeCheck) {
+
+                if (!isFound) {
                     tempList.add(i);
+                }
+
+                if (i.getType().equals(WordMap.Type.v.toString())) {
+                    WordMap.Mapping iPastTense = new WordMap.Mapping();
+                    iPastTense.setKey(doPastTense(i.getKey()));
+
+                    if (!tempList.contains(iPastTense)) {
+                        iPastTense.setType(i.getType());
+                        iPastTense.setValue(i.getValue());
+                        iPastTense.setSentimentPos(i.getSentimentPos());
+                        iPastTense.setSentimentNeg(i.getSentimentNeg());
+                        //System.out.println(iPastTense.toString());
+                        tempList.add(iPastTense);
+                    }
+
+
+                } else if (i.getType().equals(WordMap.Type.n.toString())) {
+                    WordMap.Mapping iPlural = new WordMap.Mapping();
+                    iPlural.setKey(doPluralize(i.getKey()));
+
+                    if (!tempList.contains(iPlural)) {
+                        iPlural.setType(i.getType());
+                        iPlural.setValue(i.getValue());
+                        iPlural.setSentimentPos(i.getSentimentPos());
+                        iPlural.setSentimentNeg(i.getSentimentNeg());
+                        //System.out.println(iPlural.toString());
+                        tempList.add(iPlural);
+                    }
                 }
             }
 
             System.out.println(tempList.size() + " words were processed.");
 
             // Write final results in file for error logging
-            //FileWriter writer = new FileWriter("resultlist.txt");
-            //for (WordMap.Mapping str : tempList) {
-            //    writer.write(str + System.lineSeparator());
-            //}
-            //writer.close();
+            FileWriter writer = new FileWriter("resultlist.txt");
+            for (WordMap.Mapping str : tempList) {
+                writer.write(str + System.lineSeparator());
+            }
+             writer.close();
 
             TextSound.items = tempList;
 
@@ -480,6 +520,22 @@ public class Main extends JFrame {
         TextSound.orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
         TextSound.orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
         TextSound.ordering = setOrdering.getSelectedIndex();
+    }
+
+    private String doPluralize(String input) {
+        WordElement WE = lexicon.getWord(input, LexicalCategory.NOUN);
+        InflectedWordElement infl = new InflectedWordElement(WE);
+        infl.setPlural(true);
+        //System.out.println(realiser.realise(infl));
+        return realiser.realise(infl).toString();
+    }
+
+    private String doPastTense(String input) {
+        WordElement WE = lexicon.getWord(input, LexicalCategory.VERB);
+        InflectedWordElement infl = new InflectedWordElement(WE);
+        infl.setFeature(Feature.TENSE, Tense.PAST);
+        //System.out.println(realiser.realise(infl));
+        return realiser.realise(infl).toString();
     }
 
     private static void createAndShowGUI() {
@@ -1047,7 +1103,7 @@ public class Main extends JFrame {
         scrollPane1.setViewportView(textArea1);
         panelTransformations = new JPanel();
         panelTransformations.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel1.add(panelTransformations, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(150, -1), new Dimension(200, 500), null, 0, false));
+        panel1.add(panelTransformations, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(200, -1), new Dimension(200, 500), null, 0, false));
         final JScrollPane scrollPane2 = new JScrollPane();
         panelTransformations.add(scrollPane2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         list1 = new JList();

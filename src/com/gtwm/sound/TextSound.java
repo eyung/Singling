@@ -341,7 +341,6 @@ public class TextSound {
 			//double patternTimeStamp = 0;
 
 			resetSettings();
-			System.out.println(ordering);
 
 			//soundString.append( (int) tempo + " I[" + instrument + "] " );
 			Pattern pattern = new Pattern();
@@ -390,7 +389,10 @@ public class TextSound {
 						if (lexCount == 9) {
 							lexCount++;
 						}
-						pattern.add("V" + lexCount + " @" + patternCurrentTime);
+
+						if (lexCount < 15) {
+							pattern.add("V" + lexCount + " @" + patternCurrentTime);
+						}
 					}
 
 					// Word value + 1 because it starts at 0 in the database
@@ -479,10 +481,10 @@ public class TextSound {
 					}
 
 					// Testing
-					System.out.println("Frequency for " + lastWord + "=" + thisValue +
-							" normalized to octave "
-							+ octaves + ", top frequency " + topFrequency + ": " +
-							frequency);
+					//System.out.println("Frequency for " + lastWord + "=" + thisValue +
+					//		" normalized to octave "
+					//		+ octaves + ", top frequency " + topFrequency + ": " +
+					//		frequency);
 
 					// Combine notes together as a harmony if word has more than one category
 					//if (wordValues.length > 1) {
@@ -493,8 +495,14 @@ public class TextSound {
 						musicNote = (int) Math.rint(tempNote);
 						// Note + Duration + Attack + Decay
 						//soundString.append("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "+");
+
 						frequency = Math.round(frequency * 100.0) / 100.0;
-						pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
+
+						// Hacky hack hack so that we are capping voices at 16
+						if (lexCount < 15) {
+							pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
+						}
+
 						System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
 					//} else {
 						// Convert freq to music string and append to sound string
@@ -657,7 +665,7 @@ public class TextSound {
 					tempo = settingTempo.keepInRange(tempo);
 					baseTempo = tempo;
 					//soundString.append("T" + (int) tempo + " ");
-					pattern.setTempo((int)tempo);
+					pattern.add("T" + (int)tempo);
 				//}
 				break;
 
