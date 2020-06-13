@@ -171,34 +171,25 @@ public class Main extends JFrame {
                     }
                 }
 
+                // Add a new entry to database using unique word/key
                 if (!isFound) {
                     tempList.add(i);
                 }
 
+                // Get past tense version of verb and add to list if it doesn't exist already
                 if (i.getType().equals(WordMap.Type.v.toString())) {
-                    WordMap.Mapping iPastTense = new WordMap.Mapping();
-                    iPastTense.setKey(doPastTense(i.getKey()));
+                    WordMap.Mapping iPastTense = new WordMap.Mapping(doPastTense(i.getKey()),
+                            i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
 
                     if (!tempList.contains(iPastTense)) {
-                        iPastTense.setType(i.getType());
-                        iPastTense.setValue(i.getValue());
-                        iPastTense.setSentimentPos(i.getSentimentPos());
-                        iPastTense.setSentimentNeg(i.getSentimentNeg());
-                        //System.out.println(iPastTense.toString());
                         tempList.add(iPastTense);
                     }
 
-
+                // Get pluralized noun and add to list if it doesn't exist already
                 } else if (i.getType().equals(WordMap.Type.n.toString())) {
-                    WordMap.Mapping iPlural = new WordMap.Mapping();
-                    iPlural.setKey(doPluralize(i.getKey()));
-
+                    WordMap.Mapping iPlural = new WordMap.Mapping(doPluralize(i.getKey()),
+                            i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
                     if (!tempList.contains(iPlural)) {
-                        iPlural.setType(i.getType());
-                        iPlural.setValue(i.getValue());
-                        iPlural.setSentimentPos(i.getSentimentPos());
-                        iPlural.setSentimentNeg(i.getSentimentNeg());
-                        //System.out.println(iPlural.toString());
                         tempList.add(iPlural);
                     }
                 }
@@ -211,7 +202,7 @@ public class Main extends JFrame {
             for (WordMap.Mapping str : tempList) {
                 writer.write(str + System.lineSeparator());
             }
-             writer.close();
+            writer.close();
 
             TextSound.items = tempList;
 
