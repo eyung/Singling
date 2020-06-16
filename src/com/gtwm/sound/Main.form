@@ -616,11 +616,12 @@
                 <properties>
                   <model>
                     <item value="Transformation:"/>
-                    <item value="WORD_TYPE"/>
-                    <item value="WORD_LENGTH"/>
-                    <item value="WORD_CATEGORY"/>
-                    <item value="SYMBOLS"/>
+                    <item value="WORDTYPE"/>
+                    <item value="WORDLENGTH"/>
+                    <item value="WORDVALUE"/>
+                    <item value="PUNCTUATION"/>
                     <item value="CHARACTER"/>
+                    <item value="SENTIMENT"/>
                   </model>
                   <toolTipText value="Transformation"/>
                 </properties>

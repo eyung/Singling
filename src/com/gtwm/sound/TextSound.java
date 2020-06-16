@@ -468,6 +468,16 @@ public class TextSound {
 								applyMod(i, pattern);
 							}
 							//}
+						} else if (i.mod == Queue.Instruction.Mods.SENTIMENT) {
+							if (i.getSentimentType().equals(Queue.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
+								if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL") {
+									applySentimentMod(i, item.getSentimentPos(), pattern);
+								}
+							} else if (i.getSentimentType().equals(Queue.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
+								if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
+									applySentimentMod(i, item.getSentimentNeg(), pattern);
+								}
+							}
 						}
 					}
 
@@ -751,6 +761,35 @@ public class TextSound {
 				decay = (int) settingsDecay.keepInRange(decay);
 				break;
 		}
+		return pattern;
+	}
+
+	private static Pattern applySentimentMod(Queue.Instruction i, String sentimentValue, Pattern pattern) {
+		// Allow sound instructions to be played if notes are set to mute in default settings
+		if (defaultNoteOperation == noteOperationType.MUTE) {
+			pattern.add(":CE(935,10200)");
+		}
+
+		switch (i.soundMod) {
+			case TEMPO:
+				break;
+
+			case MIDI_NOTE:
+				Setting settingsFrequency = Setting.BASE_FREQUENCY;
+				double midiNoteNumber;
+
+				///if (i.sentimentType.equals(Queue.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
+					midiNoteNumber = Double.parseDouble(sentimentValue);
+					frequency = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
+					frequency = settingsFrequency.keepInRange(frequency);
+					System.out.println("FREQUENCY= " + frequency);
+					System.out.println("SENTIMENTVALUE= " + sentimentValue);
+				//} else if (i.sentimentType.equals(Queue.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
+
+				//}
+				break;
+		}
+
 		return pattern;
 	}
 

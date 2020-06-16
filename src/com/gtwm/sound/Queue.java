@@ -6,7 +6,7 @@ public class Queue {
 
     static class Instruction implements Serializable {
 
-        enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE, PUNCTUATION, CHARACTER }
+        enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE, PUNCTUATION, CHARACTER, SENTIMENT }
 
         enum SoundMods { TEMPO, NOTE_DURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION, MIDI_NOTE, ATTACK, DECAY }
 
@@ -14,24 +14,28 @@ public class Queue {
 
         enum ChangeModes { SET, INCREMENT }
 
+        enum SentimentTypes { POSITIVESENTIMENT, NEGATIVESENTIMENT }
+
         Mods mod;
         ModOperators modOperator;
         String modValue;
         SoundMods soundMod;
         String soundModValue;
         ChangeModes changeMode;
+        SentimentTypes sentimentType;
 
         public Instruction() {
 
         }
 
-        public Instruction(Mods v, ModOperators w, String x, SoundMods y, String z, ChangeModes a) {
+        public Instruction(Mods v, ModOperators w, String x, SoundMods y, String z, ChangeModes a, SentimentTypes b) {
             this.mod = v;
             this.modOperator = w;
             this.modValue = x;
             this.soundMod = y;
             this.soundModValue = z;
             this.changeMode = a;
+            this.sentimentType = b;
         }
 
         public void setMod(Mods thisMod) {
@@ -80,6 +84,10 @@ public class Queue {
             return changeMode;
         }
 
+        public void setSentimentType(SentimentTypes thisSentimentType) { sentimentType = thisSentimentType; }
+
+        public SentimentTypes getSentimentType() { return sentimentType; }
+
         public String toString() {
             if (mod.equals(Mods.WORDLENGTH)) {
                 return "WORDLENGTH " + modOperator +
@@ -96,6 +104,8 @@ public class Queue {
                         " TO " + changeMode +
                         " " + soundMod +
                         " " + soundModValue;
+            } else if (mod.equals(Mods.SENTIMENT)) {
+                return "SENTIMENT " + sentimentType + " CHANGING " + soundMod;
             } else {
                 return "Instruction:{" +
                         "mod=" + mod +

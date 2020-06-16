@@ -180,12 +180,10 @@ public class Main extends JFrame {
                 if (i.getType().equals(WordMap.Type.v.toString())) {
                     WordMap.Mapping iPastTense = new WordMap.Mapping(doPastTense(i.getKey()),
                             i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
-
                     if (!tempList.contains(iPastTense)) {
                         tempList.add(iPastTense);
                     }
-
-                // Get pluralized noun and add to list if it doesn't exist already
+                    // Get pluralized noun and add to list if it doesn't exist already
                 } else if (i.getType().equals(WordMap.Type.n.toString())) {
                     WordMap.Mapping iPlural = new WordMap.Mapping(doPluralize(i.getKey()),
                             i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
@@ -290,7 +288,7 @@ public class Main extends JFrame {
                                                     ActionListener() {
                                                         @Override
                                                         public void actionPerformed(ActionEvent e) {
-                                                            if (btnAddInstruction.getSelectedItem() == "WORD_TYPE") {
+                                                            /*if (btnAddInstruction.getSelectedItem() == "WORD_TYPE") {
                                                                 InstructionFormWordType dialog = new InstructionFormWordType();
                                                                 dialog.setTitle("Transformation: Word Type");
                                                                 dialog.pack();
@@ -325,6 +323,57 @@ public class Main extends JFrame {
                                                                 dialog.setLocationRelativeTo(panelTransformationInputs);
                                                                 dialog.setVisible(true);
                                                                 btnAddInstruction.setSelectedIndex(0);
+                                                            }*/
+
+                                                            switch (Queue.Instruction.Mods.valueOf(btnAddInstruction.getSelectedItem().toString())) {
+                                                                case WORDTYPE:
+                                                                    InstructionFormWordType dialogWordType = new InstructionFormWordType();
+                                                                    dialogWordType.setTitle("Transformation: Word Type");
+                                                                    dialogWordType.pack();
+                                                                    dialogWordType.setLocationRelativeTo(panelTransformationInputs);
+                                                                    dialogWordType.setVisible(true);
+                                                                    btnAddInstruction.setSelectedIndex(0);
+                                                                    break;
+                                                                case WORDLENGTH:
+                                                                    InstructionFormWordLength dialogWordLength = new InstructionFormWordLength();
+                                                                    dialogWordLength.setTitle("Transformation: Word Length");
+                                                                    dialogWordLength.pack();
+                                                                    dialogWordLength.setLocationRelativeTo(panelTransformationInputs);
+                                                                    dialogWordLength.setVisible(true);
+                                                                    btnAddInstruction.setSelectedIndex(0);
+                                                                    break;
+                                                                case WORDVALUE:
+                                                                    InstructionFormWordValue dialogWordValue = new InstructionFormWordValue();
+                                                                    dialogWordValue.setTitle("Transformation: Word Category");
+                                                                    dialogWordValue.pack();
+                                                                    dialogWordValue.setLocationRelativeTo(panelTransformationInputs);
+                                                                    dialogWordValue.setVisible(true);
+                                                                    btnAddInstruction.setSelectedIndex(0);
+                                                                    break;
+                                                                case PUNCTUATION:
+                                                                    InstructionFormSymbols dialogSymbol = new InstructionFormSymbols();
+                                                                    dialogSymbol.setTitle("Transformation: Symbols");
+                                                                    dialogSymbol.pack();
+                                                                    dialogSymbol.setLocationRelativeTo(panelTransformationInputs);
+                                                                    dialogSymbol.setVisible(true);
+                                                                    btnAddInstruction.setSelectedIndex(0);
+                                                                    break;
+                                                                case CHARACTER:
+                                                                    InstructionFormCharacter dialogCharacter = new InstructionFormCharacter();
+                                                                    dialogCharacter.setTitle("Transformation: Character");
+                                                                    dialogCharacter.pack();
+                                                                    dialogCharacter.setLocationRelativeTo(panelTransformationInputs);
+                                                                    dialogCharacter.setVisible(true);
+                                                                    btnAddInstruction.setSelectedIndex(0);
+                                                                    break;
+                                                                case SENTIMENT:
+                                                                    InstructionFormSentiment dialogSentiment = new InstructionFormSentiment();
+                                                                    dialogSentiment.setTitle("Transformation: Sentiment");
+                                                                    dialogSentiment.pack();
+                                                                    dialogSentiment.setLocationRelativeTo(panelTransformationInputs);
+                                                                    dialogSentiment.setVisible(true);
+                                                                    btnAddInstruction.setSelectedIndex(0);
+                                                                    break;
                                                             }
                                                         }
                                                     });
@@ -1110,11 +1159,12 @@ public class Main extends JFrame {
         btnAddInstruction = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel6 = new DefaultComboBoxModel();
         defaultComboBoxModel6.addElement("Transformation:");
-        defaultComboBoxModel6.addElement("WORD_TYPE");
-        defaultComboBoxModel6.addElement("WORD_LENGTH");
-        defaultComboBoxModel6.addElement("WORD_CATEGORY");
-        defaultComboBoxModel6.addElement("SYMBOLS");
+        defaultComboBoxModel6.addElement("WORDTYPE");
+        defaultComboBoxModel6.addElement("WORDLENGTH");
+        defaultComboBoxModel6.addElement("WORDVALUE");
+        defaultComboBoxModel6.addElement("PUNCTUATION");
         defaultComboBoxModel6.addElement("CHARACTER");
+        defaultComboBoxModel6.addElement("SENTIMENT");
         btnAddInstruction.setModel(defaultComboBoxModel6);
         btnAddInstruction.setToolTipText("Transformation");
         panelTransformationInputs.add(btnAddInstruction, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
