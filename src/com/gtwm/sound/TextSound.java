@@ -471,11 +471,11 @@ public class TextSound {
 						} else if (i.mod == Queue.Instruction.Mods.SENTIMENT) {
 							if (i.getSentimentType().equals(Queue.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
 								if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL") {
-									applySentimentMod(i, item.getSentimentPos(), pattern);
+									applySentimentMod(i, thisValue, item.getSentimentPos(), pattern);
 								}
 							} else if (i.getSentimentType().equals(Queue.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
 								if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
-									applySentimentMod(i, item.getSentimentNeg(), pattern);
+									applySentimentMod(i, thisValue, item.getSentimentNeg(), pattern);
 								}
 							}
 						}
@@ -764,7 +764,7 @@ public class TextSound {
 		return pattern;
 	}
 
-	private static Pattern applySentimentMod(Queue.Instruction i, String sentimentValue, Pattern pattern) {
+	private static Pattern applySentimentMod(Queue.Instruction i, double wordValue, String sentimentValue, Pattern pattern) {
 		// Allow sound instructions to be played if notes are set to mute in default settings
 		if (defaultNoteOperation == noteOperationType.MUTE) {
 			pattern.add(":CE(935,10200)");
@@ -779,7 +779,7 @@ public class TextSound {
 				double midiNoteNumber;
 
 				///if (i.sentimentType.equals(Queue.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
-					midiNoteNumber = Double.parseDouble(sentimentValue);
+					midiNoteNumber = (Double.parseDouble(sentimentValue) * 100) * wordValue;
 					frequency = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
 					frequency = settingsFrequency.keepInRange(frequency);
 					System.out.println("FREQUENCY= " + frequency);
