@@ -34,6 +34,10 @@ public class InstructionFormSentiment extends JDialog {
                         //instruction.setSoundModValue(String.valueOf(setFrequency.getSelectedItem()));
                         //instruction.setSoundMod(Queue.Instruction.SoundMods.MIDI_NOTE);
                         break;
+                    case MAJOR:
+                        break;
+                    case MINOR:
+                        break;
                 }
 
                 //TODO Check against duplicate instruction
@@ -137,6 +141,8 @@ public class InstructionFormSentiment extends JDialog {
         setSoundModTo = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("MIDI_NOTE");
+        defaultComboBoxModel1.addElement("MAJOR");
+        defaultComboBoxModel1.addElement("MINOR");
         setSoundModTo.setModel(defaultComboBoxModel1);
         panel3.add(setSoundModTo, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();

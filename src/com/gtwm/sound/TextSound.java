@@ -21,6 +21,7 @@ import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import org.jfugue.realtime.RealtimePlayer;
+import org.jfugue.theory.Note;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -371,6 +372,8 @@ public class TextSound {
 	}
 
 	public static void sonifyWord(List<WordMap.Mapping> items, StringBuilder lastWord, Pattern pattern, boolean doNoteGap) {
+		Pattern transformedPattern = new Pattern();
+
 		// Lookup database
 		for (WordMap.Mapping item : items) {
 
@@ -393,6 +396,11 @@ public class TextSound {
 						if (lexCount < 15) {
 							pattern.add("V" + lexCount + " @" + patternCurrentTime);
 						}
+
+						//if (lexCount > 15) {
+						//	lexCount = 0;
+						//}
+						//pattern.add("V" + lexCount + " @" + patternCurrentTime);
 					}
 
 					// Word value + 1 because it starts at 0 in the database
@@ -416,6 +424,8 @@ public class TextSound {
 
 					// Go through the instructions queue
 					for (Queue.Instruction i : instructions) {
+
+						transformedPattern.clear();
 
 						// The main logic part of the program
 						// Make changes based on user instructions
@@ -471,11 +481,11 @@ public class TextSound {
 						} else if (i.mod == Queue.Instruction.Mods.SENTIMENT) {
 							if (i.getSentimentType().equals(Queue.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
 								if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL") {
-									applySentimentMod(i, thisValue, item.getSentimentPos(), pattern);
+									transformedPattern = applySentimentMod(i, thisValue, item.getSentimentPos(), pattern);
 								}
 							} else if (i.getSentimentType().equals(Queue.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
 								if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
-									applySentimentMod(i, thisValue, item.getSentimentNeg(), pattern);
+									transformedPattern = applySentimentMod(i, thisValue, item.getSentimentNeg(), pattern);
 								}
 							}
 						}
@@ -496,30 +506,26 @@ public class TextSound {
 					//		+ octaves + ", top frequency " + topFrequency + ": " +
 					//		frequency);
 
-					// Combine notes together as a harmony if word has more than one category
-					//if (wordValues.length > 1) {
-						double tempNote;
-						int musicNote;
-						// Convert freq to MIDI music string using reference note and frequency A4 440hz
-						tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
-						musicNote = (int) Math.rint(tempNote);
-						// Note + Duration + Attack + Decay
-						//soundString.append("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "+");
+					// Convert freq to MIDI music string using reference note and frequency A4 440hz
+					double tempNote;
+					int musicNote;
+					tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
+					musicNote = (int) Math.rint(tempNote);
 
-						frequency = Math.round(frequency * 100.0) / 100.0;
+					frequency = Math.round(frequency * 100.0) / 100.0;
 
-						// Hacky hack hack so that we are capping voices at 16
-						if (lexCount < 15) {
+					// Hacky hack hack so that we are capping voices at 16
+					if (lexCount < 15) {
+						if (transformedPattern != null && !transformedPattern.toString().equals("")) {
+							// Note + Duration + Attack + Decay
+							pattern.add(transformedPattern + "/" + noteLength + "a" + attack + "d" + decay + "");
+						} else {
+							// Note + Duration + Attack + Decay
 							pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
 						}
+					}
 
-						System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
-					//} else {
-						// Convert freq to music string and append to sound string
-						// Note + Duration + Attack + Decay
-					//	soundString.append(MicrotoneNotation.convertFrequencyToMusicString(frequency) + "/" + noteLength + "a" + attack + "d" + decay + "+");
-					//	System.out.println("Convert freq to music string: " + MicrotoneNotation.convertFrequencyToMusicString(frequency));
-					//}
+					System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
 
 					lexCount++;
 				}
@@ -656,7 +662,7 @@ public class TextSound {
 		pattern.add("I[" + instrument + "] ");
 	}
 
-	private static Pattern applyMod(Queue.Instruction i, Pattern pattern) {
+	private static void applyMod(Queue.Instruction i, Pattern pattern) {
 		// Allow sound instructions to be played if notes are set to mute in default settings
 		if (defaultNoteOperation == noteOperationType.MUTE) { pattern.add(":CE(935,10200)"); }
 
@@ -761,10 +767,18 @@ public class TextSound {
 				decay = (int) settingsDecay.keepInRange(decay);
 				break;
 		}
-		return pattern;
+
 	}
 
 	private static Pattern applySentimentMod(Queue.Instruction i, double wordValue, String sentimentValue, Pattern pattern) {
+		Pattern sentimentPattern = new Pattern();
+		Setting settingsFrequency = Setting.BASE_FREQUENCY;
+
+		double tempNote;
+		int midiNumber;
+		double x;
+		String thisNote;
+
 		// Allow sound instructions to be played if notes are set to mute in default settings
 		if (defaultNoteOperation == noteOperationType.MUTE) {
 			pattern.add(":CE(935,10200)");
@@ -775,22 +789,49 @@ public class TextSound {
 				break;
 
 			case MIDI_NOTE:
-				Setting settingsFrequency = Setting.BASE_FREQUENCY;
-				double midiNoteNumber;
+				double newWordValue;
 
-				///if (i.sentimentType.equals(Queue.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
-					midiNoteNumber = (Double.parseDouble(sentimentValue) * 100) * wordValue;
-					frequency = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
+				//if (i.sentimentType.equals(Queue.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
+					newWordValue = (Double.parseDouble(sentimentValue) * 100) * wordValue;
+					frequency = Math.pow(2, (newWordValue - 69) / 12) * 440;
 					frequency = settingsFrequency.keepInRange(frequency);
-					System.out.println("FREQUENCY= " + frequency);
-					System.out.println("SENTIMENTVALUE= " + sentimentValue);
+					//System.out.println("FREQUENCY= " + frequency);
+					//System.out.println("SENTIMENTVALUE= " + sentimentValue);
 				//} else if (i.sentimentType.equals(Queue.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
 
 				//}
 				break;
+
+			case MAJOR:
+				x = (Double.parseDouble(sentimentValue) * 100) * wordValue;
+				frequency = Math.pow(2, (x - 69) / 12) * 440;
+				frequency = settingsFrequency.keepInRange(frequency);
+
+				// Convert freq to MIDI music string using reference note and frequency A4 440hz
+				tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
+				midiNumber = (int) Math.rint(tempNote);
+
+				frequency = Math.round(frequency * 100.0) / 100.0;
+
+				sentimentPattern.add(midiNumber + "maj");
+				break;
+
+			case MINOR:
+				x = (Double.parseDouble(sentimentValue) * 100) * wordValue;
+				frequency = Math.pow(2, (x - 69) / 12) * 440;
+				frequency = settingsFrequency.keepInRange(frequency);
+
+				// Convert freq to MIDI music string using reference note and frequency A4 440hz
+				tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
+				midiNumber = (int) Math.rint(tempNote);
+
+				frequency = Math.round(frequency * 100.0) / 100.0;
+
+				sentimentPattern.add(midiNumber + "min");
+				break;
 		}
 
-		return pattern;
+		return sentimentPattern;
 	}
 
 	private static void resetSettings() {

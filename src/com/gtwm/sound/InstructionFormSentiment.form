@@ -64,6 +64,8 @@
             <properties>
               <model>
                 <item value="MIDI_NOTE"/>
+                <item value="MAJOR"/>
+                <item value="MINOR"/>
               </model>
             </properties>
           </component>

@@ -8,13 +8,15 @@ public class Queue {
 
         enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE, PUNCTUATION, CHARACTER, SENTIMENT }
 
-        enum SoundMods { TEMPO, NOTE_DURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION, MIDI_NOTE, ATTACK, DECAY }
+        enum SoundMods { TEMPO, NOTE_DURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION, MIDI_NOTE, ATTACK, DECAY, MAJOR, MINOR }
 
         enum ModOperators { EQUALTO, LARGERTHAN, LESSTHAN }
 
         enum ChangeModes { SET, INCREMENT }
 
         enum SentimentTypes { POSITIVESENTIMENT, NEGATIVESENTIMENT }
+
+        enum InstructionStatus { ACTIVE, INACTIVE }
 
         Mods mod;
         ModOperators modOperator;
@@ -23,12 +25,13 @@ public class Queue {
         String soundModValue;
         ChangeModes changeMode;
         SentimentTypes sentimentType;
+        InstructionStatus instructionStatus;
 
         public Instruction() {
 
         }
 
-        public Instruction(Mods v, ModOperators w, String x, SoundMods y, String z, ChangeModes a, SentimentTypes b) {
+        public Instruction(Mods v, ModOperators w, String x, SoundMods y, String z, ChangeModes a, SentimentTypes b, InstructionStatus c) {
             this.mod = v;
             this.modOperator = w;
             this.modValue = x;
@@ -36,6 +39,7 @@ public class Queue {
             this.soundModValue = z;
             this.changeMode = a;
             this.sentimentType = b;
+            this.instructionStatus = c;
         }
 
         public void setMod(Mods thisMod) {
@@ -87,6 +91,14 @@ public class Queue {
         public void setSentimentType(SentimentTypes thisSentimentType) { sentimentType = thisSentimentType; }
 
         public SentimentTypes getSentimentType() { return sentimentType; }
+
+        public void setInstructionStatus(InstructionStatus thisInstructionStatus) {
+            instructionStatus = thisInstructionStatus;
+        }
+
+        public InstructionStatus getInstructionStatus() {
+            return instructionStatus;
+        }
 
         public String toString() {
             if (mod.equals(Mods.WORDLENGTH)) {
