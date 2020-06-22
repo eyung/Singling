@@ -106,7 +106,7 @@ public class Main extends JFrame {
         g.drawString("Starting up...", splashx, splashy);
         splash.update();
 
-        // Set model for instructions panel
+        // Set models
         list1.setModel(model);
         textModel = this.textArea1;
 
@@ -1150,7 +1150,7 @@ public class Main extends JFrame {
         list1.setBackground(new Color(-1));
         scrollPane2.setViewportView(list1);
         panelTransformationInputs = new JPanel();
-        panelTransformationInputs.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panelTransformationInputs.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         panelTransformations.add(panelTransformationInputs, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         btnRemoveInstruction = new JButton();
         btnRemoveInstruction.setText("-");
@@ -1168,6 +1168,8 @@ public class Main extends JFrame {
         btnAddInstruction.setModel(defaultComboBoxModel6);
         btnAddInstruction.setToolTipText("Transformation");
         panelTransformationInputs.add(btnAddInstruction, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        panelTransformationInputs.add(spacer2, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         label2.setLabelFor(setTempo);
         label3.setLabelFor(setDuration);
         label4.setLabelFor(setInstrument);
