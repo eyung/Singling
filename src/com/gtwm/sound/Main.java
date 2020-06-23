@@ -4,7 +4,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
-import org.w3c.dom.Text;
 import simplenlg.features.Feature;
 import simplenlg.features.Tense;
 import simplenlg.framework.InflectedWordElement;
@@ -22,7 +21,6 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -56,7 +54,7 @@ public class Main extends JFrame {
     private JPanel panelTextInput;
     private JPanel panelTransformations;
     private JPanel panelProcessBtns;
-    private JButton btnPause;
+    private JButton btnTogglePause;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -264,7 +262,7 @@ public class Main extends JFrame {
                             // Process text
                             TextSound.runStuff();
                             TextSound.doStartPlayer(textArea1.getText());
-                            TextSound.doPlay();
+                            //TextSound.doPlay();
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -421,7 +419,7 @@ public class Main extends JFrame {
             }
         });
 
-        btnPause.addActionListener(new ActionListener() {
+        btnTogglePause.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 TextSound.doPause();
@@ -1143,9 +1141,9 @@ public class Main extends JFrame {
         panelProcessBtns.add(btnProcess, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         panelProcessBtns.add(spacer1, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        btnPause = new JButton();
-        btnPause.setText("Pause");
-        panelProcessBtns.add(btnPause, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btnTogglePause = new JButton();
+        btnTogglePause.setText("Pause/Resume");
+        panelProcessBtns.add(btnTogglePause, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         panelTextInput.add(scrollPane1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         textArea1 = new JTextArea();

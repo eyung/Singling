@@ -107,15 +107,14 @@ public class TextSound {
 	static List<String> orderings = new ArrayList<String>();
 
 	static Player player;
+	static SinglingPlayer singlingPlayer;
+	static Thread threadPlayer;
 
 	static Pattern pattern;
-
 	static double patternCurrentTime = 0;
 	
 	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
-
 	static List<WordMap.Mapping> items;
-
 	static List<Queue.Instruction> instructions = new ArrayList<>();
 
 	// Keeping track of how many categories a word falls under
@@ -202,11 +201,6 @@ public class TextSound {
 		// Reset initial settings
 		resetSettings();
 
-		// Verify list data
-		//for ( Queue.Instruction i : instructions ) {
-		//	System.out.println(i);
-		//}
-
 		// Each ordering gives a different character
 		// Mayzner's
 		orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
@@ -215,42 +209,31 @@ public class TextSound {
 		// letter frequency based upon Oxford dictionary (https://languages.oup.com/)
 		orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
 
-		//String ss = "T" + (int) tempo + " I[" + instrument + "] " + processString(input);
-
 		pattern = new Pattern();
 		pattern.setVoice(0);
 		pattern.setInstrument(instrument);
 		pattern.setTempo((int)tempo);
 		patternCurrentTime = 0;
-
-		//String ss = processString(input, pattern);
-		//System.out.println("Pattern = " + ss);
-		//pattern = processString(input, pattern);
-
-		//File file = new File(output);
-		//MidiFileManager midiFileManager = new MidiFileManager();
-		//midiFileManager.savePatternToMidi(pattern, file);
-
-		//Player player = new Player();
-		//player.play(ss);
-		//player.play(pattern);
-		//player.getManagedPlayer().finish();
 	}
 
 	public static void doStartPlayer(String input) {
-		pattern = processString(input, pattern);
 		player = new Player();
+		singlingPlayer = new SinglingPlayer();
+		threadPlayer = new Thread(singlingPlayer);
+
+		pattern = processString(input, pattern);
+
+		singlingPlayer.setPattern(pattern, player);
+
+		System.out.println("Start player:" + threadPlayer.getId());
+		threadPlayer.start();
 	}
 
 	public static void doPlay() {
 		//pattern = processString(input, pattern);
-
 		//Player player = new Player();
 		player.play(pattern);
-
-		if (player.getManagedPlayer().isFinished()) {
-			player.getManagedPlayer().finish();
-		}
+		player.getManagedPlayer().finish();
 	}
 
 	public static void doSaveAsMidi(String input, String output) throws Exception{
@@ -262,7 +245,11 @@ public class TextSound {
 	}
 
 	public static void doPause() {
-		player.getManagedPlayer().pause();
+		if (player.getManagedPlayer().isPlaying()) {
+			player.getManagedPlayer().pause();
+		} else if(player.getManagedPlayer().isPaused()) {
+			player.getManagedPlayer().resume();
+		}
 	}
 
 	/**
