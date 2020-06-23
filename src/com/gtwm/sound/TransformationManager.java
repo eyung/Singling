@@ -2,7 +2,7 @@ package com.gtwm.sound;
 
 import java.io.Serializable;
 
-public class Queue {
+public class TransformationManager {
 
     static class Instruction implements Serializable {
 

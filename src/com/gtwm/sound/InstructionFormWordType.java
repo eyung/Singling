@@ -57,13 +57,13 @@ public class InstructionFormWordType extends JDialog {
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                Queue.Instruction instruction = new Queue.Instruction();
-                instruction.setMod(Queue.Instruction.Mods.WORDTYPE);
+                TransformationManager.Instruction instruction = new TransformationManager.Instruction();
+                instruction.setMod(TransformationManager.Instruction.Mods.WORDTYPE);
                 instruction.setModValue(String.valueOf(setType.getSelectedItem()));
-                instruction.setChangeMode(Queue.Instruction.ChangeModes.valueOf(String.valueOf(setChangeMode.getSelectedItem())));
+                instruction.setChangeMode(TransformationManager.Instruction.ChangeModes.valueOf(String.valueOf(setChangeMode.getSelectedItem())));
 
-                if (instruction.changeMode == Queue.Instruction.ChangeModes.SET) {
-                    instruction.setSoundMod(Queue.Instruction.SoundMods.valueOf(String.valueOf(setSoundModTo.getSelectedItem())));
+                if (instruction.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
+                    instruction.setSoundMod(TransformationManager.Instruction.SoundMods.valueOf(String.valueOf(setSoundModTo.getSelectedItem())));
                     switch (instruction.soundMod) {
                         case TEMPO:
                             instruction.setSoundModValue(String.valueOf(setTempo.getSelectedItem()));
@@ -93,8 +93,8 @@ public class InstructionFormWordType extends JDialog {
                             instruction.setSoundModValue(String.valueOf(setDecay.getValue()));
                             break;
                     }
-                } else if (instruction.changeMode == Queue.Instruction.ChangeModes.INCREMENT) {
-                    instruction.setSoundMod(Queue.Instruction.SoundMods.valueOf(String.valueOf(setSoundModBy.getSelectedItem())));
+                } else if (instruction.changeMode == TransformationManager.Instruction.ChangeModes.INCREMENT) {
+                    instruction.setSoundMod(TransformationManager.Instruction.SoundMods.valueOf(String.valueOf(setSoundModBy.getSelectedItem())));
                     //System.out.println("Increment: " + instruction.soundMod);
                     switch (instruction.soundMod) {
                         case TEMPO:
@@ -116,7 +116,7 @@ public class InstructionFormWordType extends JDialog {
                 }
 
                 // Check against duplicate instruction
-                for (Queue.Instruction i : TextSound.instructions) {
+                for (TransformationManager.Instruction i : TextSound.instructions) {
                     if (i.getModValue() == instruction.getModValue() && i.getSoundMod() == instruction.getSoundMod()) {
                         //System.out.println("already exist   ");
                         instructionCheck = false;

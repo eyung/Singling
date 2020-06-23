@@ -36,7 +36,7 @@ public class Main extends JFrame {
     private JComboBox setDuration;
     private JSlider setOctaves;
     private JComboBox setTempo;
-    private JList<Queue.Instruction> list1;
+    private JList<TransformationManager.Instruction> list1;
     private JButton btnRemoveInstruction;
     private JComboBox btnAddInstruction;
     private JPanel panelTransformationInputs;
@@ -85,6 +85,7 @@ public class Main extends JFrame {
     // For streaming text to notes in real-time
     static RealtimePlayer realtimePlayer;
 
+    // Initialising simplenlg classes for parsing and transforming text
     final Lexicon lexicon = Lexicon.getDefaultLexicon();
     final NLGFactory nlgFactory = new NLGFactory(lexicon);
     final Realiser realiser = new Realiser(lexicon);
@@ -276,7 +277,7 @@ public class Main extends JFrame {
                                                        ActionListener() {
                                                            @Override
                                                            public void actionPerformed(ActionEvent e) {
-                                                               Queue.Instruction selectedInstruction = list1.getSelectedValue();
+                                                               TransformationManager.Instruction selectedInstruction = list1.getSelectedValue();
                                                                TextSound.instructions.remove(selectedInstruction);
                                                                model.removeElement(selectedInstruction);
                                                            }
@@ -326,7 +327,7 @@ public class Main extends JFrame {
                                                                 btnAddInstruction.setSelectedIndex(0);
                                                             }*/
 
-                                                            switch (Queue.Instruction.Mods.valueOf(btnAddInstruction.getSelectedItem().toString())) {
+                                                            switch (TransformationManager.Instruction.Mods.valueOf(btnAddInstruction.getSelectedItem().toString())) {
                                                                 case WORDTYPE:
                                                                     InstructionFormWordType dialogWordType = new InstructionFormWordType();
                                                                     dialogWordType.setTitle("Transformation: Word Type");
@@ -427,7 +428,7 @@ public class Main extends JFrame {
         });
     }
 
-    public static void listAddInstruction(DefaultListModel thisModel, Queue.Instruction thisInstruction) {
+    public static void listAddInstruction(DefaultListModel thisModel, TransformationManager.Instruction thisInstruction) {
         thisModel.addElement(thisInstruction);
     }
 
@@ -539,7 +540,7 @@ public class Main extends JFrame {
         String prefString = prefs.get("instructionsPref", "x");
         TextSound.instructions = serialInstructionsQueue.deserializeObject(prefString);
         Main.model.clear();
-        for (Queue.Instruction i : TextSound.instructions) {
+        for (TransformationManager.Instruction i : TextSound.instructions) {
             listAddInstruction(Main.model, i);
         }
         String prefString2 = prefs.get("textPref", "y");

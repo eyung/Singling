@@ -21,8 +21,9 @@ import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import org.jfugue.realtime.RealtimePlayer;
-import org.jfugue.theory.Note;
 
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -115,10 +116,13 @@ public class TextSound {
 	
 	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
 	static List<WordMap.Mapping> items;
-	static List<Queue.Instruction> instructions = new ArrayList<>();
+	static List<TransformationManager.Instruction> instructions = new ArrayList<>();
 
 	// Keeping track of how many categories a word falls under
 	static int lexCount = 0;
+
+	// Character offset count for highlighting
+	static int highlighterOffset = 0;
 
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
@@ -373,6 +377,7 @@ public class TextSound {
 
 	public static void sonifyWord(List<WordMap.Mapping> items, StringBuilder lastWord, Pattern pattern, boolean doNoteGap) {
 		Pattern transformedPattern = new Pattern();
+		//int offset = 0;
 
 		// Lookup database
 		for (WordMap.Mapping item : items) {
@@ -380,6 +385,9 @@ public class TextSound {
 			// Match
 			if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
 
+				highlightWord(lastWord);
+
+				// Lexnames to read
 				double[] wordValues = convertToArr.toDoubleArr(item.getValue());
 
 				// Iterate through list of lexnames for each word
@@ -423,13 +431,13 @@ public class TextSound {
 					}
 
 					// Go through the instructions queue
-					for (Queue.Instruction i : instructions) {
+					for (TransformationManager.Instruction i : instructions) {
 
 						transformedPattern.clear();
 
 						// The main logic part of the program
 						// Make changes based on user instructions
-						if (i.mod == Queue.Instruction.Mods.WORDTYPE) {
+						if (i.mod == TransformationManager.Instruction.Mods.WORDTYPE) {
 							WordMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
 							for (WordMap.Type m : wordtypes) {
 								if (m != null && m.toString().equals(i.modValue)) {
@@ -437,7 +445,7 @@ public class TextSound {
 								}
 							}
 
-						} else if (i.mod == Queue.Instruction.Mods.WORDLENGTH) {
+						} else if (i.mod == TransformationManager.Instruction.Mods.WORDLENGTH) {
 							switch (i.getModOperator()) {
 								case EQUALTO:
 									if (Integer.parseInt(i.getModValue()) == lastWord.length()) {
@@ -456,7 +464,7 @@ public class TextSound {
 									break;
 							}
 
-						} else if (i.mod == Queue.Instruction.Mods.WORDVALUE) {
+						} else if (i.mod == TransformationManager.Instruction.Mods.WORDVALUE) {
 							//double[] lexnames = convertToArr.toDoubleArr(item.getValue() + 1);
 							//for (double n : lexnames) {
 							//	if (n == Double.parseDouble(i.modValue)) {
@@ -469,7 +477,7 @@ public class TextSound {
 								applyMod(i, pattern);
 							}
 
-						} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
+						} else if (i.mod == TransformationManager.Instruction.Mods.PUNCTUATION) {
 							//String[] punctuations = convertToArr.toStringArr(item.getValue());
 
 							//for (String n : punctuations) {
@@ -478,12 +486,12 @@ public class TextSound {
 								applyMod(i, pattern);
 							}
 							//}
-						} else if (i.mod == Queue.Instruction.Mods.SENTIMENT) {
-							if (i.getSentimentType().equals(Queue.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
+						} else if (i.mod == TransformationManager.Instruction.Mods.SENTIMENT) {
+							if (i.getSentimentType().equals(TransformationManager.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
 								if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL") {
 									transformedPattern = applySentimentMod(i, thisValue, item.getSentimentPos(), pattern);
 								}
-							} else if (i.getSentimentType().equals(Queue.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
+							} else if (i.getSentimentType().equals(TransformationManager.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
 								if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
 									transformedPattern = applySentimentMod(i, thisValue, item.getSentimentNeg(), pattern);
 								}
@@ -525,7 +533,7 @@ public class TextSound {
 						}
 					}
 
-					System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
+					//System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
 
 					lexCount++;
 				}
@@ -588,11 +596,11 @@ public class TextSound {
 		}
 
 		// Go through the instructions queue
-		for (Queue.Instruction i : instructions) {
+		for (TransformationManager.Instruction i : instructions) {
 
 			// The main logic part of the program
 			// Make changes based on user instructions
-			if (i.mod == Queue.Instruction.Mods.CHARACTER) {
+			if (i.mod == TransformationManager.Instruction.Mods.CHARACTER) {
 				//System.out.println("AEIOUaeiou".indexOf(ch));
 				if (i.modValue.equals("vowels") && "AEIOUaeiou".indexOf(ch) != -1) {
 					applyMod(i, pattern);
@@ -600,7 +608,7 @@ public class TextSound {
 					applyMod(i, pattern);
 				}
 
-			} else if (i.mod == Queue.Instruction.Mods.PUNCTUATION) {
+			} else if (i.mod == TransformationManager.Instruction.Mods.PUNCTUATION) {
 				//String[] punctuations = convertToArr.toStringArr(item.getValue());
 
 				//for (String n : punctuations) {
@@ -662,7 +670,7 @@ public class TextSound {
 		pattern.add("I[" + instrument + "] ");
 	}
 
-	private static void applyMod(Queue.Instruction i, Pattern pattern) {
+	private static void applyMod(TransformationManager.Instruction i, Pattern pattern) {
 		// Allow sound instructions to be played if notes are set to mute in default settings
 		if (defaultNoteOperation == noteOperationType.MUTE) { pattern.add(":CE(935,10200)"); }
 
@@ -670,7 +678,7 @@ public class TextSound {
 			case TEMPO:
 				Setting settingTempo = Setting.TEMPO;
 				//if (lexCount <= 0) {
-					if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+					if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
 						tempo = Double.parseDouble(i.soundModValue);
 						//soundString.append("T" + (int) tempo + " ");
 					} else {
@@ -687,7 +695,7 @@ public class TextSound {
 
 			case NOTE_DURATION:
 				Setting settingNoteDuration = Setting.NOTE_LENGTH;
-				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+				if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
 					noteLength = settingNoteDuration.keepInRange(noteLength);
 					noteLength = Double.parseDouble(i.soundModValue);
 				} else {
@@ -699,7 +707,7 @@ public class TextSound {
 
 			case OCTAVE:
 				Setting settingOctaves = Setting.OCTAVES;
-				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+				if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
 					octaves = settingOctaves.keepInRange(octaves);
 					octaves = Double.parseDouble(i.soundModValue);
 				} else {
@@ -743,7 +751,7 @@ public class TextSound {
 				Setting settingsFrequency = Setting.BASE_FREQUENCY;
 				double midiNoteNumber = Double.parseDouble(i.soundModValue);
 
-				if (i.changeMode == Queue.Instruction.ChangeModes.SET) {
+				if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
 					frequency = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
 					frequency = settingsFrequency.keepInRange(frequency);
 				} else {
@@ -770,7 +778,7 @@ public class TextSound {
 
 	}
 
-	private static Pattern applySentimentMod(Queue.Instruction i, double wordValue, String sentimentValue, Pattern pattern) {
+	private static Pattern applySentimentMod(TransformationManager.Instruction i, double wordValue, String sentimentValue, Pattern pattern) {
 		Pattern sentimentPattern = new Pattern();
 		Setting settingsFrequency = Setting.BASE_FREQUENCY;
 
@@ -844,10 +852,36 @@ public class TextSound {
 		decay = baseDecay;
 		//ordering =
 	}
+
+	public static void highlightWord(StringBuilder lastWord) {
+
+		int docLength = Main.textModel.getDocument().getLength();
+		String wordHighlight = lastWord.toString();
+		String textToSearch = "";
+		try {
+			textToSearch = Main.textModel.getDocument().getText(0, docLength);
+		} catch (Exception e) {}
+
+		// Highlight words in textarea
+		//System.out.println(lastWord.toString());
+		try {
+			//String textToSearch = Main.textModel.getDocument().getText(0, length);
+			System.out.println("Highlight: " + wordHighlight + " | Offset: " + highlighterOffset);
+			highlighterOffset = textToSearch.toLowerCase().indexOf(wordHighlight.toLowerCase(), highlighterOffset);
+			if (highlighterOffset != -1) {
+				Highlighter hl = Main.textModel.getHighlighter();
+				//hl.removeAllHighlights();
+				hl.addHighlight(highlighterOffset, highlighterOffset +wordHighlight.length(), DefaultHighlighter.DefaultPainter);
+				highlighterOffset += wordHighlight.length();
+			}
+		} catch (Exception e) {}
+	}
 }
 
+
+
 class serialInstructionsQueue {
-	static ObjectOutputStream serializeObject(List<Queue.Instruction> thisObjectList) {
+	static ObjectOutputStream serializeObject(List<TransformationManager.Instruction> thisObjectList) {
 		try {
 			FileOutputStream fos = new FileOutputStream(TextSound.prefsFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -870,7 +904,7 @@ class serialInstructionsQueue {
 		}
 	}
 
-	static List<Queue.Instruction> deserializeObject(String thisOutStream) {
+	static List<TransformationManager.Instruction> deserializeObject(String thisOutStream) {
 		try {
 			FileInputStream fis = new FileInputStream(TextSound.prefsFile);
 			ObjectInputStream ois = new ObjectInputStream(fis);

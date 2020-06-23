@@ -24,11 +24,11 @@ public class InstructionFormSentiment extends JDialog {
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Queue.Instruction instruction = new Queue.Instruction();
-                instruction.setMod(Queue.Instruction.Mods.SENTIMENT);
-                instruction.setChangeMode(Queue.Instruction.ChangeModes.SET);
-                instruction.setSentimentType(Queue.Instruction.SentimentTypes.valueOf(String.valueOf(setSentiment.getSelectedItem())));
-                instruction.setSoundMod(Queue.Instruction.SoundMods.valueOf(String.valueOf(setSoundModTo.getSelectedItem())));
+                TransformationManager.Instruction instruction = new TransformationManager.Instruction();
+                instruction.setMod(TransformationManager.Instruction.Mods.SENTIMENT);
+                instruction.setChangeMode(TransformationManager.Instruction.ChangeModes.SET);
+                instruction.setSentimentType(TransformationManager.Instruction.SentimentTypes.valueOf(String.valueOf(setSentiment.getSelectedItem())));
+                instruction.setSoundMod(TransformationManager.Instruction.SoundMods.valueOf(String.valueOf(setSoundModTo.getSelectedItem())));
                 switch (instruction.soundMod) {
                     case MIDI_NOTE:
                         //instruction.setSoundModValue(String.valueOf(setFrequency.getSelectedItem()));
@@ -41,7 +41,7 @@ public class InstructionFormSentiment extends JDialog {
                 }
 
                 //TODO Check against duplicate instruction
-                for (Queue.Instruction i : TextSound.instructions) {
+                for (TransformationManager.Instruction i : TextSound.instructions) {
                     if (i.getSentimentType() == instruction.getSentimentType() && i.getSoundMod() == instruction.getSoundMod()) {
                         instructionCheck = false;
                     }
