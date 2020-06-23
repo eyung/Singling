@@ -106,6 +106,8 @@ public class TextSound {
 	static int ordering;
 	static List<String> orderings = new ArrayList<String>();
 
+	static Player player;
+
 	static Pattern pattern;
 
 	static double patternCurrentTime = 0;
@@ -235,13 +237,20 @@ public class TextSound {
 		//player.getManagedPlayer().finish();
 	}
 
-	public static void doPlay(String input) {
+	public static void doStartPlayer(String input) {
 		pattern = processString(input, pattern);
+		player = new Player();
+	}
 
-		Player player = new Player();
-		//player.play(ss);
+	public static void doPlay() {
+		//pattern = processString(input, pattern);
+
+		//Player player = new Player();
 		player.play(pattern);
-		player.getManagedPlayer().finish();
+
+		if (player.getManagedPlayer().isFinished()) {
+			player.getManagedPlayer().finish();
+		}
 	}
 
 	public static void doSaveAsMidi(String input, String output) throws Exception{
@@ -250,6 +259,10 @@ public class TextSound {
 		File file = new File(output);
 		MidiFileManager midiFileManager = new MidiFileManager();
 		midiFileManager.savePatternToMidi(pattern, file);
+	}
+
+	public static void doPause() {
+		player.getManagedPlayer().pause();
 	}
 
 	/**

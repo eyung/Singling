@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
+import org.w3c.dom.Text;
 import simplenlg.features.Feature;
 import simplenlg.features.Tense;
 import simplenlg.framework.InflectedWordElement;
@@ -55,6 +56,7 @@ public class Main extends JFrame {
     private JPanel panelTextInput;
     private JPanel panelTransformations;
     private JPanel panelProcessBtns;
+    private JButton btnPause;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -261,7 +263,8 @@ public class Main extends JFrame {
 
                             // Process text
                             TextSound.runStuff();
-                            TextSound.doPlay(textArea1.getText());
+                            TextSound.doStartPlayer(textArea1.getText());
+                            TextSound.doPlay();
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -418,6 +421,12 @@ public class Main extends JFrame {
             }
         });
 
+        btnPause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                TextSound.doPause();
+            }
+        });
     }
 
     public static void listAddInstruction(DefaultListModel thisModel, Queue.Instruction thisInstruction) {
@@ -1124,16 +1133,19 @@ public class Main extends JFrame {
         panelTextInput.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panelTextInput, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(400, -1), new Dimension(400, 500), null, 0, false));
         panelProcessBtns = new JPanel();
-        panelProcessBtns.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panelProcessBtns.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
         panelTextInput.add(panelProcessBtns, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         btnPlay = new JButton();
         btnPlay.setText("Play");
         panelProcessBtns.add(btnPlay, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         btnProcess = new JButton();
         btnProcess.setText("Convert to MIDI");
-        panelProcessBtns.add(btnProcess, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panelProcessBtns.add(btnProcess, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panelProcessBtns.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panelProcessBtns.add(spacer1, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        btnPause = new JButton();
+        btnPause.setText("Pause");
+        panelProcessBtns.add(btnPause, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JScrollPane scrollPane1 = new JScrollPane();
         panelTextInput.add(scrollPane1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         textArea1 = new JTextArea();

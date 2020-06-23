@@ -45,6 +45,7 @@ public class InstructionFormWordLength extends JDialog {
         setDuration.setModel(InstructionFormModels.modelSetNoteDuration);
         setInstrument.setModel(InstructionFormModels.modelSetInstrument);
         setFrequency.setModel(InstructionFormModels.modelSetFrequency);
+        setLength.setModel(InstructionFormModels.modelSetLength);
         incrementTempo.setModel(InstructionFormModels.modelIncrementTempo);
         incrementOctave.setModel(InstructionFormModels.modelIncrementOctave);
         incrementDuration.setModel(InstructionFormModels.modelIncrementNoteDuration);
