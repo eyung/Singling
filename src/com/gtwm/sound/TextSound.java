@@ -448,17 +448,17 @@ public class TextSound {
 						} else if (i.mod == TransformationManager.Instruction.Mods.WORDLENGTH) {
 							switch (i.getModOperator()) {
 								case EQUALTO:
-									if (Integer.parseInt(i.getModValue()) == lastWord.length()) {
+									if (Double.parseDouble(i.getModValue()) == lastWord.length()) {
 										applyMod(i, pattern);
 									}
 									break;
 								case LARGERTHAN:
-									if (Integer.parseInt(i.getModValue()) < lastWord.length()) {
+									if (Double.parseDouble(i.getModValue()) < lastWord.length()) {
 										applyMod(i, pattern);
 									}
 									break;
 								case LESSTHAN:
-									if (Integer.parseInt(i.getModValue()) > lastWord.length()) {
+									if (Double.parseDouble(i.getModValue()) > lastWord.length()) {
 										applyMod(i, pattern);
 									}
 									break;
