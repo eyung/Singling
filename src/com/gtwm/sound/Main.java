@@ -5,12 +5,15 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
 import simplenlg.features.Feature;
+import simplenlg.features.Form;
 import simplenlg.features.Tense;
 import simplenlg.framework.InflectedWordElement;
 import simplenlg.framework.LexicalCategory;
 import simplenlg.framework.NLGFactory;
 import simplenlg.framework.WordElement;
 import simplenlg.lexicon.Lexicon;
+import simplenlg.phrasespec.SPhraseSpec;
+import simplenlg.phrasespec.VPPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 
 import javax.sound.midi.MidiUnavailableException;
@@ -179,12 +182,20 @@ public class Main extends JFrame {
 
                 // Get past tense version of verb and add to list if it doesn't exist already
                 if (i.getType().equals(WordMap.Type.v.toString())) {
+
                     WordMap.Mapping iPastTense = new WordMap.Mapping(doPastTense(i.getKey()),
                             i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
                     if (!tempList.contains(iPastTense)) {
                         tempList.add(iPastTense);
                     }
-                    // Get pluralized noun and add to list if it doesn't exist already
+
+                    WordMap.Mapping iGerund = new WordMap.Mapping(doGerund(i.getKey()),
+                            i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
+                    if (!tempList.contains(iGerund)) {
+                        tempList.add(iGerund);
+                    }
+
+                // Get pluralized noun and add to list if it doesn't exist already
                 } else if (i.getType().equals(WordMap.Type.n.toString())) {
                     WordMap.Mapping iPlural = new WordMap.Mapping(doPluralize(i.getKey()),
                             i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
@@ -584,6 +595,15 @@ public class Main extends JFrame {
         infl.setFeature(Feature.TENSE, Tense.PAST);
         //System.out.println(realiser.realise(infl));
         return realiser.realise(infl).toString();
+    }
+
+    private String doGerund(String input) {
+        VPPhraseSpec word = nlgFactory.createVerbPhrase(input);
+        SPhraseSpec clause = nlgFactory.createClause();
+        clause.setVerbPhrase(word);
+        clause.setFeature(Feature.FORM, Form.GERUND);
+        //System.out.println(realiser.realise(clause));
+        return realiser.realise(clause).toString();
     }
 
     private static void createAndShowGUI() {
