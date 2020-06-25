@@ -261,15 +261,9 @@ public class TextSound {
 	 * Turn the input string into a sound string that can be played by jFugue
 	 */
 	private static Pattern processString(String input, Pattern pattern) {
-		//StringBuilder soundString = new StringBuilder();
-		// For debugging / printout purposes
 		StringBuilder lastSentence = new StringBuilder();
-		// To allow word properties to influence sound
 		StringBuilder lastWord = new StringBuilder();
 		int lastWordLength = 0;
-
-		// Placing a space before punctuations to sound them and the word before
-		input = input.replaceAll("\\p{Punct}", " $0");
 
 		for (int charIndex = 0; charIndex < input.length(); charIndex++) {
 			char ch = input.charAt(charIndex);
@@ -278,6 +272,7 @@ public class TextSound {
 			lastSentence.append(ch);
 			String charString = String.valueOf(ch);
 			// A = 1, B = 2, ...
+			String lastCharString;
 			int charNum = orderings.get(ordering).indexOf(upperCh) + 1;
 
 			// Space
@@ -285,40 +280,45 @@ public class TextSound {
 
 				double theRestLength = restLength;
 
+				if (perWord) {
+					// Last character of word is a punctuation
+					lastCharString = String.valueOf(input.charAt((charIndex - 1)));
+					if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", lastCharString)) {
+
+						//System.out.println("last char: " + lastWord.substring(lastWord.length()-1));
+						//System.out.println("last word: " + lastWord.deleteCharAt(lastWord.length() - 1));
+
+						sonifyWord(items, lastWord.deleteCharAt(lastWord.length() - 1), pattern, true);
+						lastWord.setLength(0);
+						lastWord.append(lastCharString);
+						sonifyWord(items, lastWord, pattern, true);
+
+						//	if (lastCharString.equals(".")) {
+						//		System.out.println("period");
+						//	}
+
+						lastSentence.setLength(0);
+					} else {
+						sonifyWord(items, lastWord, pattern, true);
+					}
+				}
+
 				//if (passingWords.contains(lastWord)) {
 				//	theRestLength = restLength * (2d/3d);
 				//}
 
-				if (perWord) {
-					//sonifyWord(items, lastWord, soundString, true);
-					sonifyWord(items, lastWord, pattern, true);
-				}
-
   				lastWordLength = lastWord.length();
 				lastWord.setLength(0);
-				//soundString.append("R/" + String.format("%f", theRestLength) + " ");
 				pattern.add("R/" + String.format("%f", theRestLength) + " ");
 				patternCurrentTime += theRestLength;
 
 				if (charString.equals("\n")) {
 					// An extra rest on newlines
-					//soundString.append("R/" + String.format("%f", restLength) + " ");
 					pattern.add("R/" + String.format("%f", restLength) + " ");
 					patternCurrentTime += restLength;
 				}
 
 				patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
-
-				// Last character of word is a punctuation
-				//String lastCharString = String.valueOf(input.charAt((charIndex-1)));
-				//if (Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(input.charAt(charIndex-1)))) {
-				if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
-				//	System.out.println("last char: " + lastCharString);
-				//	if (lastCharString.equals(".")) {
-				//		System.out.println("period");
-				//	}
-					lastSentence.setLength(0);
-				}
 
 			} else {
 
@@ -326,15 +326,12 @@ public class TextSound {
 
 				// Character
 				if (perChar) {
-					//sonifyCharacter(lastWord, soundString, charNum, ch);
 					sonifyCharacter(lastWord, pattern, charNum, ch);
 				}
 
 			}
 		}
 
-		//System.out.println(soundString.toString());
-		//return soundString.toString();
 		System.out.println(pattern.toString());
 		return pattern;
 	}
