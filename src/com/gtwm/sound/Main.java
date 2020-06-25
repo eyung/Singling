@@ -208,11 +208,11 @@ public class Main extends JFrame {
             System.out.println(tempList.size() + " words were processed.");
 
             // Write final results in file for error logging
-            FileWriter writer = new FileWriter("resultlist.txt");
-            for (WordMap.Mapping str : tempList) {
-                writer.write(str + System.lineSeparator());
-            }
-            writer.close();
+            //FileWriter writer = new FileWriter("resultlist.txt");
+            //for (WordMap.Mapping str : tempList) {
+            //    writer.write(str + System.lineSeparator());
+            //}
+            //writer.close();
 
             TextSound.items = tempList;
 
