@@ -68,10 +68,10 @@ public class Main extends JFrame {
     final File workingDirectory = new File(System.getProperty("user.dir"));
 
     // Input file name
-    String inputText = "";
+    private String inputText = "";
 
     // Set default output file name
-    String outFilename = "output.mid";
+    private String outFilename = "output.mid";
 
     // Creating a text model for instructions textarea so that it can be updated
     static DefaultListModel model = new DefaultListModel();
@@ -81,7 +81,7 @@ public class Main extends JFrame {
     static Preferences prefs = Preferences.userNodeForPackage(Main.class);
 
     // Storing database words and values to list item
-    List<WordMap.Mapping> allItems;
+    private List<WordMap.Mapping> allItems;
 
     //static Highlighter highlighter;
     //static HighlightPainter painter;

@@ -168,8 +168,12 @@
                 <item value="0.03125"/>
                 <item value="0.015625"/>
                 <item value="0.0078125"/>
+                <item value="1.25"/>
+                <item value="1.50"/>
+                <item value="1.75"/>
+                <item value="2.00"/>
               </model>
-              <selectedIndex value="1"/>
+              <selectedIndex value="0"/>
             </properties>
           </component>
           <component id="c24ed" class="javax.swing.JSlider" binding="setOctaves">

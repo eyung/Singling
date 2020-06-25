@@ -21,6 +21,7 @@ import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import org.jfugue.realtime.RealtimePlayer;
+import org.jfugue.theory.Note;
 
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
@@ -376,8 +377,8 @@ public class TextSound {
 	}
 
 	public static void sonifyWord(List<WordMap.Mapping> items, StringBuilder lastWord, Pattern pattern, boolean doNoteGap) {
+		// Pattern transformed by sentiment values
 		Pattern transformedPattern = new Pattern();
-		//int offset = 0;
 
 		// Lookup database
 		for (WordMap.Mapping item : items) {
@@ -522,6 +523,19 @@ public class TextSound {
 
 					frequency = Math.round(frequency * 100.0) / 100.0;
 
+					// Make chord based on sentiment analysis value
+					String sentimentChord;
+					if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && !item.getSentimentPos().equalsIgnoreCase("0")) {
+						//System.out.println(makeMajorChord(Double.parseDouble(item.wordSentimentPos)));
+						sentimentChord = makeMajorChord(Double.parseDouble(item.wordSentimentPos));
+					} else if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL" && !item.getSentimentNeg().equalsIgnoreCase("0")) {
+						//System.out.println(makeMinorChord(Double.parseDouble(item.wordSentimentNeg)));
+						sentimentChord = makeMinorChord(Double.parseDouble(item.wordSentimentNeg));
+					} else {
+						sentimentChord = "";
+					}
+
+
 					// Hacky hack hack so that we are capping voices at 16
 					if (lexCount < 15) {
 						if (transformedPattern != null && !transformedPattern.toString().equals("")) {
@@ -529,7 +543,8 @@ public class TextSound {
 							pattern.add(transformedPattern + "/" + noteLength + "a" + attack + "d" + decay + "");
 						} else {
 							// Note + Duration + Attack + Decay
-							pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
+							//pattern.add("m" + frequency + "maj/" + noteLength + "a" + attack + "d" + decay + "");
+							pattern.add(musicNote + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + "");
 						}
 					}
 
@@ -853,7 +868,7 @@ public class TextSound {
 		//ordering =
 	}
 
-	public static void highlightWord(StringBuilder lastWord) {
+	private static void highlightWord(StringBuilder lastWord) {
 
 		int docLength = Main.textModel.getDocument().getLength();
 		String wordHighlight = lastWord.toString();
@@ -866,7 +881,7 @@ public class TextSound {
 		//System.out.println(lastWord.toString());
 		try {
 			//String textToSearch = Main.textModel.getDocument().getText(0, length);
-			System.out.println("Highlight: " + wordHighlight + " | Offset: " + highlighterOffset);
+			//System.out.println("Highlight: " + wordHighlight + " | Offset: " + highlighterOffset);
 			highlighterOffset = textToSearch.toLowerCase().indexOf(wordHighlight.toLowerCase(), highlighterOffset);
 			if (highlighterOffset != -1) {
 				Highlighter hl = Main.textModel.getHighlighter();
@@ -875,6 +890,24 @@ public class TextSound {
 				highlighterOffset += wordHighlight.length();
 			}
 		} catch (Exception e) {}
+	}
+
+	private static String makeMajorChord(double sentimentValue) {
+		String[] majorChords = {"maj", "maj6", "maj7", "maj9", "add9", "maj6%9", "maj7%6", "maj13"};
+		int chordNum = (int)Math.round(sentimentValue*10)-1;
+		while (chordNum > 7) {
+			chordNum += -1;
+		}
+		return majorChords[chordNum];
+	}
+
+	private static String makeMinorChord(double sentimentValue) {
+		String[] minorChords = {"min", "min6", "min7", "min9", "min11", "min7%11", "minadd9", "min6%9", "minmaj7", "minmaj9"};
+		int chordNum = (int)Math.round(sentimentValue*10)-1;
+		while (chordNum > 9) {
+			chordNum += -1;
+		}
+		return minorChords[chordNum];
 	}
 }
 
