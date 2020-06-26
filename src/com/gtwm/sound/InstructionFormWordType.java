@@ -31,6 +31,8 @@ public class InstructionFormWordType extends JDialog {
     private JSpinner incrementFrequency;
     private JSlider setAttack;
     private JSlider setDecay;
+    private JSlider setPitchbend;
+    private JSpinner incrementPitchbend;
 
     boolean instructionCheck = true;
 
@@ -92,6 +94,9 @@ public class InstructionFormWordType extends JDialog {
                         case DECAY:
                             instruction.setSoundModValue(String.valueOf(setDecay.getValue()));
                             break;
+                        case PITCHBEND:
+                            instruction.setSoundModValue(String.valueOf(setPitchbend.getValue()));
+                            break;
                     }
                 } else if (instruction.changeMode == TransformationManager.Instruction.ChangeModes.INCREMENT) {
                     instruction.setSoundMod(TransformationManager.Instruction.SoundMods.valueOf(String.valueOf(setSoundModBy.getSelectedItem())));
@@ -111,6 +116,9 @@ public class InstructionFormWordType extends JDialog {
                             break;
                         case MIDI_NOTE:
                             instruction.setSoundModValue(String.valueOf(incrementFrequency.getValue()));
+                            break;
+                        case PITCHBEND:
+                            instruction.setSoundModValue(String.valueOf(incrementPitchbend.getValue()));
                             break;
                     }
                 }
@@ -176,6 +184,7 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "NOTE_DURATION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(true);
@@ -186,6 +195,7 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "OCTAVE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -196,6 +206,7 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "INSTRUMENT") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -206,6 +217,7 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "VOLUME") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -216,6 +228,7 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PERCUSSION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -226,6 +239,7 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "MIDI_NOTE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -236,6 +250,7 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(true);
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "ATTACK") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -246,6 +261,7 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(false);
                     setAttack.setVisible(true);
                     setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "DECAY") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -256,6 +272,18 @@ public class InstructionFormWordType extends JDialog {
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
                     setDecay.setVisible(true);
+                    setPitchbend.setVisible(false);
+                } else if (setSoundModTo.getSelectedItem() == "PITCHBEND") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(false);
+                    setOctave.setVisible(false);
+                    setInstrument.setVisible(false);
+                    setVolume.setVisible(false);
+                    setPercussion.setVisible(false);
+                    setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
+                    setPitchbend.setVisible(true);
                 }
                 InstructionFormWordType.super.pack();
             }
@@ -270,30 +298,42 @@ public class InstructionFormWordType extends JDialog {
                     incrementOctave.setVisible(false);
                     incrementVolume.setVisible(false);
                     incrementFrequency.setVisible(false);
+                    incrementPitchbend.setVisible(false);
                 } else if (setSoundModBy.getSelectedItem() == "NOTE_DURATION") {
                     incrementTempo.setVisible(false);
                     incrementDuration.setVisible(true);
                     incrementOctave.setVisible(false);
                     incrementVolume.setVisible(false);
                     incrementFrequency.setVisible(false);
+                    incrementPitchbend.setVisible(false);
                 } else if (setSoundModBy.getSelectedItem() == "OCTAVE") {
                     incrementTempo.setVisible(false);
                     incrementDuration.setVisible(false);
                     incrementOctave.setVisible(true);
                     incrementVolume.setVisible(false);
                     incrementFrequency.setVisible(false);
+                    incrementPitchbend.setVisible(false);
                 } else if (setSoundModBy.getSelectedItem() == "VOLUME") {
                     incrementTempo.setVisible(false);
                     incrementDuration.setVisible(false);
                     incrementOctave.setVisible(false);
                     incrementVolume.setVisible(true);
                     incrementFrequency.setVisible(false);
+                    incrementPitchbend.setVisible(false);
                 } else if (setSoundModBy.getSelectedItem() == "MIDI_NOTE") {
                     incrementTempo.setVisible(false);
                     incrementDuration.setVisible(false);
                     incrementOctave.setVisible(false);
                     incrementVolume.setVisible(false);
                     incrementFrequency.setVisible(true);
+                    incrementPitchbend.setVisible(false);
+                } else if (setSoundModBy.getSelectedItem() == "PITCHBEND") {
+                    incrementTempo.setVisible(false);
+                    incrementDuration.setVisible(false);
+                    incrementOctave.setVisible(false);
+                    incrementVolume.setVisible(false);
+                    incrementFrequency.setVisible(false);
+                    incrementPitchbend.setVisible(true);
                 }
                 InstructionFormWordType.super.pack();
             }

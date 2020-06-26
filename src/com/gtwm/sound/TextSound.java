@@ -96,6 +96,9 @@ public class TextSound {
 	static int decay;
 	static int baseDecay = 64;
 
+	// Pitch Bend
+	static long pitchBend = 8192;
+
 	// Default note operation
 	enum noteOperationType { LEXNAMEFREQ, STATICFREQ, MUTE }
 	static noteOperationType defaultNoteOperation = noteOperationType.LEXNAMEFREQ;
@@ -428,6 +431,24 @@ public class TextSound {
 							break;
 					}
 
+					// Normalise to fit in the range
+					double topFrequency = baseFrequency;
+					for (int j = 0; j < targetOctave; j++) {
+						topFrequency = topFrequency * 2;
+					}
+					while (frequency > topFrequency) {
+						frequency = frequency / 2;
+					}
+
+					// Convert freq to MIDI music string using reference note and frequency A4 440hz
+					int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
+
+					// Find pitch using base midi note number
+					pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
+					//System.out.println("Pitch bend: " + pitchBend);
+					//System.out.println("Frequency: " + frequency);
+					//System.out.println("Midi Number: " + midiNumber);
+
 					// Go through the instructions queue
 					for (TransformationManager.Instruction i : instructions) {
 
@@ -496,30 +517,6 @@ public class TextSound {
 							}
 						}
 					}
-
-					// Normalise to fit in the range
-					double topFrequency = baseFrequency;
-					for (int j = 0; j < targetOctave; j++) {
-						topFrequency = topFrequency * 2;
-					}
-					while (frequency > topFrequency) {
-						frequency = frequency / 2;
-					}
-
-					// Testing
-					//System.out.println("Frequency for " + lastWord + "=" + thisValue +
-					//		" normalized to octave "
-					//		+ octaves + ", top frequency " + topFrequency + ": " +
-					//		frequency);
-
-					// Convert freq to MIDI music string using reference note and frequency A4 440hz
-					int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
-
-					// Find pitch using base midi note number
-					long pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
-					//System.out.println("Pitch bend: " + pitchBend);
-					//System.out.println("Frequency: " + frequency);
-					//System.out.println("Midi Number: " + midiNumber);
 
 					//frequency = Math.round(frequency * 100.0) / 100.0;
 
@@ -795,6 +792,14 @@ public class TextSound {
 				Setting settingsDecay = Setting.ATTACK;
 				decay = Integer.parseInt(i.soundModValue);
 				decay = (int) settingsDecay.keepInRange(decay);
+				break;
+
+			case PITCHBEND:
+				if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
+					pitchBend = Long.parseLong(i.soundModValue);
+				} else {
+					pitchBend += Long.parseLong(i.soundModValue);
+				}
 				break;
 		}
 
