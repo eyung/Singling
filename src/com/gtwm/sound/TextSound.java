@@ -513,12 +513,15 @@ public class TextSound {
 					//		frequency);
 
 					// Convert freq to MIDI music string using reference note and frequency A4 440hz
-					double tempNote;
-					int musicNote;
-					tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
-					musicNote = (int) Math.rint(tempNote);
+					int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
 
-					frequency = Math.round(frequency * 100.0) / 100.0;
+					// Find pitch using base midi note number
+					long pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
+					//System.out.println("Pitch bend: " + pitchBend);
+					//System.out.println("Frequency: " + frequency);
+					//System.out.println("Midi Number: " + midiNumber);
+
+					//frequency = Math.round(frequency * 100.0) / 100.0;
 
 					// Make chord based on sentiment analysis value
 					String sentimentChord;
@@ -532,7 +535,6 @@ public class TextSound {
 						sentimentChord = "";
 					}
 
-
 					// Hacky hack hack so that we are capping voices at 16
 					if (lexCount < 15) {
 						if (transformedPattern != null && !transformedPattern.toString().equals("")) {
@@ -540,12 +542,20 @@ public class TextSound {
 							pattern.add(transformedPattern + "/" + noteLength + "a" + attack + "d" + decay + "");
 						} else {
 							// Note + Duration + Attack + Decay
-							//pattern.add("m" + frequency + "maj/" + noteLength + "a" + attack + "d" + decay + "");
-							pattern.add(musicNote + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + "");
+
+							// JFugue's implementation which adds microtones
+							//pattern.add("m" + frequency + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + "");
+							//pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
+							//pattern.add("m512.3q");
+							//pattern.add(":PitchWheel(5192) 72/0.25 :PitchWheel(8192)");
+
+							//pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
+							pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " :PW(8192)");
+							//pattern.add(midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 						}
 					}
 
-					//System.out.println("Convert frequency: " + frequency + " to note: " + musicNote);
+					System.out.println("Convert frequency: " + frequency + " to note: " + midiNumber);
 
 					lexCount++;
 				}

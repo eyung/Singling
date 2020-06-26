@@ -187,7 +187,7 @@
               <paintTicks value="true"/>
               <paintTrack value="true"/>
               <snapToTicks value="false"/>
-              <value value="10"/>
+              <value value="2"/>
               <valueIsAdjusting value="true"/>
             </properties>
           </component>
