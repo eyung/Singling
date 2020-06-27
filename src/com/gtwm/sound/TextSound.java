@@ -254,8 +254,10 @@ public class TextSound {
 		try {
 			if (player.getManagedPlayer().isPlaying()) {
 				player.getManagedPlayer().pause();
+				singlingPlayer.stop();
 			} else if (player.getManagedPlayer().isPaused()) {
 				player.getManagedPlayer().resume();
+				singlingPlayer.resume();
 			}
 		} catch (Exception e) {}
 

@@ -11,8 +11,12 @@ import org.staccato.StaccatoParser;
 import javax.sound.midi.Sequence;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
+import java.util.concurrent.Semaphore;
 
 public class SinglingPlayer implements Runnable {
+
+    private volatile boolean running = true;
+    private volatile boolean paused = false;
 
     private Pattern pattern;
     private Player player;
@@ -35,7 +39,6 @@ public class SinglingPlayer implements Runnable {
             plp.addParserListener(dpl);
 
             LyricParserListener lpl = new LyricParserListener();
-
             plp.addParserListener(lpl);
 
             //player.play(pattern);
@@ -44,13 +47,29 @@ public class SinglingPlayer implements Runnable {
 
             //player.getManagedPlayer().finish();
 
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
+
     }
 
     public void stopMusic(Thread threadPlayer) {
         threadPlayer.interrupt();
         threadPlayer = null;
         player.getManagedPlayer().finish();
+    }
+
+    public void stop() {
+        try {
+            plp.wait();
+        } catch (Exception e) {
+        }
+    }
+
+    public void resume() {
+        try {
+            plp.notify();
+        } catch (Exception e) {
+        }
     }
 }
 
