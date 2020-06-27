@@ -224,6 +224,7 @@ public class TextSound {
 	public static void doStartPlayer(String input) {
 		player = new Player();
 		singlingPlayer = new SinglingPlayer();
+
 		threadPlayer = new Thread(singlingPlayer);
 
 		pattern = processString(input, pattern);
@@ -250,13 +251,14 @@ public class TextSound {
 	}
 
 	public static void doPause() {
-		if (player.getManagedPlayer().isPlaying()) {
-			player.getManagedPlayer().pause();
-			System.out.println("Pausing: " + threadPlayer.getId());
-		} else if (player.getManagedPlayer().isPaused()) {
-			player.getManagedPlayer().resume();
-			System.out.println("Resuming: " + threadPlayer.getId());
-		}
+		try {
+			if (player.getManagedPlayer().isPlaying()) {
+				player.getManagedPlayer().pause();
+			} else if (player.getManagedPlayer().isPaused()) {
+				player.getManagedPlayer().resume();
+			}
+		} catch (Exception e) {}
+
 	}
 
 	/**
@@ -544,7 +546,7 @@ public class TextSound {
 							//pattern.add(":PitchWheel(5192) 72/0.25 :PitchWheel(8192)");
 
 							//pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
-							pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " :PW(8192) " + "'" + lastWord);
+							pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " '" + lastWord);
 						}
 					}
 

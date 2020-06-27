@@ -3,10 +3,12 @@ package com.gtwm.sound;
 import org.jfugue.devtools.DiagnosticParserListener;
 import org.jfugue.parser.ParserListenerAdapter;
 import org.jfugue.pattern.Pattern;
+import org.jfugue.player.ManagedPlayerListener;
 import org.jfugue.player.Player;
 import org.jfugue.temporal.TemporalPLP;
 import org.staccato.StaccatoParser;
 
+import javax.sound.midi.Sequence;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 
@@ -15,8 +17,8 @@ public class SinglingPlayer implements Runnable {
     private Pattern pattern;
     private Player player;
 
-    StaccatoParser parser = new StaccatoParser();
-    TemporalPLP plp = new TemporalPLP();
+    private StaccatoParser parser = new StaccatoParser();
+    private TemporalPLP plp = new TemporalPLP();
 
     public void setPattern (Pattern myPattern, Player myPlayer) {
         pattern = myPattern;
@@ -29,10 +31,11 @@ public class SinglingPlayer implements Runnable {
             parser.addParserListener(plp);
             parser.parse(pattern);
 
-            //DiagnosticParserListener dpl = new DiagnosticParserListener();
-            //plp.addParserListener(dpl);
+            DiagnosticParserListener dpl = new DiagnosticParserListener();
+            plp.addParserListener(dpl);
 
             LyricParserListener lpl = new LyricParserListener();
+
             plp.addParserListener(lpl);
 
             //player.play(pattern);
@@ -53,7 +56,7 @@ public class SinglingPlayer implements Runnable {
 
 class LyricParserListener extends ParserListenerAdapter {
     //String thisLyric;
-    int offset;
+    int offset=0;
 
     @Override
     public void onLyricParsed(String lyric) {
@@ -65,8 +68,8 @@ class LyricParserListener extends ParserListenerAdapter {
         int docLength = Main.textModel.getDocument().getLength();
         try {
             String textToSearch = Main.textModel.getDocument().getText(0, docLength);
-            System.out.println("Highlight: " + lyric + " | Offset: " + offset);
-            offset = textToSearch.toLowerCase().indexOf(lyric.toLowerCase(), offset);
+            //System.out.println("Highlight: " + lyric + " | Offset: " + offset);
+            offset = textToSearch.toLowerCase().indexOf(lyric.toLowerCase(), offset-lyric.length());
             if (offset != -1) {
                 Highlighter hl = Main.textModel.getHighlighter();
                 hl.removeAllHighlights();
