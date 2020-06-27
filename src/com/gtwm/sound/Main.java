@@ -432,6 +432,7 @@ public class Main extends JFrame {
         offRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+
                 realtimePlayer.close();
             }
         });
@@ -439,7 +440,9 @@ public class Main extends JFrame {
         btnTogglePause.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+
                 TextSound.doPause();
+
             }
         });
     }

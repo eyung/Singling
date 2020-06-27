@@ -125,9 +125,6 @@ public class TextSound {
 	// Keeping track of how many categories a word falls under
 	static int lexCount = 0;
 
-	// Character offset count for highlighting
-	static int highlighterOffset = 0;
-
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
 				1.0, 10.0), TEMPO(40, 400), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383), ATTACK(0, 127);
@@ -233,7 +230,7 @@ public class TextSound {
 
 		singlingPlayer.setPattern(pattern, player);
 
-		System.out.println("Start player:" + threadPlayer.getId());
+		//System.out.println("Start player:" + threadPlayer.getId());
 		threadPlayer.start();
 	}
 
@@ -255,8 +252,10 @@ public class TextSound {
 	public static void doPause() {
 		if (player.getManagedPlayer().isPlaying()) {
 			player.getManagedPlayer().pause();
-		} else if(player.getManagedPlayer().isPaused()) {
+			System.out.println("Pausing: " + threadPlayer.getId());
+		} else if (player.getManagedPlayer().isPaused()) {
 			player.getManagedPlayer().resume();
+			System.out.println("Resuming: " + threadPlayer.getId());
 		}
 	}
 
@@ -385,8 +384,6 @@ public class TextSound {
 
 			// Match
 			if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
-
-				highlightWord(lastWord);
 
 				// Lexnames to read
 				double[] wordValues = convertToArr.toDoubleArr(item.getValue());
@@ -547,8 +544,7 @@ public class TextSound {
 							//pattern.add(":PitchWheel(5192) 72/0.25 :PitchWheel(8192)");
 
 							//pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
-							pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " :PW(8192)");
-							//pattern.add(midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+							pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " :PW(8192) " + "'" + lastWord);
 						}
 					}
 
@@ -802,7 +798,6 @@ public class TextSound {
 				}
 				break;
 		}
-
 	}
 
 	private static Pattern applySentimentMod(TransformationManager.Instruction i, double wordValue, String sentimentValue, Pattern pattern) {
@@ -880,30 +875,6 @@ public class TextSound {
 		//ordering =
 	}
 
-	private static void highlightWord(StringBuilder lastWord) {
-
-		int docLength = Main.textModel.getDocument().getLength();
-		String wordHighlight = lastWord.toString();
-		String textToSearch = "";
-		try {
-			textToSearch = Main.textModel.getDocument().getText(0, docLength);
-		} catch (Exception e) {}
-
-		// Highlight words in textarea
-		//System.out.println(lastWord.toString());
-		try {
-			//String textToSearch = Main.textModel.getDocument().getText(0, length);
-			//System.out.println("Highlight: " + wordHighlight + " | Offset: " + highlighterOffset);
-			highlighterOffset = textToSearch.toLowerCase().indexOf(wordHighlight.toLowerCase(), highlighterOffset);
-			if (highlighterOffset != -1) {
-				Highlighter hl = Main.textModel.getHighlighter();
-				//hl.removeAllHighlights();
-				hl.addHighlight(highlighterOffset, highlighterOffset +wordHighlight.length(), DefaultHighlighter.DefaultPainter);
-				highlighterOffset += wordHighlight.length();
-			}
-		} catch (Exception e) {}
-	}
-
 	private static String makeMajorChord(double sentimentValue) {
 		String[] majorChords = {"maj", "maj6", "maj7", "maj9", "add9", "maj6%9", "maj7%6", "maj13"};
 		int chordNum = (int)Math.round(sentimentValue*10)-1;
@@ -922,8 +893,6 @@ public class TextSound {
 		return minorChords[chordNum];
 	}
 }
-
-
 
 class serialInstructionsQueue {
 	static ObjectOutputStream serializeObject(List<TransformationManager.Instruction> thisObjectList) {
