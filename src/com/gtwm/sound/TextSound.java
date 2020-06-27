@@ -541,7 +541,7 @@ public class TextSound {
 						} else {
 							// Note + Duration + Attack + Decay
 
-							// JFugue's implementation which adds microtones
+							// JFugue's implementation which adds microtones as pitch bend events
 							//pattern.add("m" + frequency + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + "");
 							//pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
 							//pattern.add("m512.3q");

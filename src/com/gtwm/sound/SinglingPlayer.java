@@ -3,15 +3,13 @@ package com.gtwm.sound;
 import org.jfugue.devtools.DiagnosticParserListener;
 import org.jfugue.parser.ParserListenerAdapter;
 import org.jfugue.pattern.Pattern;
-import org.jfugue.player.ManagedPlayerListener;
 import org.jfugue.player.Player;
 import org.jfugue.temporal.TemporalPLP;
 import org.staccato.StaccatoParser;
 
-import javax.sound.midi.Sequence;
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
-import java.util.concurrent.Semaphore;
+import java.awt.*;
 
 public class SinglingPlayer implements Runnable {
 
@@ -22,7 +20,7 @@ public class SinglingPlayer implements Runnable {
     private StaccatoParser parser = new StaccatoParser();
     private TemporalPLP plp = new TemporalPLP();
 
-    // Initalise Parser Listeners
+    // Initialise Parser Listeners
     private DiagnosticParserListener dpl = new DiagnosticParserListener();
     private LyricParserListener lpl = new LyricParserListener();
 
@@ -79,7 +77,7 @@ class LyricParserListener extends ParserListenerAdapter {
                 }
             }
         }
-        highlightWord(lyric);
+        doHighlight(lyric);
     }
 
     public void stop() {
@@ -101,7 +99,7 @@ class LyricParserListener extends ParserListenerAdapter {
         }
     }
 
-    private void highlightWord(String lyric) {
+    private void doHighlight(String lyric) {
         int docLength = Main.textModel.getDocument().getLength();
         try {
             String textToSearch = Main.textModel.getDocument().getText(0, docLength);
@@ -110,7 +108,7 @@ class LyricParserListener extends ParserListenerAdapter {
             if (offset != -1) {
                 Highlighter hl = Main.textModel.getHighlighter();
                 hl.removeAllHighlights();
-                hl.addHighlight(offset, offset+lyric.length(), DefaultHighlighter.DefaultPainter);
+                hl.addHighlight(offset, offset+lyric.length(), new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN));
                 offset += lyric.length();
             }
         } catch (Exception e) {}

@@ -16,6 +16,7 @@ import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.phrasespec.VPPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 
+import javax.imageio.ImageIO;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -118,6 +119,9 @@ public class Main extends JFrame {
         // Set models
         list1.setModel(model);
         textModel = this.textArea1;
+
+        //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
+        //btnPlay.setIcon(a);
 
         // Add docomentListener to input text panel
         textArea1.getDocument().addDocumentListener(documentListener);
@@ -229,42 +233,39 @@ public class Main extends JFrame {
         // Load user preferences
         //loadSettings(this.textArea1, TextSound.prefsFile);
 
-        btnProcess.addActionListener(new
+        btnProcess.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                 // Handle open button action
+                 if (e.getSource() == btnProcess) {
+                     if (textArea1.getLineCount() > 0) {
 
-                                             ActionListener() {
-                                                 @Override
-                                                 public void actionPerformed(ActionEvent e) {
+                         fc.setCurrentDirectory(workingDirectory);
 
-                                                     // Handle open button action
-                                                     if (e.getSource() == btnProcess) {
-                                                         if (textArea1.getLineCount() > 0) {
+                         int returnVal = fc.showSaveDialog(panel1);
 
-                                                             fc.setCurrentDirectory(workingDirectory);
+                         if (returnVal == JFileChooser.APPROVE_OPTION) {
+                             File fileToSave = fc.getSelectedFile();
+                             outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
+                             System.out.println("Save as file: " + outFilename);
 
-                                                             int returnVal = fc.showSaveDialog(panel1);
+                             try {
+                                 // Get initial settings from user inputs
+                                 setBaseValues();
 
-                                                             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                                                                 File fileToSave = fc.getSelectedFile();
-                                                                 outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
-                                                                 System.out.println("Save as file: " + outFilename);
-
-                                                                 try {
-                                                                     // Get initial settings from user inputs
-                                                                     setBaseValues();
-
-                                                                     // Process text
-                                                                     TextSound.runStuff();
-                                                                     TextSound.doSaveAsMidi(textArea1.getText(), outFilename);
-                                                                 } catch (Exception ex) {
-                                                                     ex.printStackTrace();
-                                                                 }
-                                                             } else {
-                                                                 System.out.println("Save command cancelled by user.");
-                                                             }
-                                                         }
-                                                     }
-                                                 }
-                                             });
+                                 // Process text
+                                 TextSound.runStuff();
+                                 TextSound.doSaveAsMidi(textArea1.getText(), outFilename);
+                             } catch (Exception ex) {
+                                 ex.printStackTrace();
+                             }
+                         } else {
+                             System.out.println("Save command cancelled by user.");
+                         }
+                     }
+                 }
+            }
+         });
 
         btnPlay.addActionListener(new ActionListener() {
             @Override
@@ -288,135 +289,90 @@ public class Main extends JFrame {
             }
         });
 
-        btnRemoveInstruction.addActionListener(new
-
-                                                       ActionListener() {
-                                                           @Override
-                                                           public void actionPerformed(ActionEvent e) {
-                                                               TransformationManager.Instruction selectedInstruction = list1.getSelectedValue();
-                                                               TextSound.instructions.remove(selectedInstruction);
-                                                               model.removeElement(selectedInstruction);
-                                                           }
-                                                       });
+        btnRemoveInstruction.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               TransformationManager.Instruction selectedInstruction = list1.getSelectedValue();
+               TextSound.instructions.remove(selectedInstruction);
+               model.removeElement(selectedInstruction);
+           }
+        });
 
         btnRemoveInstruction.setMnemonic(KeyEvent.VK_DELETE);
 
-        btnAddInstruction.addActionListener(new
+        btnAddInstruction.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            switch (TransformationManager.Instruction.Mods.valueOf(btnAddInstruction.getSelectedItem().toString())) {
+                case WORDTYPE:
+                    InstructionFormWordType dialogWordType = new InstructionFormWordType();
+                    dialogWordType.setTitle("Transformation: Word Type");
+                    dialogWordType.pack();
+                    dialogWordType.setLocationRelativeTo(panelTransformationInputs);
+                    dialogWordType.setVisible(true);
+                    btnAddInstruction.setSelectedIndex(0);
+                    break;
+                case WORDLENGTH:
+                    InstructionFormWordLength dialogWordLength = new InstructionFormWordLength();
+                    dialogWordLength.setTitle("Transformation: Word Length");
+                    dialogWordLength.pack();
+                    dialogWordLength.setLocationRelativeTo(panelTransformationInputs);
+                    dialogWordLength.setVisible(true);
+                    btnAddInstruction.setSelectedIndex(0);
+                    break;
+                case WORDVALUE:
+                    InstructionFormWordValue dialogWordValue = new InstructionFormWordValue();
+                    dialogWordValue.setTitle("Transformation: Word LGC");
+                    dialogWordValue.pack();
+                    dialogWordValue.setLocationRelativeTo(panelTransformationInputs);
+                    dialogWordValue.setVisible(true);
+                    btnAddInstruction.setSelectedIndex(0);
+                    break;
+                case PUNCTUATION:
+                    InstructionFormSymbols dialogSymbol = new InstructionFormSymbols();
+                    dialogSymbol.setTitle("Transformation: Symbols");
+                    dialogSymbol.pack();
+                    dialogSymbol.setLocationRelativeTo(panelTransformationInputs);
+                    dialogSymbol.setVisible(true);
+                    btnAddInstruction.setSelectedIndex(0);
+                    break;
+                case CHARACTER:
+                    InstructionFormCharacter dialogCharacter = new InstructionFormCharacter();
+                    dialogCharacter.setTitle("Transformation: Character");
+                    dialogCharacter.pack();
+                    dialogCharacter.setLocationRelativeTo(panelTransformationInputs);
+                    dialogCharacter.setVisible(true);
+                    btnAddInstruction.setSelectedIndex(0);
+                    break;
+                case SENTIMENT:
+                    InstructionFormSentiment dialogSentiment = new InstructionFormSentiment();
+                    dialogSentiment.setTitle("Transformation: Sentiment");
+                    dialogSentiment.pack();
+                    dialogSentiment.setLocationRelativeTo(panelTransformationInputs);
+                    dialogSentiment.setVisible(true);
+                    btnAddInstruction.setSelectedIndex(0);
+                    break;
+            }
+        }
+    });
 
-                                                    ActionListener() {
-                                                        @Override
-                                                        public void actionPerformed(ActionEvent e) {
-                                                            /*if (btnAddInstruction.getSelectedItem() == "WORD_TYPE") {
-                                                                InstructionFormWordType dialog = new InstructionFormWordType();
-                                                                dialog.setTitle("Transformation: Word Type");
-                                                                dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
-                                                                dialog.setVisible(true);
-                                                                btnAddInstruction.setSelectedIndex(0);
-                                                            } else if (btnAddInstruction.getSelectedItem() == "WORD_LENGTH") {
-                                                                InstructionFormWordLength dialog = new InstructionFormWordLength();
-                                                                dialog.setTitle("Transformation: Word Length");
-                                                                dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
-                                                                dialog.setVisible(true);
-                                                                btnAddInstruction.setSelectedIndex(0);
-                                                            } else if (btnAddInstruction.getSelectedItem() == "WORD_CATEGORY") {
-                                                                InstructionFormWordValue dialog = new InstructionFormWordValue();
-                                                                dialog.setTitle("Transformation: Word Category");
-                                                                dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
-                                                                dialog.setVisible(true);
-                                                                btnAddInstruction.setSelectedIndex(0);
-                                                            } else if (btnAddInstruction.getSelectedItem() == "SYMBOLS") {
-                                                                InstructionFormSymbols dialog = new InstructionFormSymbols();
-                                                                dialog.setTitle("Transformation: Symbols");
-                                                                dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
-                                                                dialog.setVisible(true);
-                                                                btnAddInstruction.setSelectedIndex(0);
-                                                            } else if (btnAddInstruction.getSelectedItem() == "CHARACTER") {
-                                                                InstructionFormCharacter dialog = new InstructionFormCharacter();
-                                                                dialog.setTitle("Transformation: Character");
-                                                                dialog.pack();
-                                                                dialog.setLocationRelativeTo(panelTransformationInputs);
-                                                                dialog.setVisible(true);
-                                                                btnAddInstruction.setSelectedIndex(0);
-                                                            }*/
+        characterRadioButton.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent actionEvent) {
+               TextSound.perChar = !TextSound.perChar;
 
-                                                            switch (TransformationManager.Instruction.Mods.valueOf(btnAddInstruction.getSelectedItem().toString())) {
-                                                                case WORDTYPE:
-                                                                    InstructionFormWordType dialogWordType = new InstructionFormWordType();
-                                                                    dialogWordType.setTitle("Transformation: Word Type");
-                                                                    dialogWordType.pack();
-                                                                    dialogWordType.setLocationRelativeTo(panelTransformationInputs);
-                                                                    dialogWordType.setVisible(true);
-                                                                    btnAddInstruction.setSelectedIndex(0);
-                                                                    break;
-                                                                case WORDLENGTH:
-                                                                    InstructionFormWordLength dialogWordLength = new InstructionFormWordLength();
-                                                                    dialogWordLength.setTitle("Transformation: Word Length");
-                                                                    dialogWordLength.pack();
-                                                                    dialogWordLength.setLocationRelativeTo(panelTransformationInputs);
-                                                                    dialogWordLength.setVisible(true);
-                                                                    btnAddInstruction.setSelectedIndex(0);
-                                                                    break;
-                                                                case WORDVALUE:
-                                                                    InstructionFormWordValue dialogWordValue = new InstructionFormWordValue();
-                                                                    dialogWordValue.setTitle("Transformation: Word Category");
-                                                                    dialogWordValue.pack();
-                                                                    dialogWordValue.setLocationRelativeTo(panelTransformationInputs);
-                                                                    dialogWordValue.setVisible(true);
-                                                                    btnAddInstruction.setSelectedIndex(0);
-                                                                    break;
-                                                                case PUNCTUATION:
-                                                                    InstructionFormSymbols dialogSymbol = new InstructionFormSymbols();
-                                                                    dialogSymbol.setTitle("Transformation: Symbols");
-                                                                    dialogSymbol.pack();
-                                                                    dialogSymbol.setLocationRelativeTo(panelTransformationInputs);
-                                                                    dialogSymbol.setVisible(true);
-                                                                    btnAddInstruction.setSelectedIndex(0);
-                                                                    break;
-                                                                case CHARACTER:
-                                                                    InstructionFormCharacter dialogCharacter = new InstructionFormCharacter();
-                                                                    dialogCharacter.setTitle("Transformation: Character");
-                                                                    dialogCharacter.pack();
-                                                                    dialogCharacter.setLocationRelativeTo(panelTransformationInputs);
-                                                                    dialogCharacter.setVisible(true);
-                                                                    btnAddInstruction.setSelectedIndex(0);
-                                                                    break;
-                                                                case SENTIMENT:
-                                                                    InstructionFormSentiment dialogSentiment = new InstructionFormSentiment();
-                                                                    dialogSentiment.setTitle("Transformation: Sentiment");
-                                                                    dialogSentiment.pack();
-                                                                    dialogSentiment.setLocationRelativeTo(panelTransformationInputs);
-                                                                    dialogSentiment.setVisible(true);
-                                                                    btnAddInstruction.setSelectedIndex(0);
-                                                                    break;
-                                                            }
-                                                        }
-                                                    });
+               setOrdering.setVisible(true);
+           }
+        });
 
-        characterRadioButton.addActionListener(new
+        wordRadioButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent actionEvent) {
+              TextSound.perWord = !TextSound.perWord;
 
-                                                       ActionListener() {
-                                                           @Override
-                                                           public void actionPerformed(ActionEvent actionEvent) {
-                                                               TextSound.perChar = !TextSound.perChar;
-
-                                                               setOrdering.setVisible(true);
-                                                           }
-                                                       });
-
-        wordRadioButton.addActionListener(new
-
-                                                  ActionListener() {
-                                                      @Override
-                                                      public void actionPerformed(ActionEvent actionEvent) {
-                                                          TextSound.perWord = !TextSound.perWord;
-
-                                                          setOrdering.setVisible(false);
-                                                      }
-                                                  });
+              setOrdering.setVisible(false);
+          }
+        });
 
         onRadioButton.addActionListener(new ActionListener() {
             @Override

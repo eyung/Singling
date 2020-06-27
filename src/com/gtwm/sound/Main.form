@@ -168,10 +168,6 @@
                 <item value="0.03125"/>
                 <item value="0.015625"/>
                 <item value="0.0078125"/>
-                <item value="1.25"/>
-                <item value="1.50"/>
-                <item value="1.75"/>
-                <item value="2.00"/>
               </model>
               <selectedIndex value="0"/>
             </properties>
@@ -396,7 +392,7 @@
                 <item value="8.66"/>
                 <item value="8.18"/>
               </model>
-              <selectedIndex value="80"/>
+              <selectedIndex value="0"/>
               <visible value="true"/>
             </properties>
           </component>
@@ -531,6 +527,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <hideActionText value="false"/>
                   <text value="Play"/>
                 </properties>
               </component>
@@ -539,14 +536,9 @@
                   <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Convert to MIDI"/>
+                  <text value="Download as MIDI"/>
                 </properties>
               </component>
-              <hspacer id="ba796">
-                <constraints>
-                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-              </hspacer>
               <component id="c8c4c" class="javax.swing.JButton" binding="btnTogglePause">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -555,6 +547,11 @@
                   <text value="Pause/Resume"/>
                 </properties>
               </component>
+              <hspacer id="1bda4">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
             </children>
           </grid>
           <scrollpane id="96831">
@@ -633,7 +630,6 @@
                     <item value="WORDVALUE"/>
                     <item value="PUNCTUATION"/>
                     <item value="CHARACTER"/>
-                    <item value="SENTIMENT"/>
                   </model>
                   <toolTipText value="Transformation"/>
                 </properties>
