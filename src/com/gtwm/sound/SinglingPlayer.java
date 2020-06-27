@@ -15,14 +15,16 @@ import java.util.concurrent.Semaphore;
 
 public class SinglingPlayer implements Runnable {
 
-    private volatile boolean running = true;
-    private volatile boolean paused = false;
-
     private Pattern pattern;
     private Player player;
 
+    // Initialise Parsers
     private StaccatoParser parser = new StaccatoParser();
     private TemporalPLP plp = new TemporalPLP();
+
+    // Initalise Parser Listeners
+    private DiagnosticParserListener dpl = new DiagnosticParserListener();
+    private LyricParserListener lpl = new LyricParserListener();
 
     public void setPattern (Pattern myPattern, Player myPlayer) {
         pattern = myPattern;
@@ -35,52 +37,68 @@ public class SinglingPlayer implements Runnable {
             parser.addParserListener(plp);
             parser.parse(pattern);
 
-            DiagnosticParserListener dpl = new DiagnosticParserListener();
+            // Output diagnostic data to console
             plp.addParserListener(dpl);
 
-            LyricParserListener lpl = new LyricParserListener();
+            // Highlight lyrics as music is played
             plp.addParserListener(lpl);
 
             //player.play(pattern);
             player.delayPlay(1000, pattern);
+
+            // Start temporal parsing
             plp.parse();
 
             //player.getManagedPlayer().finish();
 
         } catch (Exception e) {
         }
-
-    }
-
-    public void stopMusic(Thread threadPlayer) {
-        threadPlayer.interrupt();
-        threadPlayer = null;
-        player.getManagedPlayer().finish();
     }
 
     public void stop() {
-        try {
-            plp.wait();
-        } catch (Exception e) {
-        }
+        lpl.stop();
     }
 
     public void resume() {
-        try {
-            plp.notify();
-        } catch (Exception e) {
-        }
+        lpl.resume();
     }
 }
 
 class LyricParserListener extends ParserListenerAdapter {
-    //String thisLyric;
     int offset=0;
+    private volatile boolean paused = false;
 
     @Override
     public void onLyricParsed(String lyric) {
-        //thisLyric = lyric;
+        synchronized(this) {
+            while (paused) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         highlightWord(lyric);
+    }
+
+    public void stop() {
+        synchronized(this) {
+            this.paused = true;
+            notifyAll();
+        }
+    }
+
+    public void resume() {
+        synchronized(this) {
+            this.paused = false;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            notifyAll();
+        }
     }
 
     private void highlightWord(String lyric) {
