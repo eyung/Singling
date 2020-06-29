@@ -230,9 +230,6 @@ public class Main extends JFrame {
             ex.printStackTrace();
         }
 
-        // Load user preferences
-        //loadSettings(this.textArea1, TextSound.prefsFile);
-
         btnProcess.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -501,7 +498,7 @@ public class Main extends JFrame {
         g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
     }
 
-    private static void saveSettings(String saveFile) {
+   /* private static void saveSettings(String saveFile) {
         TextSound.prefsFile = saveFile;
         // Save instructions to file
         ObjectOutputStream x = serialInstructionsQueue.serializeObject(TextSound.instructions);
@@ -520,7 +517,7 @@ public class Main extends JFrame {
         }
         String prefString2 = prefs.get("textPref", "y");
         //textArea.setText(prefString2);
-    }
+    }*/
 
     private void setBaseValues() {
         TextSound.baseInstrument = String.valueOf(setInstrument.getSelectedItem());
@@ -543,6 +540,18 @@ public class Main extends JFrame {
         TextSound.orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
         TextSound.orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
         TextSound.ordering = setOrdering.getSelectedIndex();
+    }
+
+    public List<String> inputsToPrefs() {
+        List<String> userInputs = new ArrayList<String>();
+
+        userInputs.add(String.valueOf(setInstrument.getSelectedItem()));
+        userInputs.add(String.valueOf(setDuration.getSelectedItem()));
+        userInputs.add(String.valueOf(setOctaves.getValue()));
+        userInputs.add(String.valueOf(setTempo.getSelectedItem()));
+        userInputs.add(String.valueOf(setFrequency.getSelectedItem()));
+
+        return userInputs;
     }
 
     private String doPluralize(String input) {
@@ -573,6 +582,9 @@ public class Main extends JFrame {
     private static void createAndShowGUI() {
         JFileChooser fc = new JFileChooser();
         final File workingDirectory = new File(System.getProperty("user.dir"));
+
+        // Prefs
+        PreferencesManager myPrefs = new PreferencesManager();
 
         // Menu
         JMenuBar menuBar = new JMenuBar();
@@ -647,7 +659,8 @@ public class Main extends JFrame {
                     File file = fc.getSelectedFile();
                     prefsFile = file.getAbsoluteFile().toString();
                     System.out.println("Load user settings from file: " + prefsFile);
-                    loadSettings(Main.textModel, prefsFile);
+                    //loadSettings(Main.textModel, prefsFile);
+                    myPrefs.loadSettings(Main.textModel, prefsFile);
                 } else {
                     System.out.println("Open command cancelled by user.");
                 }
@@ -668,7 +681,8 @@ public class Main extends JFrame {
                     File fileToSave = fc.getSelectedFile();
                     prefsFile = fileToSave.getAbsoluteFile().toString();
                     System.out.println("Save user settings as file: " + prefsFile);
-                    saveSettings(prefsFile);
+                    //saveSettings(prefsFile);
+                    myPrefs.saveSettings(prefsFile);
                 } else {
                     System.out.println("Save command cancelled by user.");
                 }

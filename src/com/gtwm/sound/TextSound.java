@@ -49,9 +49,6 @@ import java.util.*;
  */
 public class TextSound {
 
-	//static String inputFile;
-	static String prefsFile = "usersettings";
-
 	// Starting settings
 	// NB: If any values are set to exactly zero, they will be unable to
 	// change throughout the generation
@@ -895,53 +892,6 @@ public class TextSound {
 			chordNum += -1;
 		}
 		return minorChords[chordNum];
-	}
-}
-
-class serialInstructionsQueue {
-	static ObjectOutputStream serializeObject(List<TransformationManager.Instruction> thisObjectList) {
-		try {
-			FileOutputStream fos = new FileOutputStream(TextSound.prefsFile);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-			oos.writeObject(thisObjectList);
-			oos.close();
-			fos.close();
-
-			System.out.println("\nSerialization Successful\n");
-
-			return oos;
-		} catch (FileNotFoundException e) {
-			System.out.println("a");
-			e.printStackTrace();
-			return null;
-		} catch (IOException e) {
-			System.out.println("b");
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	static List<TransformationManager.Instruction> deserializeObject(String thisOutStream) {
-		try {
-			FileInputStream fis = new FileInputStream(TextSound.prefsFile);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-
-			TextSound.instructions = (ArrayList) ois.readObject();
-
-			ois.close();
-			fis.close();
-
-			return TextSound.instructions;
-		} catch (IOException e) {
-			System.out.println("No user saved instructions to load.");
-			//e.printStackTrace();
-			return TextSound.instructions;
-		} catch (ClassNotFoundException e) {
-			System.out.println("d");
-			e.printStackTrace();
-			return null;
-		}
 	}
 }
 
