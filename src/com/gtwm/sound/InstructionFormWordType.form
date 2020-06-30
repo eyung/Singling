@@ -249,6 +249,7 @@
             <item value="r"/>
             <item value="m"/>
             <item value="s"/>
+            <item value="pn"/>
           </model>
         </properties>
       </component>

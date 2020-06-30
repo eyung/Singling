@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
+import org.w3c.dom.Text;
 import simplenlg.features.Feature;
 import simplenlg.features.Form;
 import simplenlg.features.Tense;
@@ -16,7 +17,6 @@ import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.phrasespec.VPPhraseSpec;
 import simplenlg.realiser.english.Realiser;
 
-import javax.imageio.ImageIO;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -29,7 +29,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -74,18 +73,15 @@ public class Main extends JFrame {
     // Set default output file name
     private String outFilename = "output.mid";
 
-    // Creating a text model for instructions textarea so that it can be updated
+    // Set models
     static DefaultListModel model = new DefaultListModel();
     static JTextArea textModel;
 
     // To get and load user settings
-    static Preferences prefs = Preferences.userNodeForPackage(Main.class);
+    //static Preferences prefs = Preferences.userNodeForPackage(Main.class);
 
     // Storing database words and values to list item
     private List<WordMap.Mapping> allItems;
-
-    //static Highlighter highlighter;
-    //static HighlightPainter painter;
 
     // Splash screen coordinates
     final int splashx = 100;
@@ -119,6 +115,7 @@ public class Main extends JFrame {
         // Set models
         list1.setModel(model);
         textModel = this.textArea1;
+        //setInstrument.setModel(InstructionFormModels.modelSetInstrument);
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
@@ -298,60 +295,60 @@ public class Main extends JFrame {
         btnRemoveInstruction.setMnemonic(KeyEvent.VK_DELETE);
 
         btnAddInstruction.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            switch (TransformationManager.Instruction.Mods.valueOf(btnAddInstruction.getSelectedItem().toString())) {
-                case WORDTYPE:
-                    InstructionFormWordType dialogWordType = new InstructionFormWordType();
-                    dialogWordType.setTitle("Transformation: Word Type");
-                    dialogWordType.pack();
-                    dialogWordType.setLocationRelativeTo(panelTransformationInputs);
-                    dialogWordType.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                    break;
-                case WORDLENGTH:
-                    InstructionFormWordLength dialogWordLength = new InstructionFormWordLength();
-                    dialogWordLength.setTitle("Transformation: Word Length");
-                    dialogWordLength.pack();
-                    dialogWordLength.setLocationRelativeTo(panelTransformationInputs);
-                    dialogWordLength.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                    break;
-                case WORDVALUE:
-                    InstructionFormWordValue dialogWordValue = new InstructionFormWordValue();
-                    dialogWordValue.setTitle("Transformation: Word LGC");
-                    dialogWordValue.pack();
-                    dialogWordValue.setLocationRelativeTo(panelTransformationInputs);
-                    dialogWordValue.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                    break;
-                case PUNCTUATION:
-                    InstructionFormSymbols dialogSymbol = new InstructionFormSymbols();
-                    dialogSymbol.setTitle("Transformation: Symbols");
-                    dialogSymbol.pack();
-                    dialogSymbol.setLocationRelativeTo(panelTransformationInputs);
-                    dialogSymbol.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                    break;
-                case CHARACTER:
-                    InstructionFormCharacter dialogCharacter = new InstructionFormCharacter();
-                    dialogCharacter.setTitle("Transformation: Character");
-                    dialogCharacter.pack();
-                    dialogCharacter.setLocationRelativeTo(panelTransformationInputs);
-                    dialogCharacter.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                    break;
-                case SENTIMENT:
-                    InstructionFormSentiment dialogSentiment = new InstructionFormSentiment();
-                    dialogSentiment.setTitle("Transformation: Sentiment");
-                    dialogSentiment.pack();
-                    dialogSentiment.setLocationRelativeTo(panelTransformationInputs);
-                    dialogSentiment.setVisible(true);
-                    btnAddInstruction.setSelectedIndex(0);
-                    break;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switch (TransformationManager.Instruction.Mods.valueOf(btnAddInstruction.getSelectedItem().toString())) {
+                    case WORDTYPE:
+                        InstructionFormWordType dialogWordType = new InstructionFormWordType();
+                        dialogWordType.setTitle("Transformation: Word Type");
+                        dialogWordType.pack();
+                        dialogWordType.setLocationRelativeTo(panelTransformationInputs);
+                        dialogWordType.setVisible(true);
+                        btnAddInstruction.setSelectedIndex(0);
+                        break;
+                    case WORDLENGTH:
+                        InstructionFormWordLength dialogWordLength = new InstructionFormWordLength();
+                        dialogWordLength.setTitle("Transformation: Word Length");
+                        dialogWordLength.pack();
+                        dialogWordLength.setLocationRelativeTo(panelTransformationInputs);
+                        dialogWordLength.setVisible(true);
+                        btnAddInstruction.setSelectedIndex(0);
+                        break;
+                    case WORDVALUE:
+                        InstructionFormWordValue dialogWordValue = new InstructionFormWordValue();
+                        dialogWordValue.setTitle("Transformation: Word LGC");
+                        dialogWordValue.pack();
+                        dialogWordValue.setLocationRelativeTo(panelTransformationInputs);
+                        dialogWordValue.setVisible(true);
+                        btnAddInstruction.setSelectedIndex(0);
+                        break;
+                    case PUNCTUATION:
+                        InstructionFormSymbols dialogSymbol = new InstructionFormSymbols();
+                        dialogSymbol.setTitle("Transformation: Symbols");
+                        dialogSymbol.pack();
+                        dialogSymbol.setLocationRelativeTo(panelTransformationInputs);
+                        dialogSymbol.setVisible(true);
+                        btnAddInstruction.setSelectedIndex(0);
+                        break;
+                    case CHARACTER:
+                        InstructionFormCharacter dialogCharacter = new InstructionFormCharacter();
+                        dialogCharacter.setTitle("Transformation: Character");
+                        dialogCharacter.pack();
+                        dialogCharacter.setLocationRelativeTo(panelTransformationInputs);
+                        dialogCharacter.setVisible(true);
+                        btnAddInstruction.setSelectedIndex(0);
+                        break;
+                    case SENTIMENT:
+                        InstructionFormSentiment dialogSentiment = new InstructionFormSentiment();
+                        dialogSentiment.setTitle("Transformation: Sentiment");
+                        dialogSentiment.pack();
+                        dialogSentiment.setLocationRelativeTo(panelTransformationInputs);
+                        dialogSentiment.setVisible(true);
+                        btnAddInstruction.setSelectedIndex(0);
+                        break;
+                }
             }
-        }
-    });
+        });
 
         characterRadioButton.addActionListener(new ActionListener() {
            @Override
@@ -498,27 +495,6 @@ public class Main extends JFrame {
         g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
     }
 
-   /* private static void saveSettings(String saveFile) {
-        TextSound.prefsFile = saveFile;
-        // Save instructions to file
-        ObjectOutputStream x = serialInstructionsQueue.serializeObject(TextSound.instructions);
-        prefs.put("instructionsPref", x.toString());
-        prefs.put("textPref", Main.textModel.getText());
-    }
-
-    private static void loadSettings(JTextArea textArea, String loadFile) {
-        TextSound.prefsFile = loadFile;
-        // Get user settings
-        String prefString = prefs.get("instructionsPref", "x");
-        TextSound.instructions = serialInstructionsQueue.deserializeObject(prefString);
-        Main.model.clear();
-        for (TransformationManager.Instruction i : TextSound.instructions) {
-            listAddInstruction(Main.model, i);
-        }
-        String prefString2 = prefs.get("textPref", "y");
-        //textArea.setText(prefString2);
-    }*/
-
     private void setBaseValues() {
         TextSound.baseInstrument = String.valueOf(setInstrument.getSelectedItem());
         TextSound.baseNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
@@ -542,16 +518,12 @@ public class Main extends JFrame {
         TextSound.ordering = setOrdering.getSelectedIndex();
     }
 
-    public List<String> inputsToPrefs() {
-        List<String> userInputs = new ArrayList<String>();
-
-        userInputs.add(String.valueOf(setInstrument.getSelectedItem()));
-        userInputs.add(String.valueOf(setDuration.getSelectedItem()));
-        userInputs.add(String.valueOf(setOctaves.getValue()));
-        userInputs.add(String.valueOf(setTempo.getSelectedItem()));
-        userInputs.add(String.valueOf(setFrequency.getSelectedItem()));
-
-        return userInputs;
+    public static void prefsToInputs(Main mainForm, String instrumentPref, String notedurationPref, String octavePref, String tempoPref, String frequencyPref) {
+        mainForm.setInstrument.setSelectedItem(instrumentPref);
+        mainForm.setDuration.setSelectedItem(notedurationPref);
+        mainForm.setOctaves.setValue(Integer.parseInt(octavePref));
+        mainForm.setTempo.setSelectedItem(tempoPref);
+        mainForm.setFrequency.setSelectedItem(frequencyPref);
     }
 
     private String doPluralize(String input) {
@@ -580,6 +552,7 @@ public class Main extends JFrame {
     }
 
     private static void createAndShowGUI() {
+        Main mainForm = new Main();
         JFileChooser fc = new JFileChooser();
         final File workingDirectory = new File(System.getProperty("user.dir"));
 
@@ -659,8 +632,8 @@ public class Main extends JFrame {
                     File file = fc.getSelectedFile();
                     prefsFile = file.getAbsoluteFile().toString();
                     System.out.println("Load user settings from file: " + prefsFile);
-                    //loadSettings(Main.textModel, prefsFile);
-                    myPrefs.loadSettings(Main.textModel, prefsFile);
+
+                    myPrefs.loadSettings(prefsFile, mainForm);
                 } else {
                     System.out.println("Open command cancelled by user.");
                 }
@@ -681,7 +654,15 @@ public class Main extends JFrame {
                     File fileToSave = fc.getSelectedFile();
                     prefsFile = fileToSave.getAbsoluteFile().toString();
                     System.out.println("Save user settings as file: " + prefsFile);
-                    //saveSettings(prefsFile);
+
+                    List<String> userInputs = new ArrayList<String>();
+                    userInputs.add(String.valueOf(mainForm.setInstrument.getSelectedItem()));
+                    userInputs.add(String.valueOf(mainForm.setDuration.getSelectedItem()));
+                    userInputs.add(String.valueOf(mainForm.setOctaves.getValue()));
+                    userInputs.add(String.valueOf(mainForm.setTempo.getSelectedItem()));
+                    userInputs.add(String.valueOf(mainForm.setFrequency.getSelectedItem()));
+                    myPrefs.inputsToPrefs(userInputs);
+
                     myPrefs.saveSettings(prefsFile);
                 } else {
                     System.out.println("Save command cancelled by user.");
@@ -716,7 +697,8 @@ public class Main extends JFrame {
         // Frame
         JFrame frame = new JFrame("Singling v0.2");
         frame.setJMenuBar(menuBar);
-        frame.setContentPane(new Main().panel1);
+        //frame.setContentPane(new Main().panel1);
+        frame.setContentPane(mainForm.panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);

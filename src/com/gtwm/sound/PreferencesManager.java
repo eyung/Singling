@@ -14,9 +14,12 @@ public class PreferencesManager {
     //static String inputFile;
     private String prefsFile = "usersettings";
 
-    public void setUserInputs(List<Object> userInputs) {
+    public void inputsToPrefs(List<String> userInputs) {
         prefs.put("instrumentPref", userInputs.get(0).toString());
         prefs.put("notedurationPref", userInputs.get(1).toString());
+        prefs.put("octavePref", userInputs.get(2).toString());
+        prefs.put("tempoPref", userInputs.get(3).toString());
+        prefs.put("frequencyPref", userInputs.get(4).toString());
     }
 
     public void saveSettings(String saveFile) {
@@ -27,7 +30,7 @@ public class PreferencesManager {
         prefs.put("textPref", Main.textModel.getText());
     }
 
-    public void loadSettings(JTextArea textArea, String loadFile) {
+    public void loadSettings(String loadFile, Main mainForm) {
         prefsFile = loadFile;
         // Get user settings
         String prefString = prefs.get("instructionsPref", "x");
@@ -36,11 +39,16 @@ public class PreferencesManager {
         for (TransformationManager.Instruction i : TextSound.instructions) {
             Main.listAddInstruction(Main.model, i);
         }
+
         String prefString2 = prefs.get("textPref", "y");
-        //textArea.setText(prefString2);
+        mainForm.textModel.setText(prefString2);
 
         String prefInstrument = prefs.get("instrumentPref", "a");
-        
+        String prefNoteDuration = prefs.get("notedurationPref", "b");
+        String prefOctave = prefs.get("octavePref", "c");
+        String prefTempo = prefs.get("tempoPref", "d");
+        String prefFrequency = prefs.get("frequencyPref", "e");
+        mainForm.prefsToInputs(mainForm, prefInstrument, prefNoteDuration, prefOctave, prefTempo, prefFrequency);
     }
 
     private ObjectOutputStream serializeObject(List<TransformationManager.Instruction> thisObjectList) {
