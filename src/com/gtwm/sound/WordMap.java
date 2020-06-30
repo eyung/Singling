@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class WordMap {
 
-    enum Type { n, v, a, r, m, p, s, pn }
+    enum Type { n, v, a, r, m, p, s, pn, ar  }
 
     static class Mapping {
         @Parsed(index = 0)

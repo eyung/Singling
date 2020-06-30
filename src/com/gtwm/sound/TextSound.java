@@ -25,11 +25,14 @@ import org.jfugue.theory.Note;
 
 import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.List;
 
 
 /**
@@ -380,11 +383,29 @@ public class TextSound {
 		// Pattern transformed by sentiment values
 		Pattern transformedPattern = new Pattern();
 
+		// For highlighting
+		int offset=0;
+		String wordHighlight;
+
 		// Lookup database
 		for (WordMap.Mapping item : items) {
 
 			// Match
 			if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
+
+				// Highlight
+				wordHighlight = lastWord.toString();
+				int docLength = Main.textModel.getDocument().getLength();
+				try {
+					String textToSearch = Main.textModel.getDocument().getText(0, docLength);
+					offset = textToSearch.toLowerCase().indexOf(wordHighlight.toLowerCase(), offset-wordHighlight.length());
+					if (offset != -1) {
+						Highlighter hl = Main.textModel.getHighlighter();
+						//hl.removeAllHighlights();
+						//hl.addHighlight(offset, offset+wordHighlight.length(), new ProxyHighlightPainter(new DefaultHighlighter.DefaultHighlightPainter(new Color(230, 230, 230))));
+						offset += wordHighlight.length();
+					}
+				} catch (Exception e) {}
 
 				// Lexnames to read
 				double[] wordValues = convertToArr.toDoubleArr(item.getValue());
@@ -892,6 +913,35 @@ public class TextSound {
 			chordNum += -1;
 		}
 		return minorChords[chordNum];
+	}
+
+	private static class ProxyHighlightPainter implements Highlighter.HighlightPainter {
+
+		private final Highlighter.HighlightPainter delegate;
+
+		public ProxyHighlightPainter(Highlighter.HighlightPainter delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
+			int startSel = c.getSelectionStart();
+			int endSel = c.getSelectionEnd();
+			if (startSel == endSel || startSel >= p1 || endSel <= p0) {
+				// no selection or no intersection: paint normal
+				delegate.paint(g, p0, p1, bounds, c);
+			} else if (startSel >= p0 && endSel >= p1) {
+				delegate.paint(g, p0, startSel, bounds, c);
+			} else if (startSel <= p0 && endSel <= p1) {
+				delegate.paint(g, endSel, p1, bounds, c);
+			} else if (startSel <= p0 && endSel <= p1) {
+				delegate.paint(g, p0, startSel, bounds, c);
+				delegate.paint(g, endSel, p1, bounds, c);
+			} else {
+				// just to be safe
+				delegate.paint(g, p0, p1, bounds, c);
+			}
+		}
 	}
 }
 

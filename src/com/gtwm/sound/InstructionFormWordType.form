@@ -250,6 +250,7 @@
             <item value="m"/>
             <item value="s"/>
             <item value="pn"/>
+            <item value="ar"/>
           </model>
         </properties>
       </component>
