@@ -749,7 +749,7 @@ public class TextSound {
 					volume = settingVolume.keepInRange(volume);
 					//soundString.append("X[Volume]=" + volume + " ");
 					//pattern.add("X[Volume]=" + volume + " ");
-					pattern.add(":CE(935," + volume + ")");
+					pattern.add(":CE(935," + (int) volume + ")");
 				//}
 				break;
 
