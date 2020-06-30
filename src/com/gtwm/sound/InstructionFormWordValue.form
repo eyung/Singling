@@ -299,7 +299,7 @@
               <paintLabels value="false"/>
               <paintTicks value="false"/>
               <value value="8192"/>
-              <visible value="true"/>
+              <visible value="false"/>
             </properties>
           </component>
         </children>

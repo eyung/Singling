@@ -15,6 +15,7 @@ public class SinglingPlayer implements Runnable {
 
     private Pattern pattern;
     private Player player;
+    private double delay;
 
     // Initialise Parsers
     private StaccatoParser parser = new StaccatoParser();
@@ -24,9 +25,10 @@ public class SinglingPlayer implements Runnable {
     private DiagnosticParserListener dpl = new DiagnosticParserListener();
     private LyricParserListener lpl = new LyricParserListener();
 
-    public void setPattern (Pattern myPattern, Player myPlayer) {
+    public void setPattern (Pattern myPattern, Player myPlayer, double myDelay) {
         pattern = myPattern;
         player = myPlayer;
+        delay = myDelay;
     }
 
     @Override
@@ -42,7 +44,8 @@ public class SinglingPlayer implements Runnable {
             plp.addParserListener(lpl);
 
             //player.play(pattern);
-            player.delayPlay(1000, pattern);
+            //player.delayPlay(1000, pattern);
+            player.delayPlay((long) delay*2000, pattern);
 
             // Start temporal parsing
             plp.parse();

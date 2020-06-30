@@ -10,10 +10,9 @@ public class PreferencesManager {
 
     // To get and load user settings
     private Preferences prefs = Preferences.userNodeForPackage(Main.class);
-
-    //static String inputFile;
     private String prefsFile = "usersettings";
 
+    // Save user base setting inputs to preferences
     public void inputsToPrefs(List<String> userInputs) {
         prefs.put("instrumentPref", userInputs.get(0).toString());
         prefs.put("notedurationPref", userInputs.get(1).toString());
@@ -22,12 +21,18 @@ public class PreferencesManager {
         prefs.put("frequencyPref", userInputs.get(4).toString());
     }
 
-    public void saveSettings(String saveFile) {
+    // Save user defined base settings + transformations to preferences
+    public void saveSettings(String saveFile, List<String> userInputs) {
         prefsFile = saveFile;
         // Save instructions to file
         ObjectOutputStream x = serializeObject(TextSound.instructions);
         prefs.put("instructionsPref", x.toString());
         prefs.put("textPref", Main.textModel.getText());
+        prefs.put("instrumentPref", userInputs.get(0).toString());
+        prefs.put("notedurationPref", userInputs.get(1).toString());
+        prefs.put("octavePref", userInputs.get(2).toString());
+        prefs.put("tempoPref", userInputs.get(3).toString());
+        prefs.put("frequencyPref", userInputs.get(4).toString());
     }
 
     public void loadSettings(String loadFile, Main mainForm) {

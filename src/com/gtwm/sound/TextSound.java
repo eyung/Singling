@@ -115,7 +115,7 @@ public class TextSound {
 	static Pattern pattern;
 	static double patternCurrentTime = 0;
 	
-	static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
+	//static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
 	static List<WordMap.Mapping> items;
 	static List<TransformationManager.Instruction> instructions = new ArrayList<>();
 
@@ -226,7 +226,7 @@ public class TextSound {
 
 		pattern = processString(input, pattern);
 
-		singlingPlayer.setPattern(pattern, player);
+		singlingPlayer.setPattern(pattern, player, noteLength);
 
 		//System.out.println("Start player:" + threadPlayer.getId());
 		threadPlayer.start();
@@ -555,12 +555,12 @@ public class TextSound {
 				}
 
 				if (doNoteGap) {
-					double theNoteGap = noteGap;
-					if (theNoteGap > 0.2) {
-						theNoteGap = theNoteGap / lastWord.length();
-					} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
-						theNoteGap = theNoteGap * 0.5;
-					}
+					//double theNoteGap = noteGap;
+					//if (theNoteGap > 0.2) {
+					//	theNoteGap = theNoteGap / lastWord.length();
+					//} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
+					//	theNoteGap = theNoteGap * 0.5;
+					//}
 
 					// Insert at end of musicstring: Note + Resting gap
 					//soundString.append("R/" + String.format("%f", noteGap) + " ");

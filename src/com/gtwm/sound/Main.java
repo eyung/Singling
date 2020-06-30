@@ -23,9 +23,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -73,12 +71,11 @@ public class Main extends JFrame {
     // Set default output file name
     private String outFilename = "output.mid";
 
+    final private String prefsFilename = "usersettings";
+
     // Set models
     static DefaultListModel model = new DefaultListModel();
     static JTextArea textModel;
-
-    // To get and load user settings
-    //static Preferences prefs = Preferences.userNodeForPackage(Main.class);
 
     // Storing database words and values to list item
     private List<WordMap.Mapping> allItems;
@@ -227,6 +224,11 @@ public class Main extends JFrame {
             ex.printStackTrace();
         }
 
+        // Prefs
+        System.out.println("Load user settings from file: " + prefsFilename);
+        PreferencesManager myPrefs = new PreferencesManager();
+        myPrefs.loadSettings(prefsFilename, this);
+
         btnProcess.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -242,6 +244,17 @@ public class Main extends JFrame {
                              File fileToSave = fc.getSelectedFile();
                              outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
                              System.out.println("Save as file: " + outFilename);
+
+                             // Prefs
+                             PreferencesManager myPrefs = new PreferencesManager();
+                             System.out.println("Save user settings as file: " + prefsFilename);
+                             List<String> userInputs = new ArrayList<String>();
+                             userInputs.add(String.valueOf(setInstrument.getSelectedItem()));
+                             userInputs.add(String.valueOf(setDuration.getSelectedItem()));
+                             userInputs.add(String.valueOf(setOctaves.getValue()));
+                             userInputs.add(String.valueOf(setTempo.getSelectedItem()));
+                             userInputs.add(String.valueOf(setFrequency.getSelectedItem()));
+                             myPrefs.saveSettings(prefsFilename, userInputs);
 
                              try {
                                  // Get initial settings from user inputs
@@ -267,6 +280,17 @@ public class Main extends JFrame {
                 // Handle open button action
                 if (e.getSource() == btnPlay) {
                     if (textArea1.getLineCount() > 0) {
+                        // Prefs
+                        PreferencesManager myPrefs = new PreferencesManager();
+                        System.out.println("Save user settings as file: " + prefsFilename);
+                        List<String> userInputs = new ArrayList<String>();
+                        userInputs.add(String.valueOf(setInstrument.getSelectedItem()));
+                        userInputs.add(String.valueOf(setDuration.getSelectedItem()));
+                        userInputs.add(String.valueOf(setOctaves.getValue()));
+                        userInputs.add(String.valueOf(setTempo.getSelectedItem()));
+                        userInputs.add(String.valueOf(setFrequency.getSelectedItem()));
+                        myPrefs.saveSettings(prefsFilename, userInputs);
+
                         try {
                             // Get initial settings from user inputs
                             setBaseValues();
@@ -393,6 +417,24 @@ public class Main extends JFrame {
 
                 TextSound.doPause();
 
+            }
+        });
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Prefs
+                PreferencesManager myPrefs = new PreferencesManager();
+                System.out.println("Save user settings as file: " + prefsFilename);
+                List<String> userInputs = new ArrayList<String>();
+                userInputs.add(String.valueOf(setInstrument.getSelectedItem()));
+                userInputs.add(String.valueOf(setDuration.getSelectedItem()));
+                userInputs.add(String.valueOf(setOctaves.getValue()));
+                userInputs.add(String.valueOf(setTempo.getSelectedItem()));
+                userInputs.add(String.valueOf(setFrequency.getSelectedItem()));
+                myPrefs.saveSettings(prefsFilename, userInputs);
+
+                super.windowClosed(e);
             }
         });
     }
@@ -661,9 +703,8 @@ public class Main extends JFrame {
                     userInputs.add(String.valueOf(mainForm.setOctaves.getValue()));
                     userInputs.add(String.valueOf(mainForm.setTempo.getSelectedItem()));
                     userInputs.add(String.valueOf(mainForm.setFrequency.getSelectedItem()));
-                    myPrefs.inputsToPrefs(userInputs);
 
-                    myPrefs.saveSettings(prefsFile);
+                    myPrefs.saveSettings(prefsFile, userInputs);
                 } else {
                     System.out.println("Save command cancelled by user.");
                 }
@@ -683,9 +724,9 @@ public class Main extends JFrame {
         });
 
         // Adding menu items to menu
-        fileMenu.add(saveText);
-        fileMenu.add(loadText);
-        fileMenu.add(separatorBar1);
+        //fileMenu.add(saveText);
+        //fileMenu.add(loadText);
+        //fileMenu.add(separatorBar1);
         fileMenu.add(saveSettings);
         fileMenu.add(loadSettings);
         fileMenu.add(separatorBar2);
