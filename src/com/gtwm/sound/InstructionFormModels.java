@@ -167,6 +167,9 @@ public class InstructionFormModels {
             new SpinnerNumberModel(1000.0, -10000.0, 10000.0, 1000.0);
     final static SpinnerNumberModel modelIncrementFrequency =
             new SpinnerNumberModel(5.0, -60.0, 60.0, 5.0);
+    final static SpinnerNumberModel modelIncrementPitchbend =
+            new SpinnerNumberModel(1000.0, -10000.0, 10000.0, 1000.0);
+
     final static SpinnerNumberModel modelSetLength =
             new SpinnerNumberModel(0.0, 0.0, 50.0, 1.0);
 }

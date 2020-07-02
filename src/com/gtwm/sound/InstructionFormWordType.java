@@ -51,6 +51,8 @@ public class InstructionFormWordType extends JDialog {
         incrementOctave.setModel(InstructionFormModels.modelIncrementOctave);
         incrementDuration.setModel(InstructionFormModels.modelIncrementNoteDuration);
         incrementFrequency.setModel(InstructionFormModels.modelIncrementFrequency);
+        incrementVolume.setModel(InstructionFormModels.modelIncrementVolume);
+        incrementPitchbend.setModel(InstructionFormModels.modelIncrementPitchbend);
 
         setContentPane(contentPane);
         setModal(true);
