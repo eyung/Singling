@@ -4,8 +4,11 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.NumberFormat;
 
 public class InstructionFormWordValue extends JDialog {
     private JPanel contentPane;
@@ -33,6 +36,10 @@ public class InstructionFormWordValue extends JDialog {
     private JSlider setDecay;
     private JSlider setPitchbend;
     private JSpinner incrementPitchbend;
+    private JLabel labelVolume;
+    private JLabel labelAttack;
+    private JLabel labelDecay;
+    private JFormattedTextField tfPitchbend;
 
     boolean instructionCheck = true;
 
@@ -179,110 +186,150 @@ public class InstructionFormWordValue extends JDialog {
                     setOctave.setVisible(false);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "NOTE_DURATION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(true);
                     setOctave.setVisible(false);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "OCTAVE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(true);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "INSTRUMENT") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
                     setInstrument.setVisible(true);
                     setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "VOLUME") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(true);
+                    labelVolume.setVisible(true);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PERCUSSION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(false);
-                    setPercussion.setVisible(true);
+                    labelVolume.setVisible(false);
+                    setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "MIDI_NOTE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(true);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "ATTACK") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(true);
+                    labelAttack.setVisible(true);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "DECAY") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(true);
+                    labelDecay.setVisible(true);
                     setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PITCHBEND") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
                     setOctave.setVisible(false);
                     setInstrument.setVisible(false);
                     setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
                     setPercussion.setVisible(false);
                     setFrequency.setVisible(false);
                     setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
                     setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
                     setPitchbend.setVisible(true);
+                    tfPitchbend.setVisible(true);
                 }
                 InstructionFormWordValue.super.pack();
             }
@@ -352,6 +399,44 @@ public class InstructionFormWordValue extends JDialog {
                     setSoundModTo.setVisible(false);
                     setSoundModBy.setVisible(true);
                 }
+            }
+        });
+
+        setVolume.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                labelVolume.setText(String.valueOf(setVolume.getValue()));
+            }
+        });
+
+        setAttack.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                labelAttack.setText(String.valueOf(setAttack.getValue()));
+            }
+        });
+
+        setDecay.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                labelDecay.setText(String.valueOf(setDecay.getValue()));
+            }
+        });
+
+        setPitchbend.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                tfPitchbend.setText(String.valueOf(setPitchbend.getValue()));
+            }
+        });
+
+        tfPitchbend.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                try {
+                    setPitchbend.setValue(Integer.parseInt(tfPitchbend.getText()));
+                } catch (Exception ex) {}
             }
         });
     }

@@ -19,6 +19,8 @@ import simplenlg.realiser.english.Realiser;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -61,6 +63,7 @@ public class Main extends JFrame {
     private JPanel panelTransformations;
     private JPanel panelProcessBtns;
     private JButton btnTogglePause;
+    private JLabel labelOctave;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -113,6 +116,7 @@ public class Main extends JFrame {
         list1.setModel(model);
         textModel = this.textArea1;
         //setInstrument.setModel(InstructionFormModels.modelSetInstrument);
+
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
@@ -420,6 +424,7 @@ public class Main extends JFrame {
             }
         });
 
+        // Save settings when window is closed
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -435,6 +440,15 @@ public class Main extends JFrame {
                 myPrefs.saveSettings(prefsFilename, userInputs);
 
                 super.windowClosed(e);
+            }
+        });
+
+        // Display updated setOctaves value
+        setOctaves.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                //int octaveValue = setOctaves.getValue();
+                //labelOctave.setText(String.valueOf(octaveValue));
             }
         });
     }

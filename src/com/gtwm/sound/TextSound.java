@@ -394,7 +394,7 @@ public class TextSound {
 			if (item.getKey().equalsIgnoreCase(lastWord.toString())) {
 
 				// Highlight
-				wordHighlight = lastWord.toString();
+				/*wordHighlight = lastWord.toString();
 				int docLength = Main.textModel.getDocument().getLength();
 				try {
 					String textToSearch = Main.textModel.getDocument().getText(0, docLength);
@@ -405,7 +405,7 @@ public class TextSound {
 						//hl.addHighlight(offset, offset+wordHighlight.length(), new ProxyHighlightPainter(new DefaultHighlighter.DefaultHighlightPainter(new Color(230, 230, 230))));
 						offset += wordHighlight.length();
 					}
-				} catch (Exception e) {}
+				} catch (Exception e) {}*/
 
 				// Lexnames to read
 				double[] wordValues = convertToArr.toDoubleArr(item.getValue());
