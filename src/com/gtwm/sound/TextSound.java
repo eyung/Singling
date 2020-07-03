@@ -830,7 +830,7 @@ public class TextSound {
 				if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
 					pitchBend = Long.parseLong(i.soundModValue);
 				} else {
-					pitchBend += Long.parseLong(i.soundModValue);
+					pitchBend += Double.parseDouble(i.soundModValue);
 				}
 				break;
 		}
