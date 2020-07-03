@@ -143,31 +143,31 @@ public class TextSound {
 			if (value < this.min) {
 				this.directionRollingAverage = (this.directionRollingAverage - 1d) / 2d;
 				if (this.directionRollingAverage < -0.8) {
-					System.out.println(this.toString() + " too low at " + value + ", swapping direction. RA = " + this.directionRollingAverage);
+					//System.out.println(this.toString() + " too low at " + value + ", swapping direction. RA = " + this.directionRollingAverage);
 					this.direction = !this.direction;
 				}
 				double returnValue = this.min + (this.min - value);
 				if (returnValue > this.min && returnValue < this.max) {
 					return returnValue;
 				} else {
-					System.out.println("" + this + " return value " + returnValue + " out of range, instead " + ((returnValue % (this.max - this.min)) + this.min));
+					//System.out.println("" + this + " return value " + returnValue + " out of range, instead " + ((returnValue % (this.max - this.min)) + this.min));
 					return (Math.abs(returnValue) % (this.max - this.min)) + this.min;
 				}
 			} else if (value > this.max) {
 				this.directionRollingAverage = (this.directionRollingAverage + 1d) / 2d;
 				if (this.directionRollingAverage > 0.8) {
-					System.out.println(this.toString() + " too high at " + value + ", swapping direction. RA = " + this.directionRollingAverage);
+					//System.out.println(this.toString() + " too high at " + value + ", swapping direction. RA = " + this.directionRollingAverage);
 					this.direction = !this.direction;
 				}
 				double returnValue = this.max - (value - this.max);
 				if (returnValue > this.min && returnValue < this.max) {
 					return returnValue;
 				} else {
-					System.out.println("" + this + " return value " + returnValue + " out of range, instead " + ((returnValue % (this.max - this.min)) + this.min));
+					//System.out.println("" + this + " return value " + returnValue + " out of range, instead " + ((returnValue % (this.max - this.min)) + this.min));
 					return (Math.abs(returnValue) % (this.max - this.min)) + this.min;
 				}
 			} else {
-				System.out.println("" + this + " now " + value);
+				//System.out.println("" + this + " now " + value);
 				return value;
 			}
 		}
@@ -222,8 +222,22 @@ public class TextSound {
 	}
 
 	public static void doStartPlayer(String input) {
-		player = new Player();
-		singlingPlayer = new SinglingPlayer();
+		if (player == null) {
+			player = new Player();
+		} else if (player != null) {
+			player.getManagedPlayer().pause();
+			player = new Player();
+		}
+
+		if (singlingPlayer == null) {
+			singlingPlayer = new SinglingPlayer();
+		} else if (singlingPlayer != null) {
+			singlingPlayer.stop();
+			singlingPlayer = new SinglingPlayer();
+		}
+
+		//player = new Player();
+		//singlingPlayer = new SinglingPlayer();
 
 		threadPlayer = new Thread(singlingPlayer);
 
@@ -570,7 +584,7 @@ public class TextSound {
 						}
 					}
 
-					System.out.println("Convert frequency: " + frequency + " to note: " + midiNumber);
+					//System.out.println("Convert frequency: " + frequency + " to note: " + midiNumber);
 
 					lexCount++;
 				}
