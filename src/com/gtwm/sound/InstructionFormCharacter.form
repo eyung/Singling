@@ -35,6 +35,8 @@
               <model>
                 <item value="consonants"/>
                 <item value="vowels"/>
+                <item value="uppercase"/>
+                <item value="lowercase"/>
               </model>
             </properties>
           </component>

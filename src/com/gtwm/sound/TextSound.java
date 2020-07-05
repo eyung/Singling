@@ -568,11 +568,11 @@ public class TextSound {
 					}
 
 					// Hacky hack hack so that we are capping voices at 16
-					if (lexCount < 15) {
-						if (transformedPattern != null && !transformedPattern.toString().equals("")) {
-							// Note + Duration + Attack + Decay
-							pattern.add(transformedPattern + "/" + noteLength + "a" + attack + "d" + decay + "");
-						} else {
+					//if (lexCount < 15) {
+					//	if (transformedPattern != null && !transformedPattern.toString().equals("")) {
+					//		// Note + Duration + Attack + Decay
+					//		pattern.add(transformedPattern + "/" + noteLength + "a" + attack + "d" + decay + "");
+					//	} else {
 							// Note + Duration + Attack + Decay
 
 							// JFugue's implementation which adds microtones as pitch bend events
@@ -583,8 +583,8 @@ public class TextSound {
 
 							//pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
 							pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " '" + lastWord);
-						}
-					}
+					//	}
+					//}
 
 					//System.out.println("Convert frequency: " + frequency + " to note: " + midiNumber);
 
@@ -660,6 +660,12 @@ public class TextSound {
 					applyMod(i, pattern);
 				} else if (i.modValue.equals("consonants") && "AEIOUaeiou".indexOf(ch) < 0) {
 					applyMod(i, pattern);
+				} else if (i.modValue.equals("uppercase") && Character.isUpperCase(ch)) {
+					applyMod(i, pattern);
+					System.out.println("uppercase");
+				} else if (i.modValue.equals("lowercase") && Character.isLowerCase(ch)) {
+					applyMod(i, pattern);
+					System.out.println("lowercase");
 				}
 
 			} else if (i.mod == TransformationManager.Instruction.Mods.PUNCTUATION) {
