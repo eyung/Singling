@@ -160,7 +160,7 @@ public class InstructionFormModels {
     final static SpinnerNumberModel modelIncrementTempo =
             new SpinnerNumberModel(5.0, -30.0, 30.0, 5.0);
     final static SpinnerNumberModel modelIncrementNoteDuration =
-            new SpinnerNumberModel(0.50, -1.0, 1.0, 0.25);
+            new SpinnerNumberModel(0.10, -1.0, 1.0, 0.10);
     final static SpinnerNumberModel modelIncrementOctave =
             new SpinnerNumberModel(1.0, -10.0, 10.0, 1.0);
     final static SpinnerNumberModel modelIncrementVolume =

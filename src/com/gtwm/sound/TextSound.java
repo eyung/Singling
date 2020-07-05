@@ -225,7 +225,9 @@ public class TextSound {
 		if (player == null) {
 			player = new Player();
 		} else if (player != null) {
-			player.getManagedPlayer().pause();
+			try {
+				player.getManagedPlayer().finish();
+			} catch (Exception e) {}
 			player = new Player();
 		}
 
@@ -605,6 +607,7 @@ public class TextSound {
 					resetSettings();
 					pattern.add("I[" + instrument + "] ");
 					pattern.add("V0");
+					pattern.add(":CE(935," + (int) volume + ")");
 					//pattern.setInstrument(instrument);
 				} else if (!doNoteGap) {
 					//
@@ -752,8 +755,9 @@ public class TextSound {
 				} else {
 					noteLength = settingNoteDuration.keepInRange(noteLength);
 					noteLength += Double.parseDouble(i.soundModValue);
+					baseNoteLength = noteLength;
 				}
-				baseNoteLength = noteLength;
+				//baseNoteLength = noteLength;
 				break;
 
 			case OCTAVE:
@@ -764,8 +768,9 @@ public class TextSound {
 				} else {
 					octaves = settingOctaves.keepInRange(octaves);
 					octaves += Double.parseDouble(i.soundModValue);
+					baseOctaves = octaves;
 				}
-				baseOctaves = octaves;
+				//baseOctaves = octaves;
 				break;
 
 			case INSTRUMENT:
@@ -908,6 +913,7 @@ public class TextSound {
 		tempo = baseTempo;
 		attack = baseAttack;
 		decay = baseDecay;
+		//volume = 10200d;
 		//ordering =
 	}
 
@@ -963,11 +969,20 @@ class convertToArr {
 	static double[] toDoubleArr(String inString) {
 		String[] tokens = inString.split(",");
 		double[] arr = new double[tokens.length];
-		int i=0;
-		for (String st : tokens) {
-			arr[i++] = Double.valueOf(st);
+		double[] arr2 = new double[15];
+
+		if (tokens.length > 15) {
+			for (int j=0; j<15; j++) {
+				arr[j] = Double.valueOf(tokens[j]);
+			}
+			return arr2;
+		} else {
+			int i=0;
+			for (String st : tokens) {
+				arr[i++] = Double.valueOf(st);
+			}
+			return arr;
 		}
-		return arr;
 	}
 
 	static WordMap.Type[] toTypeArr(String inString) {
