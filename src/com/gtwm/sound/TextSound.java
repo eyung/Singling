@@ -919,7 +919,7 @@ public class TextSound {
 		tempo = baseTempo;
 		attack = baseAttack;
 		decay = baseDecay;
-		//volume = 10200d;
+		volume = 10200d;
 		//ordering =
 	}
 

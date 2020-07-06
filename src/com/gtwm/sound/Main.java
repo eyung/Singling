@@ -231,7 +231,9 @@ public class Main extends JFrame {
         // Prefs
         System.out.println("Load user settings from file: " + prefsFilename);
         PreferencesManager myPrefs = new PreferencesManager();
-        myPrefs.loadSettings(prefsFilename, this);
+        try {
+            myPrefs.loadSettings(prefsFilename, this);
+        } catch (Exception e) { System.out.println("Preferences not loaded."); }
 
         btnProcess.addActionListener(new ActionListener() {
             @Override
@@ -577,6 +579,7 @@ public class Main extends JFrame {
     public static void prefsToInputs(Main mainForm, String instrumentPref, String notedurationPref, String octavePref, String tempoPref, String frequencyPref) {
         mainForm.setInstrument.setSelectedItem(instrumentPref);
         mainForm.setDuration.setSelectedItem(notedurationPref);
+        //System.out.println(octavePref);
         mainForm.setOctaves.setValue(Integer.parseInt(octavePref));
         mainForm.setTempo.setSelectedItem(tempoPref);
         mainForm.setFrequency.setSelectedItem(frequencyPref);
