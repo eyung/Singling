@@ -38,7 +38,7 @@ public class SinglingPlayer implements Runnable {
             parser.parse(pattern);
 
             // Output diagnostic data to console
-            plp.addParserListener(dpl);
+            //plp.addParserListener(dpl);
 
             // Highlight lyrics as music is played
             plp.addParserListener(lpl);
