@@ -609,12 +609,12 @@ public class TextSound {
 					pattern.add("V0");
 					pattern.add(":CE(935," + (int) volume + ")");
 					//pattern.setInstrument(instrument);
-				} else if (!doNoteGap) {
+				} //else if (!doNoteGap) {
 					//
 					//soundString.append(" ");
 					//soundString.deleteCharAt(soundString.length()-1);
 					//pattern.
-				}
+				//}
 
 				patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
 				patternCurrentTime += noteLength + noteGap;

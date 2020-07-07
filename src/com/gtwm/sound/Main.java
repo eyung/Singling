@@ -26,17 +26,14 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 public class Main extends JFrame {
-    private JButton btnLoadText;
     private JPanel panel1;
     private JTextArea textArea1;
     private JButton btnProcess;
@@ -74,8 +71,6 @@ public class Main extends JFrame {
     // Set default output file name
     private String outFilename = "output.mid";
 
-    final private String prefsFilename = "usersettings";
-
     // Set models
     static DefaultListModel model = new DefaultListModel();
     static JTextArea textModel;
@@ -94,6 +89,9 @@ public class Main extends JFrame {
     final Lexicon lexicon = Lexicon.getDefaultLexicon();
     final NLGFactory nlgFactory = new NLGFactory(lexicon);
     final Realiser realiser = new Realiser(lexicon);
+
+    // Prefs
+    private static String prefsFilename = "userinstructions";
 
     public Main() {
 
@@ -116,7 +114,6 @@ public class Main extends JFrame {
         list1.setModel(model);
         textModel = this.textArea1;
         //setInstrument.setModel(InstructionFormModels.modelSetInstrument);
-
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
@@ -228,13 +225,6 @@ public class Main extends JFrame {
             ex.printStackTrace();
         }
 
-        // Prefs
-        System.out.println("Load user settings from file: " + prefsFilename);
-        PreferencesManager myPrefs = new PreferencesManager();
-        try {
-            myPrefs.loadSettings(prefsFilename, this);
-        } catch (Exception e) { System.out.println("Preferences not loaded."); }
-
         btnProcess.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -250,17 +240,6 @@ public class Main extends JFrame {
                              File fileToSave = fc.getSelectedFile();
                              outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
                              System.out.println("Save as file: " + outFilename);
-
-                             // Prefs
-                             PreferencesManager myPrefs = new PreferencesManager();
-                             System.out.println("Save user settings as file: " + prefsFilename);
-                             List<String> userInputs = new ArrayList<String>();
-                             userInputs.add(String.valueOf(setInstrument.getSelectedItem()));
-                             userInputs.add(String.valueOf(setDuration.getSelectedItem()));
-                             userInputs.add(String.valueOf(setOctaves.getValue()));
-                             userInputs.add(String.valueOf(setTempo.getSelectedItem()));
-                             userInputs.add(String.valueOf(setFrequency.getSelectedItem()));
-                             myPrefs.saveSettings(prefsFilename, userInputs);
 
                              try {
                                  // Get initial settings from user inputs
@@ -286,17 +265,6 @@ public class Main extends JFrame {
                 // Handle open button action
                 if (e.getSource() == btnPlay) {
                     if (textArea1.getLineCount() > 0) {
-                        // Prefs
-                        PreferencesManager myPrefs = new PreferencesManager();
-                        System.out.println("Save user settings as file: " + prefsFilename);
-                        List<String> userInputs = new ArrayList<String>();
-                        userInputs.add(String.valueOf(setInstrument.getSelectedItem()));
-                        userInputs.add(String.valueOf(setDuration.getSelectedItem()));
-                        userInputs.add(String.valueOf(setOctaves.getValue()));
-                        userInputs.add(String.valueOf(setTempo.getSelectedItem()));
-                        userInputs.add(String.valueOf(setFrequency.getSelectedItem()));
-                        myPrefs.saveSettings(prefsFilename, userInputs);
-
                         try {
                             // Get initial settings from user inputs
                             setBaseValues();
@@ -426,21 +394,9 @@ public class Main extends JFrame {
             }
         });
 
-        // Save settings when window is closed
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Prefs
-                PreferencesManager myPrefs = new PreferencesManager();
-                System.out.println("Save user settings as file: " + prefsFilename);
-                List<String> userInputs = new ArrayList<String>();
-                userInputs.add(String.valueOf(setInstrument.getSelectedItem()));
-                userInputs.add(String.valueOf(setDuration.getSelectedItem()));
-                userInputs.add(String.valueOf(setOctaves.getValue()));
-                userInputs.add(String.valueOf(setTempo.getSelectedItem()));
-                userInputs.add(String.valueOf(setFrequency.getSelectedItem()));
-                myPrefs.saveSettings(prefsFilename, userInputs);
-
                 super.windowClosed(e);
             }
         });
@@ -576,15 +532,6 @@ public class Main extends JFrame {
         TextSound.ordering = setOrdering.getSelectedIndex();
     }
 
-    public static void prefsToInputs(Main mainForm, String instrumentPref, String notedurationPref, String octavePref, String tempoPref, String frequencyPref) {
-        mainForm.setInstrument.setSelectedItem(instrumentPref);
-        mainForm.setDuration.setSelectedItem(notedurationPref);
-        //System.out.println(octavePref);
-        mainForm.setOctaves.setValue(Integer.parseInt(octavePref));
-        mainForm.setTempo.setSelectedItem(tempoPref);
-        mainForm.setFrequency.setSelectedItem(frequencyPref);
-    }
-
     private String doPluralize(String input) {
         WordElement WE = lexicon.getWord(input, LexicalCategory.NOUN);
         InflectedWordElement infl = new InflectedWordElement(WE);
@@ -610,74 +557,45 @@ public class Main extends JFrame {
         return realiser.realise(clause).toString();
     }
 
+    private static String serialize(List<TransformationManager.Instruction> thisObjectList) {
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            ObjectOutputStream so = new ObjectOutputStream(bo);
+            so.writeObject(thisObjectList);
+            so.flush();
+            final byte[] byteArray = bo.toByteArray();
+            return Base64.getEncoder().encodeToString(byteArray);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    private static List<TransformationManager.Instruction> deserialize(String serializedObject) {
+        try {
+            byte b[] = Base64.getDecoder().decode(serializedObject);
+            ByteArrayInputStream bi = new ByteArrayInputStream(b);
+            ObjectInputStream si = new ObjectInputStream(bi);
+            return (List<TransformationManager.Instruction>) si.readObject();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
     private static void createAndShowGUI() {
         Main mainForm = new Main();
         JFileChooser fc = new JFileChooser();
         final File workingDirectory = new File(System.getProperty("user.dir"));
 
-        // Prefs
-        PreferencesManager myPrefs = new PreferencesManager();
-
         // Menu
         JMenuBar menuBar = new JMenuBar();
-        JMenuItem loadText, saveText, loadSettings, saveSettings, exitItem;
+        JMenuItem loadSettings, saveSettings, exitItem;
 
         // File
         JMenu fileMenu = new JMenu("File");
 
-        // Menu Item (Drop down menus)
-        // Load text file
-        loadText = new JMenuItem("Import Text");
-        loadText.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                fc.setCurrentDirectory(workingDirectory);
-                String inputText = "";
-
-                int returnVal = fc.showOpenDialog(Main.textModel);
-
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
-                    //This is where a real application would open the file.
-                    try {
-                        inputText = TextSound.loadFile(file.getAbsolutePath());
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                    Main.textModel.setText(inputText);
-                } else {
-                    System.out.println("Open command cancelled by user.");
-                }
-            }
-        });
-
-        // Save text as file
-        saveText = new JMenuItem("Export Text as...");
-        saveText.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fc.setCurrentDirectory(workingDirectory);
-                String outFile = "";
-
-                int returnVal = fc.showSaveDialog(Main.textModel);
-
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File fileToSave = fc.getSelectedFile();
-                    outFile = fileToSave.getAbsoluteFile().toString() + ".txt";
-                    System.out.println("Save text as file: " + outFile);
-                    try {
-                        FileWriter fw = new FileWriter(outFile, true);
-                        Main.textModel.write(fw);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    System.out.println("Save command cancelled by user.");
-                }
-            }
-        });
-
-        // Import instructions
+        // Import settings + instructions
         loadSettings = new JMenuItem("Load Settings");
         loadSettings.addActionListener(new ActionListener() {
             @Override
@@ -689,17 +607,42 @@ public class Main extends JFrame {
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
-                    prefsFile = file.getAbsoluteFile().toString();
-                    System.out.println("Load user settings from file: " + prefsFile);
 
-                    myPrefs.loadSettings(prefsFile, mainForm);
+                    Properties properties = new Properties();
+
+                    // Loading properties file
+                    try(FileReader fileReader = new FileReader(file, Charset.forName("UTF-8"))) {
+                        properties.load(fileReader);
+
+                        // Load base settings
+                        mainForm.setInstrument.setSelectedItem(properties.getProperty("instrument"));
+                        mainForm.setDuration.setSelectedItem(properties.getProperty("noteduration"));
+                        mainForm.setOctaves.setValue(Integer.parseInt(properties.getProperty("octave")));
+                        mainForm.setTempo.setSelectedItem(properties.getProperty("tempo"));
+                        mainForm.setFrequency.setSelectedItem(properties.getProperty("frequency"));
+
+                        // Load text
+                        mainForm.textModel.setText(properties.getProperty("textinput"));
+
+                        // Load instructions
+                        //String instructionsList = properties.getProperty("instructions");
+                        //TextSound.instructions = deserializeObject();
+                        TextSound.instructions = deserialize(properties.getProperty("instructions"));
+                        Main.model.clear();
+                        for (TransformationManager.Instruction i : TextSound.instructions) {
+                            Main.listAddInstruction(Main.model, i);
+                        }
+
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 } else {
                     System.out.println("Open command cancelled by user.");
                 }
             }
         });
 
-        // Export instructions
+        // Export settings + instructions
         saveSettings = new JMenuItem("Save Settings as...");
         saveSettings.addActionListener(new ActionListener() {
             @Override
@@ -711,17 +654,32 @@ public class Main extends JFrame {
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File fileToSave = fc.getSelectedFile();
+
                     prefsFile = fileToSave.getAbsoluteFile().toString();
-                    System.out.println("Save user settings as file: " + prefsFile);
 
-                    List<String> userInputs = new ArrayList<String>();
-                    userInputs.add(String.valueOf(mainForm.setInstrument.getSelectedItem()));
-                    userInputs.add(String.valueOf(mainForm.setDuration.getSelectedItem()));
-                    userInputs.add(String.valueOf(mainForm.setOctaves.getValue()));
-                    userInputs.add(String.valueOf(mainForm.setTempo.getSelectedItem()));
-                    userInputs.add(String.valueOf(mainForm.setFrequency.getSelectedItem()));
+                    Properties properties = new Properties();
 
-                    myPrefs.saveSettings(prefsFile, userInputs);
+                    // Saving base settings
+                    properties.setProperty("instrument", String.valueOf(mainForm.setInstrument.getSelectedItem()));
+                    properties.setProperty("noteduration", String.valueOf(mainForm.setDuration.getSelectedItem()));
+                    properties.setProperty("octave", String.valueOf(mainForm.setOctaves.getValue()));
+                    properties.setProperty("tempo", String.valueOf(mainForm.setTempo.getSelectedItem()));
+                    properties.setProperty("frequency", String.valueOf(mainForm.setFrequency.getSelectedItem()));
+
+                    // Saving text
+                    properties.setProperty("textinput", Main.textModel.getText());
+
+                    // Saving instructions
+                    //ObjectOutputStream instructionsList = serializeObject(TextSound.instructions);
+                    //properties.setProperty("instructions", instructionsList.toString());
+                    properties.setProperty("instructions", serialize(TextSound.instructions));
+
+                    // Saving to file
+                    try(FileWriter output = new FileWriter(prefsFile, Charset.forName("UTF-8"))) {
+                        properties.store(output, "Save user settings: " + prefsFile);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 } else {
                     System.out.println("Save command cancelled by user.");
                 }
@@ -729,8 +687,7 @@ public class Main extends JFrame {
         });
 
         // Separators
-        JSeparator separatorBar1 = new JSeparator();
-        JSeparator separatorBar2 = new JSeparator();
+        JSeparator separatorBar = new JSeparator();
 
         // Exit
         exitItem = new JMenuItem("Exit");
@@ -741,12 +698,9 @@ public class Main extends JFrame {
         });
 
         // Adding menu items to menu
-        //fileMenu.add(saveText);
-        //fileMenu.add(loadText);
-        //fileMenu.add(separatorBar1);
         fileMenu.add(saveSettings);
         fileMenu.add(loadSettings);
-        fileMenu.add(separatorBar2);
+        fileMenu.add(separatorBar);
         fileMenu.add(exitItem);
 
         // Adding menu to menu bar
@@ -755,7 +709,6 @@ public class Main extends JFrame {
         // Frame
         JFrame frame = new JFrame("Singling v0.2");
         frame.setJMenuBar(menuBar);
-        //frame.setContentPane(new Main().panel1);
         frame.setContentPane(mainForm.panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();

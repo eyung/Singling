@@ -212,7 +212,7 @@
                 <item value="220"/>
               </model>
               <requestFocusEnabled value="false"/>
-              <selectedIndex value="11"/>
+              <selectedIndex value="0"/>
             </properties>
           </component>
           <component id="876cf" class="javax.swing.JLabel">
@@ -229,7 +229,7 @@
             </constraints>
             <properties>
               <labelFor value="3e630"/>
-              <text value="Tempo (BPS):"/>
+              <text value="Tempo (BPM):"/>
             </properties>
           </component>
           <component id="32450" class="javax.swing.JLabel">
@@ -395,7 +395,7 @@
                 <item value="8.66"/>
                 <item value="8.18"/>
               </model>
-              <selectedIndex value="80"/>
+              <selectedIndex value="0"/>
               <visible value="true"/>
             </properties>
           </component>
