@@ -87,6 +87,7 @@ public class TextSound {
 
 	// Volume
 	static double volume;
+	static double baseVolume = 10200d;
 
 	// Attack
 	static int attack;
@@ -219,6 +220,7 @@ public class TextSound {
 		pattern.setInstrument(instrument);
 		pattern.setTempo((int)tempo);
 		patternCurrentTime = 0;
+		volume = 10200d;
 	}
 
 	public static void doStartPlayer(String input) {
@@ -276,7 +278,6 @@ public class TextSound {
 				singlingPlayer.resume();
 			}
 		} catch (Exception e) {}
-
 	}
 
 	/**
@@ -463,6 +464,7 @@ public class TextSound {
 							// Mute tone
 							//noteLength = 0;
 							pattern.add(":CE(935,0)");
+							//volume = 0;
 							break;
 					}
 
@@ -582,7 +584,13 @@ public class TextSound {
 							//pattern.add(":PitchWheel(5192) 72/0.25 :PitchWheel(8192)");
 
 							//pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
-							pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " '" + lastWord);
+					//pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " '" + lastWord);
+					pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
+
+					// First LGC of word will inherit the word as lyric item
+					if (lexCount == 0) {
+						pattern.add(" '" + lastWord);
+					}
 					//	}
 					//}
 
@@ -919,7 +927,7 @@ public class TextSound {
 		tempo = baseTempo;
 		attack = baseAttack;
 		decay = baseDecay;
-		volume = 10200d;
+		volume = baseVolume;
 		//ordering =
 	}
 

@@ -611,7 +611,7 @@ public class Main extends JFrame {
                     Properties properties = new Properties();
 
                     // Loading properties file
-                    try(FileReader fileReader = new FileReader(file, Charset.forName("UTF-8"))) {
+                    try(FileReader fileReader = new FileReader(file)) {
                         properties.load(fileReader);
 
                         // Load base settings
@@ -675,7 +675,7 @@ public class Main extends JFrame {
                     properties.setProperty("instructions", serialize(TextSound.instructions));
 
                     // Saving to file
-                    try(FileWriter output = new FileWriter(prefsFile, Charset.forName("UTF-8"))) {
+                    try(FileWriter output = new FileWriter(prefsFile)) {
                         properties.store(output, "Save user settings: " + prefsFile);
                     } catch (IOException ex) {
                         ex.printStackTrace();
