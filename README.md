@@ -1,4 +1,4 @@
-<a href=""><img src="https://educ-lled2016.sites.olt.ubc.ca/files/2020/07/splash.gif" title="Singling" alt="Singling"></a>
+<a href=""><img src="https://educ-lled2016.sites.olt.ubc.ca/files/2020/07/splash.gif =250x250" title="Singling" alt="Singling"></a>
 
 # Singling
 
