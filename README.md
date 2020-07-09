@@ -12,7 +12,7 @@
 
 ## Installation
 
-- Download the latest stable release (zip) from `https://github.com/eyung/Singling/releases` 
+- Download the latest release from `https://github.com/eyung/Singling/releases` 
 - Unzip the jar and database folder to the same directory
 - Run the jar file
 
