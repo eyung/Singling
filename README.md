@@ -6,8 +6,6 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/eyung/singling) ![GitHub repo size](https://img.shields.io/github/repo-size/eyung/singling) ![GitHub](https://img.shields.io/github/license/eyung/singling)
 
-**Version 0.2.5-beta**
-
 <img src="https://github.com/eyung/Singling/blob/master/screenshot.gif" title="Screenshot" >
 
 ---
