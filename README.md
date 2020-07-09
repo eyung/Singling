@@ -21,7 +21,7 @@
 ## Team
 
 - Digital Literacy Centre, Department of Language & Literacy Education, Faculty of Education, UBC
-- Dr. Kedrick James, Yuya Takeda, Rachel Horst, Esteban Morales, Effiam Yung
+- Dr. Kedrick James, Rachel Horst, Esteban Morales, Yuya Takeda, Effiam Yung
 
 ---
 
