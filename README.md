@@ -1,5 +1,3 @@
-<a href=""><img src="https://drive.google.com/file/d/1U11O6qlCc-y3YxzfwG0GUo5UNfUnyCYx/view?usp=sharing" title="Singling" alt="Singling"></a>
-
 # Singling
 
 > Interactive interface for the sonification of text which can be transformed according to various parameters to facilitate the learning and analysis of *literacoustics*, reading by listening.
@@ -8,7 +6,7 @@
 
 **Singling v0.2.5-beta**
 
-![Screenshot](https://recordit.co/yoCD7yHqaJ)
+![Screenshot](https://drive.google.com/file/d/1y_EYCP7nE1AWuRJEiZJ_24cz9hGXi1my/view?usp=sharing)
 
 ---
 
@@ -22,7 +20,7 @@
 
 ## Team
 
-- <a href="https://dlc.lled.educ.ubc.ca/" target="_blank">Digital Literacy Centre, Department of Language & Literacy Education, Faculty of Education, UBC</a>
+- Digital Literacy Centre, Department of Language & Literacy Education, Faculty of Education, UBC
 - Dr. Kedrick James, Yuya Takeda, Rachel Horst, Esteban Morales, Effiam Yung
 
 ---
@@ -30,13 +28,9 @@
 ## Contact
 
 - DLC Website at <a href="https://dlc.lled.educ.ubc.ca/" target="_blank">`dlc.lled.educ.ubc.ca/`</a>
-
 - DLC Twitter at <a href="https://twitter.com/dlcatubc" target="_blank">`@DLCatUBC`</a>
-
 - LLED Website at <a href="https://lled.educ.ubc.ca/" target="_blank">`lled.educ.ubc.ca/`</a>
-
 - LLED Twitter at <a href="https://twitter.com/ubc_lled" target="_blank">`@UBC_LLED`</a>
-
 - Email at <a href="mailto:effiamyung@gmail.com" target="_blank">`effiamyung@gmail.com`</a>
 
 ---
