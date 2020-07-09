@@ -1,4 +1,4 @@
-<img src="https://educ-lled2016.sites.olt.ubc.ca/files/2020/07/splash.gif" title="Singling" alt="Singling" height="250">
+<img src="https://github.com/eyung/Singling/blob/master/src/com/resources/splash.gif" title="Singling" alt="Singling" height="250">
 
 # Singling
 
@@ -8,7 +8,7 @@
 
 **Singling v0.2.5-beta**
 
-![Screenshot](https://drive.google.com/file/d/1y_EYCP7nE1AWuRJEiZJ_24cz9hGXi1my/view?usp=sharing)
+![Screenshot](https://github.com/eyung/Singling/blob/master/screenshot.gif)
 
 ---
 
