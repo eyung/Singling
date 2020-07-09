@@ -651,6 +651,21 @@ public class TextSound {
 				break;
 		}
 
+		// Normalise to fit in the range
+		double topFrequency = baseFrequency;
+		for (int j = 0; j < targetOctave; j++) {
+			topFrequency = topFrequency * 2;
+		}
+		while (frequency > topFrequency) {
+			frequency = frequency / 2;
+		}
+
+		// Convert freq to MIDI music string using reference note and frequency A4 440hz
+		int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
+
+		// Find pitch using base midi note number
+		pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
+
 		// Set frequency of punctuations/symbols to frequency of lexname = 46
 		if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
 			targetOctave = Math.ceil((46/45d) * octaves); //26
@@ -688,23 +703,11 @@ public class TextSound {
 			}
 		}
 
-		// Normalise to fit in the range
-		double topFrequency = baseFrequency;
-		for (int j = 0; j < targetOctave; j++) {
-			topFrequency = topFrequency * 2;
-		}
-		while (frequency > topFrequency) {
-			frequency = frequency / 2;
-		}
-
-		// Convert freq to MIDI music string using reference note and frequency A4 440hz
-		//double tempNote;
-		//int musicNote;
-		//tempNote = 12 * logCalc.log(frequency/440, 2) + 69;
-		//musicNote = (int) Math.rint(tempNote);
-		//soundString.append("m" + frequency + "/" + noteLength);
-		pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay);
+		//pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay);
 		//System.out.println("Convert frequency: " + frequency + ", note length: " + noteLength);
+		pattern.add(":PW(" + pitchBend + ") " +  midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+
+		//pattern.add(" '" + ch);
 
 		// Testing
 		System.out.println("Frequency for " + lastWord + "=" + charNum +
@@ -718,10 +721,6 @@ public class TextSound {
 		//} else {
 			//soundString.append("/" + String.format("%f", noteLength));
 		//}
-
-		// Attack + Decay
-		//soundString.append("a" + attack + "d" + decay);
-		//pattern.add("a" + attack + "d" + decay);
 
 		//double theNoteGap = noteGap;
 		//if (theNoteGap > 0.2) {
