@@ -1,3 +1,5 @@
+<a href=""><img src="https://educ-lled2016.sites.olt.ubc.ca/files/2020/07/splash.gif" title="Singling" alt="Singling"></a>
+
 # Singling
 
 > Interactive interface for the sonification of text which can be transformed according to various parameters to facilitate the learning and analysis of *literacoustics*, reading by listening.
