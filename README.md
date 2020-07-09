@@ -8,7 +8,7 @@
 
 **Singling v0.2.5-beta**
 
-![Screenshot](https://github.com/eyung/Singling/blob/master/screenshot.gif)
+<img src="https://github.com/eyung/Singling/blob/master/screenshot.gif" title="Screenshot" >
 
 ---
 
