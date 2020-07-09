@@ -1,6 +1,8 @@
-<a href=""><img src="https://educ-lled2016.sites.olt.ubc.ca/files/2020/07/splash.gif" title="Singling" alt="Singling"></a>
+<a href=""><img src="https://educ-lled2016.sites.olt.ubc.ca/files/2020/07/splash.gif" title="Singling" alt="Singling" align="left" height="250"></a>
 
-![](https://educ-lled2016.sites.olt.ubc.ca/files/2020/07/splash.gif =250x250)
+![Singling](https://educ-lled2016.sites.olt.ubc.ca/files/2020/07/splash.gif =250x250)
+
+<a href="url"><img src="http://url.to/image.png" align="left" height="48" width="48" ></a>
 
 # Singling
 
