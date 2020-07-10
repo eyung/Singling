@@ -1,4 +1,4 @@
-<img src="https://github.com/eyung/Singling/blob/master/src/com/resources/splash.gif" title="Singling" alt="Singling" height="250">
+<img src="https://github.com/eyung/Singling/blob/master/src/com/resources/splash.gif" title="Singling" alt="Singling" height="200">
 
 # Singling
 
@@ -28,9 +28,9 @@
 ## Contact
 
 - Digital Literacy Centre 
-<a href="https://dlc.lled.educ.ubc.ca/" target="_blank">`dlc.lled.educ.ubc.ca/`</a> <a href="https://twitter.com/dlcatubc" target="_blank">`@DLCatUBC`</a>
+<a href="https://dlc.lled.educ.ubc.ca" target="_blank">`dlc.lled.educ.ubc.ca/`</a> <a href="https://twitter.com/dlcatubc" target="_blank">`@DLCatUBC`</a>
 - Department of Language and Literacy Education 
-<a href="https://lled.educ.ubc.ca/" target="_blank">`lled.educ.ubc.ca/`</a> <a href="https://twitter.com/ubc_lled" target="_blank">`@UBC_LLED`</a>
+<a href="https://lled.educ.ubc.ca" target="_blank">`lled.educ.ubc.ca/`</a> <a href="https://twitter.com/ubc_lled" target="_blank">`@UBC_LLED`</a>
 - Email 
 <a href="mailto:effiamyung@gmail.com" target="_blank">`effiamyung@gmail.com`</a>
 
