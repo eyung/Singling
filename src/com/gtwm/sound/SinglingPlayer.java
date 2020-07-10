@@ -106,7 +106,7 @@ class LyricParserListener extends ParserListenerAdapter {
         int docLength = Main.textModel.getDocument().getLength();
         try {
             String textToSearch = Main.textModel.getDocument().getText(0, docLength);
-            System.out.println("Highlight: " + lyric + " | Offset: " + offset);
+            //System.out.println("Highlight: " + lyric + " | Offset: " + offset);
             offset = textToSearch.toLowerCase().indexOf(lyric.toLowerCase(), offset-lyric.length());
             if (offset != -1) {
                 Highlighter hl = Main.textModel.getHighlighter();

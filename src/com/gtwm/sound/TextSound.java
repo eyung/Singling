@@ -126,8 +126,9 @@ public class TextSound {
 	// Keeping track of how many categories a word falls under
 	static int lexCount = 0;
 
+	// Keep parameters within reasonable ranges ie. BASE_FREQUENCY(16.0, 2048)
 	enum Setting {
-		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 2048), OCTAVES(
+		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 20000), OCTAVES(
 				1.0, 10.0), TEMPO(40, 400), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383), ATTACK(0, 127);
 		Setting(double min, double max) {
 			if (min == 0) {
@@ -468,24 +469,6 @@ public class TextSound {
 							break;
 					}
 
-					// Normalise to fit in the range
-					double topFrequency = baseFrequency;
-					for (int j = 0; j < targetOctave; j++) {
-						topFrequency = topFrequency * 2;
-					}
-					while (frequency > topFrequency) {
-						frequency = frequency / 2;
-					}
-
-					// Convert freq to MIDI music string using reference note and frequency A4 440hz
-					int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
-
-					// Find pitch using base midi note number
-					pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
-					//System.out.println("Pitch bend: " + pitchBend);
-					//System.out.println("Frequency: " + frequency);
-					//System.out.println("Midi Number: " + midiNumber);
-
 					// Go through the instructions queue
 					for (TransformationManager.Instruction i : instructions) {
 
@@ -569,6 +552,24 @@ public class TextSound {
 						sentimentChord = "";
 					}
 
+					// Normalise to fit in the range
+					double topFrequency = baseFrequency;
+					for (int j = 0; j < targetOctave; j++) {
+						topFrequency = topFrequency * 2;
+					}
+					while (frequency > topFrequency) {
+						frequency = frequency / 2;
+					}
+
+					// Convert freq to MIDI music string using reference note and frequency A4 440hz
+					int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
+
+					// Find pitch using base midi note number
+					pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
+					//System.out.println("Pitch bend: " + pitchBend);
+					//System.out.println("Frequency: " + frequency);
+					//System.out.println("Midi Number: " + midiNumber);
+
 					// Hacky hack hack so that we are capping voices at 16
 					//if (lexCount < 15) {
 					//	if (transformedPattern != null && !transformedPattern.toString().equals("")) {
@@ -651,27 +652,6 @@ public class TextSound {
 				break;
 		}
 
-		// Normalise to fit in the range
-		double topFrequency = baseFrequency;
-		for (int j = 0; j < targetOctave; j++) {
-			topFrequency = topFrequency * 2;
-		}
-		while (frequency > topFrequency) {
-			frequency = frequency / 2;
-		}
-
-		// Convert freq to MIDI music string using reference note and frequency A4 440hz
-		int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
-
-		// Find pitch using base midi note number
-		pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
-
-		// Set frequency of punctuations/symbols to frequency of lexname = 46
-		if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
-			targetOctave = Math.ceil((46/45d) * octaves); //26
-			frequency = 46 * baseFrequency;
-		}
-
 		// Go through the instructions queue
 		for (TransformationManager.Instruction i : instructions) {
 
@@ -701,6 +681,27 @@ public class TextSound {
 				}
 				//}
 			}
+		}
+
+		// Normalise to fit in the range
+		double topFrequency = baseFrequency;
+		for (int j = 0; j < targetOctave; j++) {
+			topFrequency = topFrequency * 2;
+		}
+		while (frequency > topFrequency) {
+			frequency = frequency / 2;
+		}
+
+		// Convert freq to MIDI music string using reference note and frequency A4 440hz
+		int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
+
+		// Find pitch using base midi note number
+		pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
+
+		// Set frequency of punctuations/symbols to frequency of lexname = 46
+		if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
+			targetOctave = Math.ceil((46/45d) * octaves); //26
+			frequency = 46 * baseFrequency;
 		}
 
 		//pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay);
@@ -818,18 +819,20 @@ public class TextSound {
 				//	baseFrequency = frequency;
 				//}
 				Setting settingsFrequency = Setting.BASE_FREQUENCY;
-				double midiNoteNumber = Double.parseDouble(i.soundModValue);
+				//double midiNoteNumber = Double.parseDouble(i.soundModValue);
 
-				if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
-					frequency = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
+				//if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
+					//frequency = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
+					frequency = Note.getFrequencyForNote(i.soundModValue)*2;
 					frequency = settingsFrequency.keepInRange(frequency);
-				} else {
-					double tempFreq = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
-					frequency += tempFreq;
-					frequency = settingsFrequency.keepInRange(frequency);
-					baseFrequency = frequency;
-				}
+				//} else {
+					//double tempFreq = Math.pow(2, (midiNoteNumber - 69) / 12) * 440;
+					//frequency += tempFreq;
+				//	frequency = settingsFrequency.keepInRange(frequency);
+				//	baseFrequency = frequency;
+				//}
 				//System.out.println("Change freq to: " + i.soundModValue);
+				//System.out.println("Note: " + i.soundModValue + ", Freq: " + frequency);
 				break;
 
 			case ATTACK:
