@@ -27,15 +27,12 @@
 
 ## Contact
 
-- DLC Website at <a href="https://dlc.lled.educ.ubc.ca/" target="_blank">`dlc.lled.educ.ubc.ca/`</a>
-- DLC Twitter at <a href="https://twitter.com/dlcatubc" target="_blank">`@DLCatUBC`</a>
-- LLED Website at <a href="https://lled.educ.ubc.ca/" target="_blank">`lled.educ.ubc.ca/`</a>
-- LLED Twitter at <a href="https://twitter.com/ubc_lled" target="_blank">`@UBC_LLED`</a>
-- Email at <a href="mailto:effiamyung@gmail.com" target="_blank">`effiamyung@gmail.com`</a>
-
-- Digital Literacy Centre <a href="https://dlc.lled.educ.ubc.ca/" target="_blank">`dlc.lled.educ.ubc.ca/`</a> <a href="https://twitter.com/dlcatubc" target="_blank">`@DLCatUBC`</a>
-- Department of Language and Literacy Education <a href="https://lled.educ.ubc.ca/" target="_blank">`lled.educ.ubc.ca/`</a> <a href="https://twitter.com/ubc_lled" target="_blank">`@UBC_LLED`</a>
-- Email <a href="mailto:effiamyung@gmail.com" target="_blank">`effiamyung@gmail.com`</a>
+- Digital Literacy Centre 
+<a href="https://dlc.lled.educ.ubc.ca/" target="_blank">`dlc.lled.educ.ubc.ca/`</a> <a href="https://twitter.com/dlcatubc" target="_blank">`@DLCatUBC`</a>
+- Department of Language and Literacy Education 
+<a href="https://lled.educ.ubc.ca/" target="_blank">`lled.educ.ubc.ca/`</a> <a href="https://twitter.com/ubc_lled" target="_blank">`@UBC_LLED`</a>
+- Email 
+<a href="mailto:effiamyung@gmail.com" target="_blank">`effiamyung@gmail.com`</a>
 
 ---
 
