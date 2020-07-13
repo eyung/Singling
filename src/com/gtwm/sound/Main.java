@@ -106,7 +106,7 @@ public class Main extends JFrame {
             System.out.println("g is null");
             return;
         }
-        g.drawString("DLC Singling ver 0.2", splashx, splashy - 20);
+        g.drawString("DLC Singling ver 0.3", splashx, splashy - 20);
         g.drawString("Starting up...", splashx, splashy);
         splash.update();
 
@@ -707,7 +707,7 @@ public class Main extends JFrame {
         menuBar.add(fileMenu);
 
         // Frame
-        JFrame frame = new JFrame("Singling v0.2");
+        JFrame frame = new JFrame("Singling v0.3");
         frame.setJMenuBar(menuBar);
         frame.setContentPane(mainForm.panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
