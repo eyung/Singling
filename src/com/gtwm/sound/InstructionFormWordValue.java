@@ -68,8 +68,9 @@ public class InstructionFormWordValue extends JDialog {
             public void actionPerformed(ActionEvent e) {
 
                 TransformationManager.Instruction instruction = new TransformationManager.Instruction();
-                instruction.setMod(TransformationManager.Instruction.Mods.WORDVALUE);
-                instruction.setModValue(String.valueOf(setValue.getSelectedItem()));
+                instruction.setMod(TransformationManager.Instruction.Mods.LGC);
+                //instruction.setModValue(String.valueOf(setValue.getSelectedItem()));
+                instruction.setModValue(String.valueOf(setValue.getSelectedIndex()));
                 instruction.setChangeMode(TransformationManager.Instruction.ChangeModes.valueOf(String.valueOf(setChangeMode.getSelectedItem())));
 
                 if (instruction.changeMode == TransformationManager.Instruction.ChangeModes.SET) {

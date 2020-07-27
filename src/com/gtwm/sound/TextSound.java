@@ -503,7 +503,7 @@ public class TextSound {
 									break;
 							}
 
-						} else if (i.mod == TransformationManager.Instruction.Mods.WORDVALUE) {
+						} else if (i.mod == TransformationManager.Instruction.Mods.LGC) {
 							//double[] lexnames = convertToArr.toDoubleArr(item.getValue() + 1);
 							//for (double n : lexnames) {
 							//	if (n == Double.parseDouble(i.modValue)) {

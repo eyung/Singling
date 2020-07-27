@@ -240,7 +240,7 @@
             <properties>
               <majorTickSpacing value="100"/>
               <maximum value="500"/>
-              <minorTickSpacing value="50"/>
+              <minorTickSpacing value="10"/>
               <paintLabels value="true"/>
               <paintTicks value="true"/>
               <snapToTicks value="true"/>
@@ -503,7 +503,7 @@
                     <item value="Transformation:"/>
                     <item value="WORDTYPE"/>
                     <item value="WORDLENGTH"/>
-                    <item value="WORDVALUE"/>
+                    <item value="LGC"/>
                     <item value="PUNCTUATION"/>
                     <item value="CHARACTER"/>
                   </model>

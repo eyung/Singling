@@ -6,7 +6,7 @@ public class TransformationManager {
 
     static class Instruction implements Serializable {
 
-        enum Mods { WORDTYPE, WORDLENGTH, WORDVALUE, PUNCTUATION, CHARACTER, SENTIMENT }
+        enum Mods { WORDTYPE, WORDLENGTH, LGC, PUNCTUATION, CHARACTER, SENTIMENT }
 
         enum SoundMods { TEMPO, NOTE_DURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION, MIDI_NOTE, ATTACK, DECAY, MAJOR, MINOR, PITCHBEND }
 
@@ -109,7 +109,7 @@ public class TransformationManager {
                         " " + soundModValue;
             } else if (mod.equals(Mods.WORDTYPE) ||
                     mod.equals(Mods.PUNCTUATION) ||
-                    mod.equals(Mods.WORDVALUE) ||
+                    mod.equals(Mods.LGC) ||
                     mod.equals(Mods.CHARACTER)) {
                 return mod +
                         ":" + modValue +

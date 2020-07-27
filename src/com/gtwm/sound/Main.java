@@ -312,7 +312,7 @@ public class Main extends JFrame {
                         dialogWordLength.setVisible(true);
                         btnAddInstruction.setSelectedIndex(0);
                         break;
-                    case WORDVALUE:
+                    case LGC:
                         InstructionFormWordValue dialogWordValue = new InstructionFormWordValue();
                         dialogWordValue.setTitle("Transformation: Word LGC");
                         dialogWordValue.pack();
