@@ -19,10 +19,7 @@ import simplenlg.realiser.english.Realiser;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.event.*;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
@@ -74,6 +71,7 @@ public class Main extends JFrame {
     // Set models
     static DefaultListModel model = new DefaultListModel();
     static JTextArea textModel;
+    MyMouseAdaptor myMouseAdaptor = new MyMouseAdaptor();
 
     // Storing database words and values to list item
     private List<WordMap.Mapping> allItems;
@@ -114,6 +112,8 @@ public class Main extends JFrame {
         list1.setModel(model);
         textModel = this.textArea1;
         //setInstrument.setModel(InstructionFormModels.modelSetInstrument);
+        list1.addMouseListener(myMouseAdaptor);
+        list1.addMouseMotionListener(myMouseAdaptor);
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
@@ -409,10 +409,42 @@ public class Main extends JFrame {
                 //labelOctave.setText(String.valueOf(octaveValue));
             }
         });
-    }
+    list1.addMouseListener(new MouseAdapter() { } );}
 
     public static void listAddInstruction(DefaultListModel thisModel, TransformationManager.Instruction thisInstruction) {
         thisModel.addElement(thisInstruction);
+    }
+
+    private class MyMouseAdaptor extends MouseInputAdapter {
+        private boolean mouseDragging = false;
+        private int dragSourceIndex;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                dragSourceIndex = list1.getSelectedIndex();
+                mouseDragging = true;
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            mouseDragging = false;
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if (mouseDragging) {
+                int currentIndex = list1.locationToIndex(e.getPoint());
+                if (currentIndex != dragSourceIndex) {
+                    int dragTargetIndex = list1.getSelectedIndex();
+                    String dragElement = model.get(dragSourceIndex).toString();
+                    model.remove(dragSourceIndex);
+                    model.add(dragTargetIndex, dragElement);
+                    dragSourceIndex = currentIndex;
+                }
+            }
+        }
     }
 
     // Listen for changes to the text area for real-time processing
