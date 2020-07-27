@@ -59,6 +59,7 @@ public class InstructionFormWordValue extends JDialog {
         incrementFrequency.setModel(InstructionFormModels.modelIncrementFrequency);
         incrementVolume.setModel(InstructionFormModels.modelIncrementVolume);
         incrementPitchbend.setModel(InstructionFormModels.modelIncrementPitchbend);
+        setValue.setModel(InstructionFormModels.modelSetLGC);
 
         setContentPane(contentPane);
         setModal(true);

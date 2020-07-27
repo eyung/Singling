@@ -24,59 +24,7 @@
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <model>
-            <item value="all adjective clusters"/>
-            <item value="relational adjectives (pertainyms)"/>
-            <item value="all adverbs"/>
-            <item value="unique beginner for nouns"/>
-            <item value="nouns denoting acts or actions"/>
-            <item value="nouns denoting animals"/>
-            <item value="nouns denoting man-made objects"/>
-            <item value="nouns denoting attributes of people and objects"/>
-            <item value="nouns denoting body parts"/>
-            <item value="nouns denoting cognitive processes and contents"/>
-            <item value="nouns denoting communicative processes and contents"/>
-            <item value="nouns denoting natural events"/>
-            <item value="nouns denoting feelings and emotions"/>
-            <item value="nouns denoting foods and drinks"/>
-            <item value="nouns denoting groupings of people or objects"/>
-            <item value="nouns denoting spatial position"/>
-            <item value="nouns denoting goals"/>
-            <item value="nouns denoting natural objects (not man-made)"/>
-            <item value="nouns denoting people"/>
-            <item value="nouns denoting natural phenomena"/>
-            <item value="nouns denoting plants"/>
-            <item value="nouns denoting possession and transfer of possession"/>
-            <item value="nouns denoting natural processes"/>
-            <item value="nouns denoting quantities and units of measure"/>
-            <item value="nouns denoting relations between people or things or ideas"/>
-            <item value="nouns denoting two and three dimensional shapes"/>
-            <item value="nouns denoting stable states of affairs"/>
-            <item value="nouns denoting substances"/>
-            <item value="nouns denoting time and temporal relations"/>
-            <item value="verbs of grooming, dressing and bodily care"/>
-            <item value="verbs of size, temperature change, intensifying, etc."/>
-            <item value="verbs of thinking, judging, analyzing, doubting"/>
-            <item value="verbs of telling, asking, ordering, singing"/>
-            <item value="verbs of fighting, athletic activities"/>
-            <item value="verbs of eating and drinking"/>
-            <item value="verbs of touching, hitting, tying, digging"/>
-            <item value="verbs of sewing, baking, painting, performing"/>
-            <item value="verbs of feeling"/>
-            <item value="verbs of walking, flying, swimming"/>
-            <item value="verbs of seeing, hearing, feeling"/>
-            <item value="verbs of buying, selling, owning"/>
-            <item value="verbs of political and social activities and events"/>
-            <item value="verbs of being, having, spatial relations"/>
-            <item value="verbs of raining, snowing, thawing, thundering"/>
-            <item value="participial adjectives"/>
-            <item value="modals all"/>
-            <item value="symbols all"/>
-            <item value="emojis all"/>
-            <item value="agential prepositions"/>
-            <item value="relational prepositions"/>
-            <item value="time prepositions"/>
-          </model>
+          <model/>
         </properties>
       </component>
       <grid id="94766" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
