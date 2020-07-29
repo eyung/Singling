@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.gtwm.sound.InstructionFormPunctuations">
+  <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="10" left="10" bottom="10" right="10"/>
+    <constraints>
+      <xy x="48" y="54" width="978" height="408"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="fee7d" layout-manager="GridLayoutManager" row-count="2" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="10" left="10" bottom="10" right="10"/>
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="2111f" class="javax.swing.JComboBox" binding="setChangeMode">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="SET"/>
+                <item value="INCREMENT"/>
+              </model>
+            </properties>
+          </component>
+          <grid id="310e9" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <grid id="b5cb0" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="ae3e4" class="javax.swing.JButton" binding="buttonOK">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="OK"/>
+                    </properties>
+                  </component>
+                  <component id="d44d4" class="javax.swing.JButton" binding="buttonCancel">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Cancel"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+          <component id="1f882" class="javax.swing.JComboBox" binding="setValue">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="#"/>
+                <item value="$"/>
+                <item value="%"/>
+                <item value="&amp;"/>
+                <item value="'"/>
+                <item value="("/>
+                <item value=")"/>
+                <item value="*"/>
+                <item value="+"/>
+                <item value="-"/>
+                <item value="."/>
+                <item value="/"/>
+                <item value=":"/>
+                <item value="&lt; "/>
+                <item value="="/>
+                <item value="&gt; "/>
+                <item value="?"/>
+                <item value="@"/>
+                <item value="["/>
+                <item value="\"/>
+                <item value="]"/>
+                <item value="^"/>
+                <item value="_"/>
+                <item value="`"/>
+                <item value="{"/>
+                <item value="|"/>
+                <item value="}"/>
+                <item value="~"/>
+                <item value="¢"/>
+                <item value="£"/>
+                <item value="¤"/>
+                <item value="¥"/>
+                <item value="₹"/>
+                <item value="¦"/>
+                <item value="§"/>
+                <item value="¨"/>
+                <item value="©"/>
+                <item value="ª"/>
+                <item value="«"/>
+                <item value="¬"/>
+                <item value="®"/>
+                <item value="¯"/>
+                <item value="°"/>
+                <item value="±"/>
+                <item value="²"/>
+                <item value="³"/>
+                <item value="´"/>
+                <item value="µ"/>
+                <item value="¶"/>
+                <item value="·"/>
+                <item value="¸"/>
+                <item value="¹"/>
+                <item value="º"/>
+                <item value="»"/>
+                <item value="¼"/>
+                <item value="½"/>
+                <item value="¾"/>
+                <item value="¿"/>
+                <item value="À"/>
+                <item value="Á"/>
+                <item value="Â"/>
+                <item value="Ã"/>
+                <item value="Ä"/>
+                <item value="Å"/>
+                <item value="Æ"/>
+                <item value="Ç"/>
+                <item value="È"/>
+                <item value="É"/>
+                <item value="Ê"/>
+                <item value="Ë"/>
+                <item value="Ì"/>
+                <item value="Í"/>
+                <item value="Î"/>
+                <item value="Ï"/>
+                <item value="Ð"/>
+                <item value="Ñ"/>
+                <item value="Ò"/>
+                <item value="Ó"/>
+                <item value="Ô"/>
+                <item value="Õ"/>
+                <item value="Ö"/>
+                <item value="×"/>
+                <item value="Ø"/>
+                <item value="Ù"/>
+                <item value="Ú"/>
+                <item value="Û"/>
+                <item value="Ü"/>
+                <item value="Ý"/>
+                <item value="Þ"/>
+                <item value="ß"/>
+                <item value="à"/>
+                <item value="á"/>
+                <item value="â"/>
+                <item value="ã"/>
+                <item value="ä"/>
+                <item value="å"/>
+                <item value="æ"/>
+                <item value="ç"/>
+                <item value="è"/>
+                <item value="é"/>
+                <item value="ê"/>
+                <item value="ë"/>
+                <item value="ì"/>
+                <item value="í"/>
+                <item value="î"/>
+                <item value="ï"/>
+                <item value="ð"/>
+                <item value="ñ"/>
+                <item value="ò"/>
+                <item value="ó"/>
+                <item value="ô"/>
+                <item value="õ"/>
+                <item value="ö"/>
+                <item value="÷"/>
+                <item value="ø"/>
+                <item value="ù"/>
+                <item value="ú"/>
+                <item value="û"/>
+                <item value="ü"/>
+                <item value="ý"/>
+                <item value="þ"/>
+                <item value="ÿ"/>
+                <item value="Œ"/>
+                <item value="œ"/>
+                <item value="Š"/>
+                <item value="š"/>
+                <item value="Ÿ"/>
+                <item value="ƒ"/>
+                <item value="ˆ"/>
+                <item value="˜"/>
+                <item value="Α"/>
+                <item value="Β"/>
+                <item value="Γ"/>
+                <item value="Δ"/>
+                <item value="Ε"/>
+                <item value="Ζ"/>
+                <item value="Η"/>
+                <item value="Θ"/>
+                <item value="Ι"/>
+                <item value="Κ"/>
+                <item value="Λ"/>
+                <item value="Μ"/>
+                <item value="Ν"/>
+                <item value="Ξ"/>
+                <item value="Ο"/>
+                <item value="Π"/>
+                <item value="Ρ"/>
+                <item value="Σ"/>
+                <item value="Τ"/>
+                <item value="Υ"/>
+                <item value="Φ"/>
+                <item value="Χ"/>
+                <item value="Ψ"/>
+                <item value="Ω"/>
+                <item value="α"/>
+                <item value="β"/>
+                <item value="γ"/>
+                <item value="δ"/>
+                <item value="ε"/>
+                <item value="ζ"/>
+                <item value="η"/>
+                <item value="θ"/>
+                <item value="ι"/>
+                <item value="κ"/>
+                <item value="λ"/>
+                <item value="μ"/>
+                <item value="ν"/>
+                <item value="ξ"/>
+                <item value="ο"/>
+                <item value="π"/>
+                <item value="ρ"/>
+                <item value="ς"/>
+                <item value="σ"/>
+                <item value="τ"/>
+                <item value="υ"/>
+                <item value="φ"/>
+                <item value="χ"/>
+                <item value="ψ"/>
+                <item value="ω"/>
+                <item value="ϑ"/>
+                <item value="ϒ"/>
+                <item value="ϖ"/>
+                <item value="–"/>
+                <item value="—"/>
+                <item value="‘"/>
+                <item value="’"/>
+                <item value="‚"/>
+                <item value="“"/>
+                <item value="”"/>
+                <item value="„"/>
+                <item value="†"/>
+                <item value="‡"/>
+                <item value="‰"/>
+                <item value="‹"/>
+                <item value="›"/>
+                <item value="•"/>
+                <item value="…"/>
+                <item value="′"/>
+                <item value="″"/>
+                <item value="‾"/>
+                <item value="⁄"/>
+                <item value="ℑ"/>
+                <item value="ℜ"/>
+                <item value="™"/>
+                <item value="ℵ"/>
+                <item value="←"/>
+                <item value="↑"/>
+                <item value="→"/>
+                <item value="↓"/>
+                <item value="↔"/>
+                <item value="↵"/>
+                <item value="⇐"/>
+                <item value="⇑"/>
+                <item value="⇒"/>
+                <item value="⇓"/>
+                <item value="⇔"/>
+                <item value="◄"/>
+                <item value="►"/>
+                <item value="▲"/>
+                <item value="▼"/>
+                <item value="∀"/>
+                <item value="∂"/>
+                <item value="∃"/>
+                <item value="∅"/>
+                <item value="∇"/>
+                <item value="∈"/>
+                <item value="∉"/>
+                <item value="∋"/>
+                <item value="∏"/>
+                <item value="∑"/>
+                <item value="−"/>
+                <item value="∗"/>
+                <item value="√"/>
+                <item value="∝"/>
+                <item value="∞"/>
+                <item value="∠"/>
+                <item value="∧"/>
+                <item value="∨"/>
+                <item value="∩"/>
+                <item value="∪"/>
+                <item value="∫"/>
+                <item value="∴"/>
+                <item value="∼"/>
+                <item value="≅"/>
+                <item value="≈"/>
+                <item value="≠"/>
+                <item value="≡"/>
+                <item value="≤"/>
+                <item value="≥"/>
+                <item value="⊂"/>
+                <item value="⊃"/>
+                <item value="⊄"/>
+                <item value="⊆"/>
+                <item value="⊇"/>
+                <item value="⊕"/>
+                <item value="⊗"/>
+                <item value="⊥"/>
+                <item value="⋅"/>
+                <item value="⌈"/>
+                <item value="⌉"/>
+                <item value="⌊"/>
+                <item value="⌋"/>
+                <item value="〈"/>
+                <item value="〉"/>
+                <item value="◊"/>
+                <item value="♠"/>
+                <item value="♣"/>
+                <item value="♥"/>
+                <item value="♦"/>
+                <item value=","/>
+                <item value="!"/>
+                <item value=";"/>
+              </model>
+            </properties>
+          </component>
+          <component id="278ce" class="javax.swing.JComboBox" binding="setSoundModTo">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="TEMPO"/>
+                <item value="NOTE_DURATION"/>
+                <item value="OCTAVE"/>
+                <item value="INSTRUMENT"/>
+                <item value="VOLUME"/>
+                <item value="MIDI_NOTE"/>
+              </model>
+            </properties>
+          </component>
+          <component id="e5821" class="javax.swing.JComboBox" binding="setSoundModBy">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="TEMPO"/>
+                <item value="NOTEDURATION"/>
+                <item value="OCTAVE"/>
+                <item value="VOLUME"/>
+              </model>
+              <visible value="false"/>
+            </properties>
+          </component>
+          <grid id="49e86" binding="setPanel" layout-manager="GridLayoutManager" row-count="10" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="8c245" class="javax.swing.JComboBox" binding="setTempo">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="40"/>
+                    <item value="45"/>
+                    <item value="50"/>
+                    <item value="55"/>
+                    <item value="60"/>
+                    <item value="65"/>
+                    <item value="70"/>
+                    <item value="80"/>
+                    <item value="95"/>
+                    <item value="110"/>
+                    <item value="120"/>
+                    <item value="145"/>
+                    <item value="180"/>
+                    <item value="220"/>
+                  </model>
+                </properties>
+              </component>
+              <component id="c7e39" class="javax.swing.JComboBox" binding="setDuration">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="1.00"/>
+                    <item value="0.50"/>
+                    <item value="0.25"/>
+                    <item value="0.125"/>
+                    <item value="0.0625"/>
+                    <item value="0.03125"/>
+                    <item value="0.015625"/>
+                  </model>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="cbab5" class="javax.swing.JComboBox" binding="setInstrument">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="PIANO"/>
+                    <item value="GUITAR"/>
+                    <item value="TINKLE_BELL"/>
+                  </model>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="c6d" class="javax.swing.JComboBox" binding="setOctave">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="0"/>
+                    <item value="1"/>
+                    <item value="2"/>
+                    <item value="3"/>
+                    <item value="4"/>
+                    <item value="5"/>
+                    <item value="6"/>
+                    <item value="7"/>
+                    <item value="8"/>
+                    <item value="9"/>
+                    <item value="10"/>
+                  </model>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="7f03" class="javax.swing.JSlider" binding="setVolume">
+                <constraints>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <majorTickSpacing value="1000"/>
+                  <maximum value="16383"/>
+                  <value value="8000"/>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="d556b" class="javax.swing.JComboBox" binding="setPercussion">
+                <constraints>
+                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="Bass_Drum"/>
+                    <item value="Hi_Bongo"/>
+                    <item value="Hand_Clap"/>
+                  </model>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="6b50a" class="javax.swing.JComboBox" binding="setFrequency">
+                <constraints>
+                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <model>
+                    <item value="16"/>
+                    <item value="32"/>
+                    <item value="64"/>
+                    <item value="128"/>
+                    <item value="256"/>
+                  </model>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="a42f0" class="javax.swing.JSlider" binding="setAttack">
+                <constraints>
+                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="ce520" class="javax.swing.JSlider" binding="setDecay">
+                <constraints>
+                  <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="dba2a" class="javax.swing.JSlider" binding="setPitchbend">
+                <constraints>
+                  <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <majorTickSpacing value="1000"/>
+                  <maximum value="16383"/>
+                  <value value="8192"/>
+                  <visible value="false"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="3bd98" binding="incrementPanel" layout-manager="GridLayoutManager" row-count="6" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <visible value="false"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="769e8" class="javax.swing.JSpinner" binding="incrementTempo">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="916c7" class="javax.swing.JSpinner" binding="incrementDuration">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="9d2e0" class="javax.swing.JSpinner" binding="incrementOctave">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="25a3e" class="javax.swing.JSpinner" binding="incrementVolume">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="ae246" class="javax.swing.JSpinner" binding="incrementFrequency">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <visible value="false"/>
+                </properties>
+              </component>
+              <component id="931ef" class="javax.swing.JSpinner" binding="incrementPitchbend">
+                <constraints>
+                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <visible value="false"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

@@ -6,7 +6,7 @@ public class TransformationManager {
 
     static class Instruction implements Serializable {
 
-        enum Mods { WORDTYPE, WORDLENGTH, LGC, PUNCTUATION, CHARACTER, SENTIMENT }
+        enum Mods { WORDTYPE, WORDLENGTH, LGC, PUNCTUATION, SYMBOLS, CHARACTER, SENTIMENT }
 
         enum SoundMods { TEMPO, NOTE_DURATION, OCTAVE, INSTRUMENT, VOLUME, PERCUSSION, MIDI_NOTE, ATTACK, DECAY, MAJOR, MINOR, PITCHBEND }
 

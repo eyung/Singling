@@ -61,7 +61,7 @@ public class InstructionFormSymbols extends JDialog {
             public void actionPerformed(ActionEvent e) {
 
                 TransformationManager.Instruction instruction = new TransformationManager.Instruction();
-                instruction.setMod(TransformationManager.Instruction.Mods.PUNCTUATION);
+                instruction.setMod(TransformationManager.Instruction.Mods.SYMBOLS);
                 instruction.setModValue(String.valueOf(setValue.getSelectedItem()));
                 instruction.setChangeMode(TransformationManager.Instruction.ChangeModes.valueOf(String.valueOf(setChangeMode.getSelectedItem())));
 

@@ -321,6 +321,14 @@ public class Main extends JFrame {
                         btnAddInstruction.setSelectedIndex(0);
                         break;
                     case PUNCTUATION:
+                        InstructionFormPunctuations dialogPunctuations = new InstructionFormPunctuations();
+                        dialogPunctuations.setTitle("Transformation: Punctuations");
+                        dialogPunctuations.pack();
+                        dialogPunctuations.setLocationRelativeTo(panelTransformationInputs);
+                        dialogPunctuations.setVisible(true);
+                        btnAddInstruction.setSelectedIndex(0);
+                        break;
+                    case SYMBOLS:
                         InstructionFormSymbols dialogSymbol = new InstructionFormSymbols();
                         dialogSymbol.setTitle("Transformation: Symbols");
                         dialogSymbol.pack();
