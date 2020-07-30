@@ -18,6 +18,12 @@
 
 ---
 
+## Documentation
+
+- `https://github.com/eyung/Singling/blob/master/Singling-Excerpt.docx`
+
+---
+
 ## Team
 
 - Digital Literacy Centre, Department of Language & Literacy Education, Faculty of Education, UBC
