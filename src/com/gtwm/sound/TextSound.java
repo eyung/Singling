@@ -306,7 +306,12 @@ public class TextSound {
 
 				if (perWord) {
 					// Last character of word is a punctuation
-					lastCharString = String.valueOf(input.charAt((charIndex - 1)));
+
+					// First word will be played, even if there is a space/line break before it
+					if (charIndex > 0) {
+						lastCharString = String.valueOf(input.charAt((charIndex - 1)));
+					} else lastCharString = String.valueOf(0);
+
 					if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", lastCharString)) {
 
 						//System.out.println("last char: " + lastWord.substring(lastWord.length()-1));
@@ -541,15 +546,23 @@ public class TextSound {
 					//frequency = Math.round(frequency * 100.0) / 100.0;
 
 					// Make chord based on sentiment analysis value
-					String sentimentChord;
-					if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && !item.getSentimentPos().equalsIgnoreCase("0")) {
-						//System.out.println(makeMajorChord(Double.parseDouble(item.wordSentimentPos)));
-						sentimentChord = makeMajorChord(Double.parseDouble(item.wordSentimentPos));
-					} else if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL" && !item.getSentimentNeg().equalsIgnoreCase("0")) {
-						//System.out.println(makeMinorChord(Double.parseDouble(item.wordSentimentNeg)));
-						sentimentChord = makeMinorChord(Double.parseDouble(item.wordSentimentNeg));
-					} else {
-						sentimentChord = "";
+					String sentimentChord = "";
+					double sumSentimentValue;
+					//if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && !item.getSentimentPos().equalsIgnoreCase("0")) {
+					//	//System.out.println(makeMajorChord(Double.parseDouble(item.wordSentimentPos)));
+					//	sentimentChord = makeMajorChord(Double.parseDouble(item.wordSentimentPos));
+					//} else if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL" && !item.getSentimentNeg().equalsIgnoreCase("0")) {
+					//	//System.out.println(makeMinorChord(Double.parseDouble(item.wordSentimentNeg)));
+					//	sentimentChord = makeMinorChord(Double.parseDouble(item.wordSentimentNeg));
+					//}
+
+					if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
+						sumSentimentValue = Double.parseDouble(item.getSentimentPos()) + (Double.parseDouble(item.getSentimentNeg())*-1);
+						if (sumSentimentValue > 0) {
+							sentimentChord = makeMajorChord(sumSentimentValue);
+						} else {
+							sentimentChord = makeMinorChord(sumSentimentValue*-1);
+						}
 					}
 
 					// Normalise to fit in the range
