@@ -246,6 +246,7 @@ public class TextSound {
 
 		threadPlayer = new Thread(singlingPlayer);
 
+		input += new String (" ");
 		pattern = processString(input, pattern);
 
 		singlingPlayer.setPattern(pattern, player, noteLength);
