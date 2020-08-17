@@ -407,10 +407,6 @@ public class TextSound {
 		// Pattern transformed by sentiment values
 		Pattern transformedPattern = new Pattern();
 
-		// For highlighting
-		int offset=0;
-		String wordHighlight;
-
 		// Lookup database
 		for (WordMap.Mapping item : items) {
 
@@ -556,7 +552,6 @@ public class TextSound {
 					//	//System.out.println(makeMinorChord(Double.parseDouble(item.wordSentimentNeg)));
 					//	sentimentChord = makeMinorChord(Double.parseDouble(item.wordSentimentNeg));
 					//}
-
 					if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
 						sumSentimentValue = Double.parseDouble(item.getSentimentPos()) + (Double.parseDouble(item.getSentimentNeg())*-1);
 						if (sumSentimentValue > 0) {
@@ -577,6 +572,7 @@ public class TextSound {
 
 					// Convert freq to MIDI music string using reference note and frequency A4 440hz
 					int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
+					int baseMidiNumber = (int) Math.rint(12*logCalc.log(baseFrequency/440.0f, 2) + 69.0f);
 
 					// Find pitch using base midi note number
 					pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
@@ -600,7 +596,17 @@ public class TextSound {
 
 							//pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
 					//pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " '" + lastWord);
-					pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
+					//pattern.add(":PW(" + pitchBend + ") " + midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
+
+					//System.out.println("sentiment" + sentimentChord);
+					// Midi message to send to player
+					// If sentiment values are found, use the base (fundamental) frequency without pitchbend to create a chord
+					// Otherwise, use the LGC as a variable to create a midi note
+					if (sentimentChord != "") {
+						pattern.add(baseMidiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
+					} else {
+						pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+					}
 
 					// First LGC of word will inherit the word as lyric item
 					if (lexCount == 0) {
