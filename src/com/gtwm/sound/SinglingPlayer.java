@@ -112,7 +112,7 @@ class LyricParserListener extends ParserListenerAdapter {
                 Highlighter hl = Main.textModel.getHighlighter();
                 hl.removeAllHighlights();
                 hl.addHighlight(offset, offset+lyric.length(), new DefaultHighlighter.DefaultHighlightPainter(Color.CYAN));
-                offset += lyric.length();
+                offset += lyric.length() + 1;
             }
         } catch (Exception e) {}
     }
