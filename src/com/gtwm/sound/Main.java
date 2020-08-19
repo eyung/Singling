@@ -58,6 +58,7 @@ public class Main extends JFrame {
     private JPanel panelProcessBtns;
     private JButton btnTogglePause;
     private JLabel labelOctave;
+    private JToggleButton btnSentiment;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -417,7 +418,22 @@ public class Main extends JFrame {
                 //labelOctave.setText(String.valueOf(octaveValue));
             }
         });
-    list1.addMouseListener(new MouseAdapter() { } );}
+
+        // Test
+        list1.addMouseListener(new MouseAdapter() { } );
+
+        // Sentiment button toggle state
+        btnSentiment.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                if(itemEvent.getStateChange()==ItemEvent.SELECTED){
+                    //System.out.println("button is selected");
+                } else if(itemEvent.getStateChange()==ItemEvent.DESELECTED){
+                    //System.out.println("button is not selected");
+                }
+            }
+        });
+    }
 
     public static void listAddInstruction(DefaultListModel thisModel, TransformationManager.Instruction thisInstruction) {
         thisModel.addElement(thisInstruction);
@@ -555,8 +571,11 @@ public class Main extends JFrame {
         TextSound.baseOctaves = Double.valueOf(setOctaves.getValue());
         TextSound.baseTempo = Double.valueOf(setTempo.getValue());
         TextSound.baseFrequency = Double.valueOf(setFrequency.getValue());
+
         TextSound.perWord = wordRadioButton.isSelected();
         TextSound.perChar = characterRadioButton.isSelected();
+
+        TextSound.sentimentState = btnSentiment.isSelected();
 
         if (lexnamesRadioButton.isSelected()) {
             TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;

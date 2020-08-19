@@ -369,6 +369,14 @@
               <value value="150"/>
             </properties>
           </component>
+          <component id="ba4d" class="javax.swing.JToggleButton" binding="btnSentiment">
+            <constraints>
+              <grid row="8" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Sentiment"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <component id="1cd43" class="javax.swing.JLabel">

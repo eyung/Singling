@@ -126,6 +126,9 @@ public class TextSound {
 	// Keeping track of how many categories a word falls under
 	static int lexCount = 0;
 
+	// Sentiment state
+	static boolean sentimentState;
+
 	// Keep parameters within reasonable ranges ie. BASE_FREQUENCY(16.0, 2048)
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 20000), OCTAVES(
@@ -342,6 +345,7 @@ public class TextSound {
 				pattern.add("R/" + String.format("%f", theRestLength) + " ");
 				patternCurrentTime += theRestLength;
 
+				// New line
 				if (charString.equals("\n")) {
 					// An extra rest on newlines
 					pattern.add("R/" + String.format("%f", restLength) + " ");
@@ -602,12 +606,13 @@ public class TextSound {
 					// Midi message to send to player
 					// If sentiment values are found, use the base (fundamental) frequency without pitchbend to create a chord
 					// Otherwise, use the LGC as a variable to create a midi note
-					if (sentimentChord != "") {
+
+					if (sentimentState && sentimentChord != "") {
 						pattern.add(baseMidiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
 					} else {
 						pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 					}
-
+					
 					// First LGC of word will inherit the word as lyric item
 					if (lexCount == 0) {
 						pattern.add(" '" + lastWord);
