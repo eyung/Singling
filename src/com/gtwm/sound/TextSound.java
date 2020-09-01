@@ -120,6 +120,7 @@ public class TextSound {
 	static double patternCurrentTime = 0;
 	
 	//static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
+	static Set<String> passingWords = new HashSet<String>();
 	static List<WordMap.Mapping> items;
 	static List<TransformationManager.Instruction> instructions = new ArrayList<>();
 
@@ -612,7 +613,7 @@ public class TextSound {
 					} else {
 						pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 					}
-					
+
 					// First LGC of word will inherit the word as lyric item
 					if (lexCount == 0) {
 						pattern.add(" '" + lastWord);

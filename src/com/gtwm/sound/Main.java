@@ -59,6 +59,7 @@ public class Main extends JFrame {
     private JButton btnTogglePause;
     private JLabel labelOctave;
     private JToggleButton btnSentiment;
+    private JButton btnAddPassingWords;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -431,6 +432,16 @@ public class Main extends JFrame {
                 } else if(itemEvent.getStateChange()==ItemEvent.DESELECTED){
                     //System.out.println("button is not selected");
                 }
+            }
+        });
+        btnAddPassingWords.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                PassingWordsForm passingWordsForm = new PassingWordsForm();
+                passingWordsForm.setTitle("Add ??");
+                passingWordsForm.pack();
+                passingWordsForm.setLocationRelativeTo(panelTransformationInputs);
+                passingWordsForm.setVisible(true);
             }
         });
     }
