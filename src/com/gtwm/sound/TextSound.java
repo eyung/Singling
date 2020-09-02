@@ -286,6 +286,17 @@ public class TextSound {
 		} catch (Exception e) {}
 	}
 
+
+
+	private static boolean containsIgnoreCase(Set<String> list, String soughtFor) {
+		for (String current : list) {
+			if (current.equalsIgnoreCase(soughtFor)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Turn the input string into a sound string that can be played by jFugue
 	 */
@@ -309,7 +320,24 @@ public class TextSound {
 
 				double theRestLength = restLength;
 
-				if (perWord) {
+				// If passing word is encountered...
+				//if (passingWords.contains(lastWord)) {
+				if (containsIgnoreCase(passingWords, lastWord.toString())) {
+
+					//theRestLength = restLength * (2d/3d);
+
+					// Convert freq to MIDI music string using reference note and frequency A4 440hz
+					int baseMidiNumber = (int) Math.rint(12*logCalc.log(baseFrequency/440.0f, 2) + 69.0f);
+					pattern.add("I[GUNSHOT] :PW(" + pitchBend + ") " + baseMidiNumber + "/" + noteLength + "a" + attack + "d" + decay );
+
+					System.out.println("Passing Word found: " + lastWord);
+
+					//resetSettings();
+					pattern.add("I[" + instrument + "] ");
+					//pattern.add("V0");
+					//pattern.add(":CE(935," + (int) volume + ")");
+
+				} else if (perWord) {
 					// Last character of word is a punctuation
 
 					// First word will be played, even if there is a space/line break before it
@@ -336,10 +364,6 @@ public class TextSound {
 						sonifyWord(items, lastWord, pattern, true);
 					}
 				}
-
-				//if (passingWords.contains(lastWord)) {
-				//	theRestLength = restLength * (2d/3d);
-				//}
 
   				lastWordLength = lastWord.length();
 				lastWord.setLength(0);
