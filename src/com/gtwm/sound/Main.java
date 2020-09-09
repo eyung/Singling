@@ -116,6 +116,7 @@ public class Main extends JFrame {
         //setInstrument.setModel(InstructionFormModels.modelSetInstrument);
         list1.addMouseListener(myMouseAdaptor);
         list1.addMouseMotionListener(myMouseAdaptor);
+        setInstrument.setModel(InstructionFormModels.modelSetInstrument);
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
