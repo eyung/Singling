@@ -583,7 +583,8 @@ public class TextSound {
 					//}
 					if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
 						sumSentimentValue = Double.parseDouble(item.getSentimentPos()) + (Double.parseDouble(item.getSentimentNeg())*-1);
-						if (sumSentimentValue > 0) {
+
+						if (sumSentimentValue >= 0) {
 							sentimentChord = makeMajorChord(sumSentimentValue);
 						} else {
 							sentimentChord = makeMinorChord(sumSentimentValue*-1);
@@ -985,7 +986,7 @@ public class TextSound {
 
 	private static String makeMajorChord(double sentimentValue) {
 		String[] majorChords = {"maj", "maj6", "maj7", "maj9", "add9", "maj6%9", "maj7%6", "maj13"};
-		int chordNum = (int)Math.round(sentimentValue*10)-1;
+		int chordNum = (int)Math.round(sentimentValue*10);
 		while (chordNum > 7) {
 			chordNum += -1;
 		}
@@ -994,7 +995,7 @@ public class TextSound {
 
 	private static String makeMinorChord(double sentimentValue) {
 		String[] minorChords = {"min", "min6", "min7", "min9", "min11", "min7%11", "minadd9", "min6%9", "minmaj7", "minmaj9"};
-		int chordNum = (int)Math.round(sentimentValue*10)-1;
+		int chordNum = (int)Math.round(sentimentValue*10);
 		while (chordNum > 9) {
 			chordNum += -1;
 		}
