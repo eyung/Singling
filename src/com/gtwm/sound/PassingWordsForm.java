@@ -10,6 +10,7 @@ public class PassingWordsForm extends JDialog {
     private JList list1;
     private JTextField textField1;
     private JButton addButton;
+    private JButton removeButton;
 
     public PassingWordsForm() {
         setContentPane(contentPane);
@@ -61,6 +62,14 @@ public class PassingWordsForm extends JDialog {
                 }
 
                 textField1.setText("");
+            }
+        });
+
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                TextSound.passingWords.remove(list1.getSelectedValue());
+                listModel.removeElement(list1.getSelectedValue());
             }
         });
     }
