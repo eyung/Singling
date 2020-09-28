@@ -174,7 +174,7 @@
           </component>
           <component id="c24ed" class="javax.swing.JSlider" binding="setOctaves">
             <constraints>
-              <grid row="2" column="1" row-span="2" col-span="3" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+              <grid row="2" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
               <inverted value="false"/>
@@ -192,7 +192,7 @@
           </component>
           <component id="876cf" class="javax.swing.JLabel">
             <constraints>
-              <grid row="2" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Octave Range:"/>
@@ -200,7 +200,7 @@
           </component>
           <component id="6e58d" class="javax.swing.JLabel">
             <constraints>
-              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Tempo:"/>
@@ -226,7 +226,7 @@
           </component>
           <component id="d6064" class="javax.swing.JLabel">
             <constraints>
-              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Fundamental Frequency:"/>
@@ -235,7 +235,7 @@
           </component>
           <component id="7d683" class="javax.swing.JSlider" binding="setFrequency">
             <constraints>
-              <grid row="5" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="1" use-parent-layout="false"/>
+              <grid row="4" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
               <majorTickSpacing value="100"/>
@@ -345,17 +345,9 @@
               <visible value="false"/>
             </properties>
           </component>
-          <component id="caa33" class="javax.swing.JLabel" binding="labelOctave">
-            <constraints>
-              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value=""/>
-            </properties>
-          </component>
           <component id="78351" class="javax.swing.JSlider" binding="setTempo">
             <constraints>
-              <grid row="4" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
+              <grid row="3" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
             </constraints>
             <properties>
               <majorTickSpacing value="50"/>
@@ -375,6 +367,60 @@
             </constraints>
             <properties>
               <text value="Sentiment"/>
+            </properties>
+          </component>
+          <component id="3f7f3" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Rest Duration (Space):"/>
+              <visible value="true"/>
+            </properties>
+          </component>
+          <component id="36323" class="javax.swing.JComboBox" binding="setRestLengthSpace">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="1.00"/>
+                <item value="0.50"/>
+                <item value="0.25"/>
+                <item value="0.125"/>
+                <item value="0.0625"/>
+                <item value="0.03125"/>
+                <item value="0.015625"/>
+                <item value="0.0078125"/>
+              </model>
+              <selectedIndex value="0"/>
+            </properties>
+          </component>
+          <component id="97e41" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Rest Duration (Line Break):"/>
+              <visible value="true"/>
+            </properties>
+          </component>
+          <component id="b0e25" class="javax.swing.JComboBox" binding="setRestLengthLineBreak">
+            <constraints>
+              <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="1.00"/>
+                <item value="0.50"/>
+                <item value="0.25"/>
+                <item value="0.125"/>
+                <item value="0.0625"/>
+                <item value="0.03125"/>
+                <item value="0.015625"/>
+                <item value="0.0078125"/>
+              </model>
+              <selectedIndex value="4"/>
             </properties>
           </component>
         </children>

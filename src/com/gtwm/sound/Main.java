@@ -57,9 +57,10 @@ public class Main extends JFrame {
     private JPanel panelTransformations;
     private JPanel panelProcessBtns;
     private JButton btnTogglePause;
-    private JLabel labelOctave;
     private JToggleButton btnSentiment;
     private JButton btnAddPassingWords;
+    private JComboBox setRestLengthSpace;
+    private JComboBox setRestLengthLineBreak;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -583,6 +584,8 @@ public class Main extends JFrame {
         TextSound.baseOctaves = Double.valueOf(setOctaves.getValue());
         TextSound.baseTempo = Double.valueOf(setTempo.getValue());
         TextSound.baseFrequency = Double.valueOf(setFrequency.getValue());
+        TextSound.restLength = Double.parseDouble(String.valueOf(setRestLengthSpace.getSelectedItem()));
+        TextSound.restLengthLineBreak = Double.parseDouble(String.valueOf(setRestLengthLineBreak.getSelectedItem()));
 
         TextSound.perWord = wordRadioButton.isSelected();
         TextSound.perChar = characterRadioButton.isSelected();

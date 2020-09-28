@@ -36,15 +36,6 @@ import java.util.List;
 
 
 /**
- * Turn a stream of text into sound, using the overtone series Letter A = root
- * note B = first overtone, double the frequency, one octave above C = triple
- * the frequency, an octave plus a fifth above the root D = x4 frequency, two
- * octaves up E = x5, two octaves plus a third etc.
- * 
- * Higher notes are normalised down to fit in the octave range specified
- * 
- * @author oliver
- *
  * Turn a stream of text into sound using the overtone series and synset types
  * ie. synset 1 = root, synset 2 = first over tone etc.
  *
@@ -53,8 +44,6 @@ import java.util.List;
 public class TextSound {
 
 	// Starting settings
-	// NB: If any values are set to exactly zero, they will be unable to
-	// change throughout the generation
 
 	// Instrument
 	static String instrument;
@@ -67,8 +56,11 @@ public class TextSound {
 	//static double noteGap = 0.0001; // 1 / 32d; // 1/32 = good default, 0 = no
 	static double noteGap = 1/32d;
 
-	// How long to pause when a rest (space etc.) is encountered
+	// How long to pause when a rest (space) is encountered
 	static double restLength = 1 / 16d; // 1/8 = good default
+
+	// How long to pause when a line break is encountered
+	static double restLengthLineBreak;
 
 	// Lowest note that can be played
 	static double baseFrequency; // 128 Hz = Octave below middle C
@@ -121,6 +113,7 @@ public class TextSound {
 	
 	//static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
 	static Set<String> passingWords = new HashSet<String>();
+
 	static List<WordMap.Mapping> items;
 	static List<TransformationManager.Instruction> instructions = new ArrayList<>();
 
@@ -190,21 +183,6 @@ public class TextSound {
 		
 		private double directionRollingAverage = 0d;
 		
-	}
-
-	public static String loadFile(String inFilename) throws Exception{
-		List<String> lines = Files.readAllLines(FileSystems.getDefault().getPath(inFilename),
-				StandardCharsets.UTF_8);
-		StringBuilder inBuilder = new StringBuilder();
-
-		int lineCount = 0;
-		for (String line : lines) {
-			lineCount++;
-			String theLine = line.replace("\r", "\n") + "\n";
-			inBuilder.append(theLine);
-		}
-
-		return inBuilder.toString();
 	}
 
 	public static void runStuff() throws Exception{
@@ -339,6 +317,7 @@ public class TextSound {
 
   				lastWordLength = lastWord.length();
 				lastWord.setLength(0);
+
 				pattern.add("R/" + String.format("%f", theRestLength) + " ");
 				patternCurrentTime += theRestLength;
 
