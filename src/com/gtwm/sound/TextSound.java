@@ -325,7 +325,7 @@ public class TextSound {
 				if (charString.equals("\n")) {
 					// An extra rest on newlines
 					pattern.add("R/" + String.format("%f", restLengthLineBreak) + " ");
-					patternCurrentTime += restLength;
+					patternCurrentTime += restLengthLineBreak;
 				}
 
 				patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
