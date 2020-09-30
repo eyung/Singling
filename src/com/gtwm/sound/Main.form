@@ -393,7 +393,7 @@
                 <item value="0.015625"/>
                 <item value="0.0078125"/>
               </model>
-              <selectedIndex value="0"/>
+              <selectedIndex value="4"/>
             </properties>
           </component>
           <component id="97e41" class="javax.swing.JLabel">
@@ -420,7 +420,7 @@
                 <item value="0.015625"/>
                 <item value="0.0078125"/>
               </model>
-              <selectedIndex value="4"/>
+              <selectedIndex value="0"/>
             </properties>
           </component>
         </children>
