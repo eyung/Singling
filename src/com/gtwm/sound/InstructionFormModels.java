@@ -20,7 +20,6 @@ public class InstructionFormModels {
             "ELECTRIC_GRAND",
             "HONKEY_TONK",
             "ELECTRIC_PIANO",
-            "ELECTRIC_PIANO2",
             "HARPISCHORD",
             "CLAVINET",
             "CELESTA",

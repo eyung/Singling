@@ -694,6 +694,8 @@ public class Main extends JFrame {
                         mainForm.setOctaves.setValue(Integer.parseInt(properties.getProperty("octave")));
                         mainForm.setTempo.setValue(Integer.parseInt(properties.getProperty("tempo")));
                         mainForm.setFrequency.setValue(Integer.parseInt(properties.getProperty("frequency")));
+                        mainForm.setRestLengthSpace.setSelectedItem(properties.getProperty("restlengthspace"));
+                        mainForm.setRestLengthLineBreak.setSelectedItem(properties.getProperty("restlengthlinebreak"));
 
                         // Load text
                         mainForm.textModel.setText(properties.getProperty("textinput"));
@@ -739,6 +741,8 @@ public class Main extends JFrame {
                     properties.setProperty("octave", String.valueOf(mainForm.setOctaves.getValue()));
                     properties.setProperty("tempo", String.valueOf(mainForm.setTempo.getValue()));
                     properties.setProperty("frequency", String.valueOf(mainForm.setFrequency.getValue()));
+                    properties.setProperty("restlengthspace", String.valueOf(mainForm.setRestLengthSpace.getSelectedItem()));
+                    properties.setProperty("restlengthlinebreak", String.valueOf(mainForm.setRestLengthLineBreak.getSelectedItem()));
 
                     // Saving text
                     properties.setProperty("textinput", Main.textModel.getText());

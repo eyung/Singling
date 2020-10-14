@@ -45,7 +45,7 @@ public class SinglingPlayer implements Runnable {
 
             //player.play(pattern);
             //player.delayPlay(1000, pattern);
-            player.delayPlay((long) delay*2000, pattern);
+            player.delayPlay((long) delay*1000, pattern);
 
             // Start temporal parsing
             plp.parse();
