@@ -288,6 +288,7 @@ public class Main extends JFrame {
         btnRemoveInstruction.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
+               System.out.println(list1.getSelectedValue());
                TransformationManager.Instruction selectedInstruction = list1.getSelectedValue();
                TextSound.instructions.remove(selectedInstruction);
                model.removeElement(selectedInstruction);
