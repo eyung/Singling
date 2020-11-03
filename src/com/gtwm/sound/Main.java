@@ -4,7 +4,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
-import org.w3c.dom.Text;
 import simplenlg.features.Feature;
 import simplenlg.features.Form;
 import simplenlg.features.Tense;
@@ -21,11 +20,9 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.BadLocationException;
-import javax.xml.crypto.dsig.Transform;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -289,7 +286,6 @@ public class Main extends JFrame {
         btnRemoveInstruction.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
-               System.out.println(list1.getSelectedValue());
                TransformationManager.Instruction selectedInstruction = list1.getSelectedValue();
                TextSound.instructions.remove(selectedInstruction);
                model.removeElement(selectedInstruction);
@@ -438,6 +434,8 @@ public class Main extends JFrame {
                 }
             }
         });
+
+        // Passing words (exclusion) list
         btnAddPassingWords.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -454,6 +452,7 @@ public class Main extends JFrame {
         thisModel.addElement(thisInstruction);
     }
 
+    // To enable drag/drop of transformations
     private class MyMouseAdaptor extends MouseInputAdapter {
         private boolean mouseDragging = false;
         private int dragSourceIndex;
@@ -701,6 +700,18 @@ public class Main extends JFrame {
                         mainForm.setRestLengthSpace.setSelectedItem(properties.getProperty("restlengthspace"));
                         mainForm.setRestLengthLineBreak.setSelectedItem(properties.getProperty("restlengthlinebreak"));
 
+                        // Load scope
+                        System.out.println(properties.getProperty("scope"));
+                        if (properties.getProperty("scope").equalsIgnoreCase("word")) {
+                            mainForm.wordRadioButton.setSelected(true);
+                            mainForm.characterRadioButton.setSelected(false);
+                        } else if (properties.getProperty("scope").equalsIgnoreCase("character")) {
+                            mainForm.wordRadioButton.setSelected(false);
+                            mainForm.characterRadioButton.setSelected(true);
+                        } else {
+                            //mainForm.wordRadioButton.setSelected(true);
+                        }
+
                         // Load text
                         mainForm.textModel.setText(properties.getProperty("textinput"));
 
@@ -747,6 +758,13 @@ public class Main extends JFrame {
                     properties.setProperty("frequency", String.valueOf(mainForm.setFrequency.getValue()));
                     properties.setProperty("restlengthspace", String.valueOf(mainForm.setRestLengthSpace.getSelectedItem()));
                     properties.setProperty("restlengthlinebreak", String.valueOf(mainForm.setRestLengthLineBreak.getSelectedItem()));
+
+                    // Saving scope
+                    if (mainForm.wordRadioButton.isSelected()) {
+                        properties.setProperty("scope", "word");
+                    } else if (mainForm.characterRadioButton.isSelected()) {
+                        properties.setProperty("scope", "character");
+                    }
 
                     // Saving text
                     properties.setProperty("textinput", Main.textModel.getText());
