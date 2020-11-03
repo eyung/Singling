@@ -667,7 +667,7 @@ public class TextSound {
 					patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
 					patternCurrentTime += noteLength + noteGap;
 					//System.out.println("Current time in pattern: " + patternTimeStamp);
-
+					
 					lexCount = 0;
 				}
 			}

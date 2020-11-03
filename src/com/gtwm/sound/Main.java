@@ -21,6 +21,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.BadLocationException;
+import javax.xml.crypto.dsig.Transform;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -476,9 +477,11 @@ public class Main extends JFrame {
                 int currentIndex = list1.locationToIndex(e.getPoint());
                 if (currentIndex != dragSourceIndex) {
                     int dragTargetIndex = list1.getSelectedIndex();
-                    String dragElement = model.get(dragSourceIndex).toString();
+                    //String dragElement = model.get(dragSourceIndex).toString();
+                    TransformationManager.Instruction dragInstruction = (TransformationManager.Instruction) model.get(dragSourceIndex);
                     model.remove(dragSourceIndex);
-                    model.add(dragTargetIndex, dragElement);
+                    //model.add(dragTargetIndex, dragElement);
+                    model.add(dragTargetIndex, dragInstruction);
                     dragSourceIndex = currentIndex;
                 }
             }
