@@ -730,7 +730,14 @@ public class Main extends JFrame {
                         } else if (properties.getProperty("scope").equalsIgnoreCase("off")) {
                             mainForm.offRadioButton.setSelected(false);
                         }
-                        
+
+                        // Load sentiment mode setting
+                        if (properties.getProperty("sentiment").equalsIgnoreCase("on")) {
+                            mainForm.btnSentiment.setSelected(true);
+                        } else {
+                            mainForm.btnSentiment.setSelected(false);
+                        }
+
                         // Load text
                         mainForm.textModel.setText(properties.getProperty("textinput"));
 
@@ -799,6 +806,13 @@ public class Main extends JFrame {
                         properties.setProperty("stream", "on");
                     } else if (mainForm.offRadioButton.isSelected()) {
                         properties.setProperty("stream", "off");
+                    }
+
+                    // Saving set sentiment mode
+                    if (mainForm.btnSentiment.isSelected()) {
+                        properties.setProperty("sentiment", "on");
+                    } else {
+                        properties.setProperty("sentiment", "off");
                     }
 
                     // Saving text
