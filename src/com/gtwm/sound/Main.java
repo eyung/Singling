@@ -700,18 +700,37 @@ public class Main extends JFrame {
                         mainForm.setRestLengthSpace.setSelectedItem(properties.getProperty("restlengthspace"));
                         mainForm.setRestLengthLineBreak.setSelectedItem(properties.getProperty("restlengthlinebreak"));
 
-                        // Load scope
-                        System.out.println(properties.getProperty("scope"));
+                        // Load scope setting
                         if (properties.getProperty("scope").equalsIgnoreCase("word")) {
                             mainForm.wordRadioButton.setSelected(true);
                             mainForm.characterRadioButton.setSelected(false);
                         } else if (properties.getProperty("scope").equalsIgnoreCase("character")) {
                             mainForm.wordRadioButton.setSelected(false);
                             mainForm.characterRadioButton.setSelected(true);
-                        } else {
-                            //mainForm.wordRadioButton.setSelected(true);
                         }
 
+                        // Load default note behaviour setting
+                        if (properties.getProperty("notebehaviour").equalsIgnoreCase("lexname")) {
+                            mainForm.lexnamesRadioButton.setSelected(true);
+                            //mainForm.staticRadioButton.setSelected(false);
+                            //mainForm.muteRadioButton.setSelected(false);
+                        } else if (properties.getProperty("notebehaviour").equalsIgnoreCase("static")) {
+                            //mainForm.lexnamesRadioButton.setSelected(false);
+                            mainForm.staticRadioButton.setSelected(true);
+                            //mainForm.muteRadioButton.setSelected(false);
+                        } else if (properties.getProperty("notebehaviour").equalsIgnoreCase("mute")) {
+                            //mainForm.lexnamesRadioButton.setSelected(true);
+                            //mainForm.staticRadioButton.setSelected(false);
+                            mainForm.muteRadioButton.setSelected(true);
+                        }
+
+                        // Load stream mode setting
+                        if (properties.getProperty("stream").equalsIgnoreCase("on")) {
+                            mainForm.onRadioButton.setSelected(true);
+                        } else if (properties.getProperty("scope").equalsIgnoreCase("off")) {
+                            mainForm.offRadioButton.setSelected(false);
+                        }
+                        
                         // Load text
                         mainForm.textModel.setText(properties.getProperty("textinput"));
 
@@ -759,11 +778,27 @@ public class Main extends JFrame {
                     properties.setProperty("restlengthspace", String.valueOf(mainForm.setRestLengthSpace.getSelectedItem()));
                     properties.setProperty("restlengthlinebreak", String.valueOf(mainForm.setRestLengthLineBreak.getSelectedItem()));
 
-                    // Saving scope
+                    // Saving set scope
                     if (mainForm.wordRadioButton.isSelected()) {
                         properties.setProperty("scope", "word");
                     } else if (mainForm.characterRadioButton.isSelected()) {
                         properties.setProperty("scope", "character");
+                    }
+
+                    // Saving set default note behaviour
+                    if (mainForm.lexnamesRadioButton.isSelected()) {
+                        properties.setProperty("notebehaviour", "lexname");
+                    } else if (mainForm.staticRadioButton.isSelected()) {
+                        properties.setProperty("notebehaviour", "static");
+                    } else if (mainForm.muteRadioButton.isSelected()) {
+                        properties.setProperty("notebehaviour", "mute");
+                    }
+
+                    // Saving set stream mode
+                    if (mainForm.onRadioButton.isSelected()) {
+                        properties.setProperty("stream", "on");
+                    } else if (mainForm.offRadioButton.isSelected()) {
+                        properties.setProperty("stream", "off");
                     }
 
                     // Saving text
