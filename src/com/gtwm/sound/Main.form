@@ -240,7 +240,7 @@
             <properties>
               <majorTickSpacing value="100"/>
               <maximum value="500"/>
-              <minorTickSpacing value="10"/>
+              <minorTickSpacing value="0"/>
               <paintLabels value="true"/>
               <paintTicks value="true"/>
               <snapToTicks value="true"/>

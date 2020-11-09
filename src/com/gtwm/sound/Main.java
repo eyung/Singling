@@ -700,44 +700,60 @@ public class Main extends JFrame {
                         mainForm.setRestLengthSpace.setSelectedItem(properties.getProperty("restlengthspace"));
                         mainForm.setRestLengthLineBreak.setSelectedItem(properties.getProperty("restlengthlinebreak"));
 
-                        // Load scope setting
-                        if (properties.getProperty("scope").equalsIgnoreCase("word")) {
-                            mainForm.wordRadioButton.setSelected(true);
-                            mainForm.characterRadioButton.setSelected(false);
-                        } else if (properties.getProperty("scope").equalsIgnoreCase("character")) {
-                            mainForm.wordRadioButton.setSelected(false);
-                            mainForm.characterRadioButton.setSelected(true);
+                        try {
+                            // Load scope setting
+                            if (properties.getProperty("scope").equalsIgnoreCase("word")) {
+                                mainForm.wordRadioButton.setSelected(true);
+                                mainForm.characterRadioButton.setSelected(false);
+                            } else if (properties.getProperty("scope").equalsIgnoreCase("character")) {
+                                mainForm.wordRadioButton.setSelected(false);
+                                mainForm.characterRadioButton.setSelected(true);
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
 
-                        // Load default note behaviour setting
-                        if (properties.getProperty("notebehaviour").equalsIgnoreCase("lexname")) {
-                            mainForm.lexnamesRadioButton.setSelected(true);
-                            //mainForm.staticRadioButton.setSelected(false);
-                            //mainForm.muteRadioButton.setSelected(false);
-                        } else if (properties.getProperty("notebehaviour").equalsIgnoreCase("static")) {
-                            //mainForm.lexnamesRadioButton.setSelected(false);
-                            mainForm.staticRadioButton.setSelected(true);
-                            //mainForm.muteRadioButton.setSelected(false);
-                        } else if (properties.getProperty("notebehaviour").equalsIgnoreCase("mute")) {
-                            //mainForm.lexnamesRadioButton.setSelected(true);
-                            //mainForm.staticRadioButton.setSelected(false);
-                            mainForm.muteRadioButton.setSelected(true);
+                        try {
+                            // Load default note behaviour setting
+                            if (properties.getProperty("notebehaviour").equalsIgnoreCase("lexname")) {
+                                mainForm.lexnamesRadioButton.setSelected(true);
+                                //mainForm.staticRadioButton.setSelected(false);
+                                //mainForm.muteRadioButton.setSelected(false);
+                            } else if (properties.getProperty("notebehaviour").equalsIgnoreCase("static")) {
+                                //mainForm.lexnamesRadioButton.setSelected(false);
+                                mainForm.staticRadioButton.setSelected(true);
+                                //mainForm.muteRadioButton.setSelected(false);
+                            } else if (properties.getProperty("notebehaviour").equalsIgnoreCase("mute")) {
+                                //mainForm.lexnamesRadioButton.setSelected(true);
+                                //mainForm.staticRadioButton.setSelected(false);
+                                mainForm.muteRadioButton.setSelected(true);
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
 
-                        // Load stream mode setting
-                        if (properties.getProperty("stream").equalsIgnoreCase("on")) {
-                            mainForm.onRadioButton.setSelected(true);
-                        } else if (properties.getProperty("scope").equalsIgnoreCase("off")) {
-                            mainForm.offRadioButton.setSelected(false);
+                        try {
+                            // Load stream mode setting
+                            if (properties.getProperty("stream").equalsIgnoreCase("on")) {
+                                mainForm.onRadioButton.setSelected(true);
+                            } else if (properties.getProperty("scope").equalsIgnoreCase("off")) {
+                                mainForm.offRadioButton.setSelected(false);
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
 
-                        // Load sentiment mode setting
-                        if (properties.getProperty("sentiment").equalsIgnoreCase("on")) {
-                            mainForm.btnSentiment.setSelected(true);
-                        } else {
-                            mainForm.btnSentiment.setSelected(false);
+                        try {
+                            // Load sentiment mode setting
+                            if (properties.getProperty("sentiment").equalsIgnoreCase("on")) {
+                                mainForm.btnSentiment.setSelected(true);
+                            } else {
+                                mainForm.btnSentiment.setSelected(false);
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-
+                        
                         // Load text
                         mainForm.textModel.setText(properties.getProperty("textinput"));
 
