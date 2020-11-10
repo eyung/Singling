@@ -8,7 +8,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.text.NumberFormat;
 
 public class InstructionFormWordValue extends JDialog {
     private JPanel contentPane;
@@ -40,6 +39,7 @@ public class InstructionFormWordValue extends JDialog {
     private JLabel labelAttack;
     private JLabel labelDecay;
     private JFormattedTextField tfPitchbend;
+    private JSlider setPan;
 
     boolean instructionCheck = true;
 
@@ -106,6 +106,9 @@ public class InstructionFormWordValue extends JDialog {
                             break;
                         case PITCHBEND:
                             instruction.setSoundModValue(String.valueOf(setPitchbend.getValue()));
+                            break;
+                        case PAN:
+                            instruction.setSoundModValue(String.valueOf(setPan.getValue()));
                             break;
                     }
                 } else if (instruction.changeMode == TransformationManager.Instruction.ChangeModes.INCREMENT) {
@@ -197,6 +200,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "NOTE_DURATION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(true);
@@ -212,6 +216,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "OCTAVE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -227,6 +232,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "INSTRUMENT") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -242,6 +248,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "VOLUME") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -257,6 +264,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PERCUSSION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -272,6 +280,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "MIDI_NOTE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -287,6 +296,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "ATTACK") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -302,6 +312,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "DECAY") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -317,6 +328,7 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(true);
                     setPitchbend.setVisible(false);
                     tfPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PITCHBEND") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -332,6 +344,23 @@ public class InstructionFormWordValue extends JDialog {
                     labelDecay.setVisible(false);
                     setPitchbend.setVisible(true);
                     tfPitchbend.setVisible(true);
+                    setPan.setVisible(false);
+                } else if (setSoundModTo.getSelectedItem() == "PAN") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(false);
+                    setOctave.setVisible(false);
+                    setInstrument.setVisible(false);
+                    setVolume.setVisible(false);
+                    labelVolume.setVisible(false);
+                    setPercussion.setVisible(false);
+                    setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    labelAttack.setVisible(false);
+                    setDecay.setVisible(false);
+                    labelDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
+                    tfPitchbend.setVisible(false);
+                    setPan.setVisible(true);
                 }
                 InstructionFormWordValue.super.pack();
             }

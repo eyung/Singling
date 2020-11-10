@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class InstructionFormModels {
 
-    final static String setSoundToLabels[] = {"TEMPO", "NOTE_DURATION", "OCTAVE", "VOLUME", "INSTRUMENT", "MIDI_NOTE", "ATTACK", "DECAY", "PITCHBEND"};
+    final static String setSoundToLabels[] = {"TEMPO", "NOTE_DURATION", "OCTAVE", "VOLUME", "INSTRUMENT", "MIDI_NOTE", "ATTACK", "DECAY", "PITCHBEND", "PAN"};
     final static String setSoundByLabels[] = {"TEMPO", "NOTE_DURATION", "OCTAVE", "VOLUME", "PITCHBEND"};
     final static String tempoLabels[] = {"40", "45", "50", "55", "60", "65", "70", "80", "95", "110", "120", "145", "180", "220"};
     //final static String tempoLabels[] = {"GRAVE", "LARGO", "LARGHETTO", "LENTO", "ADAGIO", "ADAGIETTO", "ANDANTE", "ANDANTINO",

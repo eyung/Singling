@@ -33,6 +33,7 @@ public class InstructionFormSymbols extends JDialog {
     private JSlider setDecay;
     private JSlider setPitchbend;
     private JSpinner incrementPitchbend;
+    private JSlider setPan;
 
     boolean instructionCheck = true;
 
@@ -97,6 +98,9 @@ public class InstructionFormSymbols extends JDialog {
                             break;
                         case PITCHBEND:
                             instruction.setSoundModValue(String.valueOf(setPitchbend.getValue()));
+                            break;
+                        case PAN:
+                            instruction.setSoundModValue(String.valueOf(setPan.getValue()));
                             break;
                     }
                 } else if (instruction.changeMode == TransformationManager.Instruction.ChangeModes.INCREMENT) {
@@ -184,6 +188,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "NOTE_DURATION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(true);
@@ -195,6 +200,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "OCTAVE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -206,6 +212,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "INSTRUMENT") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -217,6 +224,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "VOLUME") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -228,6 +236,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PERCUSSION") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -239,6 +248,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "MIDI_NOTE") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -250,6 +260,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "ATTACK") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -261,6 +272,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(true);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "DECAY") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -272,6 +284,7 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(true);
                     setPitchbend.setVisible(false);
+                    setPan.setVisible(false);
                 } else if (setSoundModTo.getSelectedItem() == "PITCHBEND") {
                     setTempo.setVisible(false);
                     setDuration.setVisible(false);
@@ -283,6 +296,19 @@ public class InstructionFormSymbols extends JDialog {
                     setAttack.setVisible(false);
                     setDecay.setVisible(false);
                     setPitchbend.setVisible(true);
+                    setPan.setVisible(false);
+                } else if (setSoundModTo.getSelectedItem() == "PAN") {
+                    setTempo.setVisible(false);
+                    setDuration.setVisible(false);
+                    setOctave.setVisible(false);
+                    setInstrument.setVisible(false);
+                    setVolume.setVisible(false);
+                    setPercussion.setVisible(false);
+                    setFrequency.setVisible(false);
+                    setAttack.setVisible(false);
+                    setDecay.setVisible(false);
+                    setPitchbend.setVisible(false);
+                    setPan.setVisible(true);
                 }
                 InstructionFormSymbols.super.pack();
             }

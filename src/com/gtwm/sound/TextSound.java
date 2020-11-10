@@ -23,16 +23,14 @@ import org.jfugue.player.Player;
 import org.jfugue.realtime.RealtimePlayer;
 import org.jfugue.theory.Note;
 
-import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -91,6 +89,10 @@ public class TextSound {
 
 	// Pitch Bend
 	static long pitchBend = 8192;
+
+	// Pan
+	static int pan;
+	static int basePan = 64;
 
 	// Default note operation
 	enum noteOperationType { LEXNAMEFREQ, STATICFREQ, MUTE }
@@ -416,6 +418,7 @@ public class TextSound {
 				pattern.add("I[" + instrument + "] ");
 				pattern.add("V0");
 				pattern.add(":CE(935," + (int) volume + ")");
+				pattern.add(":CE(10,64)");
 				//pattern.setInstrument(instrument);
 			}
 
@@ -450,6 +453,12 @@ public class TextSound {
 					// Iterate through list of lexnames for each word
 					for (double thisValue : wordValues) {
 						//System.out.println(thisValue);
+
+						// Reset to base settings
+						resetSettings();
+						pattern.add("I[" + instrument + "] ");
+						pattern.add(":CE(935," + (int) volume + ")");
+						pattern.add(":CE(10,64)");
 
 						// Set voice
 						if (wordValues.length > 1) {
@@ -651,11 +660,9 @@ public class TextSound {
 						//soundString.append("R/" + String.format("%f", noteGap) + " ");
 						pattern.add("R/" + String.format("%f", noteGap) + " ");
 
-						// Reset to base settings
-						resetSettings();
-						pattern.add("I[" + instrument + "] ");
 						pattern.add("V0");
-						pattern.add(":CE(935," + (int) volume + ")");
+						//pattern.add(":CE(935," + (int) volume + ")");
+						//pattern.add(":CE(10,64)");
 						//pattern.setInstrument(instrument);
 					} //else if (!doNoteGap) {
 					//
@@ -776,6 +783,9 @@ public class TextSound {
 		resetSettings();
 		//soundString.append("I[" + instrument + "] ");
 		pattern.add("I[" + instrument + "] ");
+		pattern.add("V0");
+		pattern.add(":CE(935," + (int) volume + ")");
+		pattern.add(":CE(10,64");
 	}
 
 	private static void applyMod(TransformationManager.Instruction i, Pattern pattern) {
@@ -894,6 +904,11 @@ public class TextSound {
 					pitchBend += Double.parseDouble(i.soundModValue);
 				}
 				break;
+
+			case PAN:
+				pan = Integer.parseInt(i.soundModValue);
+				pattern.add(":CE(10," + pan + ")");
+				break;
 		}
 	}
 
@@ -970,6 +985,7 @@ public class TextSound {
 		attack = baseAttack;
 		decay = baseDecay;
 		volume = baseVolume;
+		pan = basePan;
 		//ordering =
 	}
 
