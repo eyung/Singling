@@ -35,7 +35,7 @@ public class Main extends JFrame {
     private JPanel panel1;
     private JTextArea textArea1;
     private JButton btnProcess;
-    private JComboBox setInstrument;
+    private JComboBox setBaseInstrument;
     private JComboBox setDuration;
     private JSlider setOctaves;
     private JSlider setTempo;
@@ -117,10 +117,10 @@ public class Main extends JFrame {
         // Set models
         list1.setModel(model);
         textModel = this.textArea1;
-        //setInstrument.setModel(InstructionFormModels.modelSetInstrument);
+        //setBaseInstrument.setModel(InstructionFormModels.modelSetInstrument);
         list1.addMouseListener(myMouseAdaptor);
         list1.addMouseMotionListener(myMouseAdaptor);
-        setInstrument.setModel(InstructionFormModels.modelSetInstrument);
+        setBaseInstrument.setModel(InstructionFormModels.modelSetBaseInstrument);
         cbSetFrequency.setModel(InstructionFormModels.modelSetFrequency);
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
@@ -614,7 +614,7 @@ public class Main extends JFrame {
     }
 
     private void setBaseValues() {
-        TextSound.baseInstrument = String.valueOf(setInstrument.getSelectedItem());
+        TextSound.baseInstrument = String.valueOf(setBaseInstrument.getSelectedItem());
         TextSound.baseNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
         TextSound.baseOctaves = Double.valueOf(setOctaves.getValue());
         TextSound.baseTempo = Double.valueOf(setTempo.getValue());
@@ -724,7 +724,7 @@ public class Main extends JFrame {
                         properties.load(fileReader);
 
                         // Load base settings
-                        mainForm.setInstrument.setSelectedItem(properties.getProperty("instrument"));
+                        mainForm.setBaseInstrument.setSelectedItem(properties.getProperty("instrument"));
                         mainForm.setDuration.setSelectedItem(properties.getProperty("noteduration"));
                         mainForm.setOctaves.setValue(Integer.parseInt(properties.getProperty("octave")));
                         mainForm.setTempo.setValue(Integer.parseInt(properties.getProperty("tempo")));
@@ -825,7 +825,7 @@ public class Main extends JFrame {
                     Properties properties = new Properties();
 
                     // Saving base settings
-                    properties.setProperty("instrument", String.valueOf(mainForm.setInstrument.getSelectedItem()));
+                    properties.setProperty("instrument", String.valueOf(mainForm.setBaseInstrument.getSelectedItem()));
                     properties.setProperty("noteduration", String.valueOf(mainForm.setDuration.getSelectedItem()));
                     properties.setProperty("octave", String.valueOf(mainForm.setOctaves.getValue()));
                     properties.setProperty("tempo", String.valueOf(mainForm.setTempo.getValue()));
@@ -946,7 +946,7 @@ public class Main extends JFrame {
         panelSettings = new JPanel();
         panelSettings.setLayout(new GridLayoutManager(8, 4, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panelSettings, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(100, 500), null, 0, false));
-        setInstrument = new JComboBox();
+        setBaseInstrument = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("PIANO");
         defaultComboBoxModel1.addElement("BRIGHT_ACOUSTIC");
@@ -1075,8 +1075,8 @@ public class Main extends JFrame {
         defaultComboBoxModel1.addElement("HELICOPTER");
         defaultComboBoxModel1.addElement("APPLAUSE");
         defaultComboBoxModel1.addElement("GUNSHOT");
-        setInstrument.setModel(defaultComboBoxModel1);
-        panelSettings.add(setInstrument, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
+        setBaseInstrument.setModel(defaultComboBoxModel1);
+        panelSettings.add(setBaseInstrument, new GridConstraints(0, 1, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 1, false));
         setDuration = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
         defaultComboBoxModel2.addElement("1.00");

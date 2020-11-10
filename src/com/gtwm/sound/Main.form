@@ -18,7 +18,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="71519" class="javax.swing.JComboBox" binding="setInstrument">
+          <component id="71519" class="javax.swing.JComboBox" binding="setBaseInstrument">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
             </constraints>

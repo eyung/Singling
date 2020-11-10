@@ -118,6 +118,7 @@ public class InstructionFormModels {
             "APPLAUSE",
             "GUNSHOT"
     };
+
     final static String[] LGClist = {
             "all adjective clusters",
             "relational adjectives (pertainyms)",
@@ -187,6 +188,7 @@ public class InstructionFormModels {
     final static DefaultBoundedRangeModel modelSetAttack = new DefaultBoundedRangeModel(64, 0, 0, 127);
     final static DefaultBoundedRangeModel modelSetDecay = new DefaultBoundedRangeModel(64, 0, 0, 127);
     final static DefaultComboBoxModel modelSetInstrument = new DefaultComboBoxModel(instrumentLabel);
+    final static DefaultComboBoxModel modelSetBaseInstrument = new DefaultComboBoxModel(instrumentLabel);
     final static SpinnerNumberModel modelSetLength =
             new SpinnerNumberModel(0.0, 0.0, 50.0, 1.0);
     final static SpinnerNumberModel modelSpinnerPercentage =
