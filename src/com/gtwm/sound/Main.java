@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
+import org.jfugue.theory.Note;
 import simplenlg.features.Feature;
 import simplenlg.features.Form;
 import simplenlg.features.Tense;
@@ -25,8 +26,10 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Properties;
 
 public class Main extends JFrame {
     private JPanel panel1;
@@ -59,6 +62,8 @@ public class Main extends JFrame {
     private JButton btnAddPassingWords;
     private JComboBox setRestLengthSpace;
     private JComboBox setRestLengthLineBreak;
+    private JFormattedTextField tfSetFrequency;
+    private JComboBox cbSetFrequency;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -116,6 +121,7 @@ public class Main extends JFrame {
         list1.addMouseListener(myMouseAdaptor);
         list1.addMouseMotionListener(myMouseAdaptor);
         setInstrument.setModel(InstructionFormModels.modelSetInstrument);
+        cbSetFrequency.setModel(InstructionFormModels.modelSetFrequency);
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
@@ -446,6 +452,32 @@ public class Main extends JFrame {
                 passingWordsForm.setVisible(true);
             }
         });
+
+        setFrequency.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                tfSetFrequency.setText(String.valueOf(setFrequency.getValue()));
+            }
+        });
+
+        tfSetFrequency.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                super.keyReleased(e);
+                try {
+                    setFrequency.setValue(Integer.parseInt(tfSetFrequency.getText()));
+                } catch (Exception ex) {}
+            }
+        });
+
+        cbSetFrequency.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double userFrequency = Note.getFrequencyForNote(cbSetFrequency.getSelectedItem().toString())*2;
+                setFrequency.setValue((int)userFrequency);
+                tfSetFrequency.setText(String.valueOf(userFrequency));
+            }
+        });
     }
 
     public static void listAddInstruction(DefaultListModel thisModel, TransformationManager.Instruction thisInstruction) {
@@ -753,7 +785,7 @@ public class Main extends JFrame {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                        
+
                         // Load text
                         mainForm.textModel.setText(properties.getProperty("textinput"));
 
