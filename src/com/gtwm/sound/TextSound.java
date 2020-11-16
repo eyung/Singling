@@ -254,6 +254,12 @@ public class TextSound {
 		midiFileManager.savePatternToMidi(pattern, file);
 	}
 
+	public static void doSaveAsWAV(String input, String output) throws Exception{
+		pattern = processString(input, pattern);
+
+		Midi2WavUtils.createWavFile(player.getSequence(pattern), new File(output));
+	}
+
 	public static void doPause() {
 		try {
 			if (player.getManagedPlayer().isPlaying()) {

@@ -64,6 +64,7 @@ public class Main extends JFrame {
     private JComboBox setRestLengthLineBreak;
     private JFormattedTextField tfSetFrequency;
     private JComboBox cbSetFrequency;
+    private JButton btnSaveWAV;
 
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
@@ -121,7 +122,8 @@ public class Main extends JFrame {
         list1.addMouseListener(myMouseAdaptor);
         list1.addMouseMotionListener(myMouseAdaptor);
         setBaseInstrument.setModel(InstructionFormModels.modelSetBaseInstrument);
-        cbSetFrequency.setModel(InstructionFormModels.modelSetFrequency);
+        //cbSetFrequency.setModel(InstructionFormModels.modelSetFrequency);
+        //cbSetFrequency.setSelectedItem("A4");
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
@@ -266,6 +268,40 @@ public class Main extends JFrame {
                  }
             }
          });
+
+        btnSaveWAV.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle open button action
+                if (e.getSource() == btnSaveWAV) {
+                    if (textArea1.getLineCount() > 0) {
+
+                        fc.setCurrentDirectory(workingDirectory);
+
+                        int returnVal = fc.showSaveDialog(panel1);
+
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            File fileToSave = fc.getSelectedFile();
+                            outFilename = fileToSave.getAbsoluteFile().toString() + ".wav";
+                            System.out.println("Save as file: " + outFilename);
+
+                            try {
+                                // Get initial settings from user inputs
+                                setBaseValues();
+
+                                // Process text
+                                TextSound.runStuff();
+                                TextSound.doSaveAsWAV(textArea1.getText(), outFilename);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            System.out.println("Save command cancelled by user.");
+                        }
+                    }
+                }
+            }
+        });
 
         btnPlay.addActionListener(new ActionListener() {
             @Override
@@ -456,7 +492,9 @@ public class Main extends JFrame {
         setFrequency.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent changeEvent) {
+                int midiNumber = (int) Math.rint(12 * logCalc.log(setFrequency.getValue() / 440.0f, 2) + 69.0f);
                 tfSetFrequency.setText(String.valueOf(setFrequency.getValue()));
+                //cbSetFrequency.setSelectedIndex(midiNumber-21);
             }
         });
 
@@ -466,6 +504,7 @@ public class Main extends JFrame {
                 super.keyReleased(e);
                 try {
                     setFrequency.setValue(Integer.parseInt(tfSetFrequency.getText()));
+                    //cbSetFrequency.setSelectedItem("");
                 } catch (Exception ex) {}
             }
         });
@@ -473,9 +512,11 @@ public class Main extends JFrame {
         cbSetFrequency.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double userFrequency = Note.getFrequencyForNote(cbSetFrequency.getSelectedItem().toString())*2;
-                setFrequency.setValue((int)userFrequency);
-                tfSetFrequency.setText(String.valueOf(userFrequency));
+                if (!cbSetFrequency.getSelectedItem().equals("")) {
+                    double userFrequency = Note.getFrequencyForNote(cbSetFrequency.getSelectedItem().toString())*2;
+                    setFrequency.setValue((int)userFrequency);
+                    tfSetFrequency.setText(String.valueOf(userFrequency));
+                }
             }
         });
     }
