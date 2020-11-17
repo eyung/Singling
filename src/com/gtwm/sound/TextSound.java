@@ -27,10 +27,8 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -255,9 +253,28 @@ public class TextSound {
 	}
 
 	public static void doSaveAsWAV(String input, String output) throws Exception{
+		// Save to MIDI first
 		pattern = processString(input, pattern);
 
-		Midi2WavUtils.createWavFile(player.getSequence(pattern), new File(output));
+		File midiFile = new File(output + ".mid");
+		MidiFileManager midiFileManager = new MidiFileManager();
+		midiFileManager.savePatternToMidi(pattern, midiFile);
+
+		// Convert MIDI to WAV
+		MidPlay mp = new MidPlay();
+
+		mp.prepare(false);
+
+		//String[] dlist = mp.getDeviceList();
+		//for (String device : dlist) {
+		//	System.out.println(device);
+		//}
+
+		//mp.setDevice(0);
+
+		mp.convWav(new File(output), midiFile);
+
+		midiFile.delete();
 	}
 
 	public static void doPause() {

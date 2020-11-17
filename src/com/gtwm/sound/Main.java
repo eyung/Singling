@@ -282,7 +282,7 @@ public class Main extends JFrame {
 
                         if (returnVal == JFileChooser.APPROVE_OPTION) {
                             File fileToSave = fc.getSelectedFile();
-                            outFilename = fileToSave.getAbsoluteFile().toString() + ".wav";
+                            outFilename = fileToSave.getAbsoluteFile().toString();
                             System.out.println("Save as file: " + outFilename);
 
                             try {

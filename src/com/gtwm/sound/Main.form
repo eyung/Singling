@@ -600,7 +600,7 @@
                 </constraints>
                 <properties>
                   <text value="WAV"/>
-                  <visible value="false"/>
+                  <visible value="true"/>
                 </properties>
               </component>
             </children>
