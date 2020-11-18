@@ -770,6 +770,7 @@ public class Main extends JFrame {
                         mainForm.setOctaves.setValue(Integer.parseInt(properties.getProperty("octave")));
                         mainForm.setTempo.setValue(Integer.parseInt(properties.getProperty("tempo")));
                         mainForm.setFrequency.setValue(Integer.parseInt(properties.getProperty("frequency")));
+                        mainForm.cbSetFrequency.setSelectedIndex(0);
                         mainForm.setRestLengthSpace.setSelectedItem(properties.getProperty("restlengthspace"));
                         mainForm.setRestLengthLineBreak.setSelectedItem(properties.getProperty("restlengthlinebreak"));
 
