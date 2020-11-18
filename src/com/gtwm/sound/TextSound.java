@@ -23,6 +23,9 @@ import org.jfugue.player.Player;
 import org.jfugue.realtime.RealtimePlayer;
 import org.jfugue.theory.Note;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -253,27 +256,20 @@ public class TextSound {
 	}
 
 	public static void doSaveAsWAV(String input, String output) throws Exception{
-		// Save to MIDI first
 		pattern = processString(input, pattern);
 
+		// Save to MIDI first
 		File midiFile = new File(output + ".mid");
 		MidiFileManager midiFileManager = new MidiFileManager();
 		midiFileManager.savePatternToMidi(pattern, midiFile);
 
 		// Convert MIDI to WAV
-		MidPlay mp = new MidPlay();
+		AudioInputStream stream = AudioSystem.getAudioInputStream(midiFile);
+		File file = new File(new File(output) + ".wav");
+		AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
+		stream.close();
 
-		mp.prepare(false);
-
-		//String[] dlist = mp.getDeviceList();
-		//for (String device : dlist) {
-		//	System.out.println(device);
-		//}
-
-		//mp.setDevice(0);
-
-		mp.convWav(new File(output), midiFile);
-
+		// Delete MIDI file
 		midiFile.delete();
 	}
 
