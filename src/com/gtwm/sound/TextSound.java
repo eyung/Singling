@@ -30,12 +30,14 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
- * Turn a stream of text into sound using the overtone series and synset types
+ * Transforms a stream of text into sound using the overtone series and synset types
  * ie. synset 1 = root, synset 2 = first over tone etc.
  *
  * @author effiam
