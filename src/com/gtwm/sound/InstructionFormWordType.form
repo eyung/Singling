@@ -261,6 +261,7 @@
             <item value="s"/>
             <item value="pn"/>
             <item value="ar"/>
+            <item value="c"/>
           </model>
         </properties>
       </component>
