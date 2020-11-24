@@ -16,7 +16,6 @@ import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.phrasespec.VPPhraseSpec;
 import simplenlg.realiser.english.Realiser;
-
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -372,7 +371,7 @@ public class Main extends JFrame {
                         dialogPunctuations.setVisible(true);
                         btnAddInstruction.setSelectedIndex(0);
                         break;
-                    case SYMBOLS:
+                    case SYMBOL:
                         InstructionFormSymbols dialogSymbol = new InstructionFormSymbols();
                         dialogSymbol.setTitle("Transformation: Symbols");
                         dialogSymbol.pack();

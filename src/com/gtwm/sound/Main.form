@@ -680,6 +680,7 @@
                     <item value="WORDLENGTH"/>
                     <item value="LGC"/>
                     <item value="SYMBOL"/>
+                    <item value="PUNCTUATION"/>
                     <item value="CHARACTER"/>
                   </model>
                   <toolTipText value="Transformation"/>
