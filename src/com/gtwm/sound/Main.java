@@ -481,7 +481,7 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 PassingWordsForm passingWordsForm = new PassingWordsForm();
-                passingWordsForm.setTitle("Add ??");
+                passingWordsForm.setTitle("Manage Lexicon");
                 passingWordsForm.pack();
                 passingWordsForm.setLocationRelativeTo(panelTransformationInputs);
                 passingWordsForm.setVisible(true);
