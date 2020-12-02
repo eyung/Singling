@@ -35,7 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * Transforms a stream of text into sound using the overtone series and synset types
  * ie. synset 1 = root, synset 2 = first over tone etc.
@@ -131,7 +130,7 @@ public class TextSound {
 	// Keep parameters within reasonable ranges ie. BASE_FREQUENCY(16.0, 2048)
 	enum Setting {
 		NOTE_LENGTH(0.01, 8.0), ARPEGGIATE_GAP(0.001, 0.5), REST_LENGTH(0.01, 0.5), BASE_FREQUENCY(16.0, 20000), OCTAVES(
-				1.0, 10.0), TEMPO(40, 400), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383), ATTACK(0, 127);
+				1.0, 10.0), TEMPO(6, 600), LETTER_ORDERING(0.0,3.0), VOLUME(1.0, 16383), ATTACK(0, 127);
 		Setting(double min, double max) {
 			if (min == 0) {
 				// Don't allow absolute zero as a min otherwise will never
@@ -273,6 +272,7 @@ public class TextSound {
 		// Delete MIDI file
 		midiFile.delete();
 
+		// Close stream
 		stream.close();
 	}
 
