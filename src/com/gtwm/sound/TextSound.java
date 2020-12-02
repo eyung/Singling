@@ -269,10 +269,11 @@ public class TextSound {
 		AudioInputStream stream = AudioSystem.getAudioInputStream(midiFile);
 		File file = new File(new File(output) + ".wav");
 		AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
-		stream.close();
 
 		// Delete MIDI file
 		midiFile.delete();
+
+		stream.close();
 	}
 
 	public static void doPause() {
