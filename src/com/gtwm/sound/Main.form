@@ -519,7 +519,7 @@
               <majorTickSpacing value="100"/>
               <maximum value="350"/>
               <minimum value="50"/>
-              <minorTickSpacing value="50"/>
+              <minorTickSpacing value="10"/>
               <paintLabels value="true"/>
               <paintTicks value="true"/>
               <requestFocusEnabled value="false"/>
