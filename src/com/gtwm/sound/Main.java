@@ -24,13 +24,16 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Base64;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main extends JFrame {
     private JPanel panel1;
@@ -148,19 +151,14 @@ public class Main extends JFrame {
 
             //TODO Read all csv database files when compiled as .jar file
 
-            //ClassLoader classLoader = getClass().getClassLoader();
-            //File file = new File(classLoader.getResource("splash.gif").getFile());
-            //System.out.println("File found: " + file);
-
-            //URL testurl = Main.class.getClassLoader().getResource("/db");
-            //System.out.println("File found: " + testurl);
-
             ClassLoader classLoader = getClass().getClassLoader();
             URL resource = classLoader.getResource("db");
 
+            //System.out.println(is.toString());
+
             // Load all database files in directory 'db'
             //Files.walk(Paths.get(workingDirectory.toString() + "/db/"))
-            Files.walk(Paths.get(resource.toURI()))
+            /*Files.walk(Paths.get(resource.toURI()))
                     .filter(Files::isRegularFile)
                     .filter(p -> p.toString().endsWith(".csv"))
                     .forEach(p -> {
@@ -174,8 +172,32 @@ public class Main extends JFrame {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    });
+                    });*/
 
+            List<Path> result = getPathsFromResourceJAR("db");
+            for (Path path : result) {
+                System.out.println("Path : " + path);
+
+                String filePathInJAR = path.toString();
+                // Windows will returns /json/file1.json, cut the first /
+                // the correct path should be json/file1.json
+                if (filePathInJAR.startsWith("/")) {
+                    filePathInJAR = filePathInJAR.substring(1, filePathInJAR.length());
+                }
+
+                System.out.println("filePathInJAR : " + filePathInJAR);
+                //System.out.println("path to string: " + path.toString());
+
+                // read a file from resource folder
+                InputStream is = getFileFromResourceAsStream(filePathInJAR);
+                //printInputStream(is);
+
+                if (allItems == null) {
+                    allItems = myParser.csvtoSenseMap(filePathInJAR);
+                } else {
+                    allItems.addAll(myParser.csvtoSenseMap(filePathInJAR));
+                }
+            }
             
 
             // True if duplicate found in database
@@ -528,7 +550,7 @@ public class Main extends JFrame {
         });
 
         try {
-            DBHandler test = new DBHandler();
+            //DBHandler test = new DBHandler();
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -745,6 +767,54 @@ public class Main extends JFrame {
             System.out.println(e);
         }
         return null;
+    }
+
+    // get a file from the resources folder
+    // works everywhere, IDEA, unit test and JAR file.
+    private InputStream getFileFromResourceAsStream(String fileName) {
+
+        // The class loader that loaded the class
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        // the stream holding the file content
+        if (inputStream == null) {
+            throw new IllegalArgumentException("file not found! " + fileName);
+        } else {
+            return inputStream;
+        }
+
+    }
+
+    // Get all paths from a folder that inside the JAR file
+    private List<Path> getPathsFromResourceJAR(String folder)
+            throws URISyntaxException, IOException {
+
+        List<Path> result;
+
+        // get path of the current running JAR
+        String jarPath = getClass().getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .toURI()
+                .getPath();
+
+        // file walks JAR
+        URI uri = URI.create("jar:file:" + jarPath);
+        //URI uri = URI.create("jar:file:" + jarPath + "Singling.jar");
+
+        System.out.println(uri);
+        try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
+            //result = Files.walk(fs.getPath(folder))
+            result = Files.walk(fs.getPath(folder))
+                    .filter(Files::isRegularFile)
+                    .collect(Collectors.toList());
+        }
+
+        //System.out.println(result);
+
+        return result;
+
     }
 
     private static void createAndShowGUI() {

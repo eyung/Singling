@@ -6,6 +6,7 @@ import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -174,8 +175,13 @@ class csvparser {
 
     public Reader getReader(String absolutePath) {
         try {
-            return new InputStreamReader(new FileInputStream(new File(absolutePath)), "UTF-8");
-        } catch (UnsupportedEncodingException | FileNotFoundException e) {
+            // The class loader that loaded the class
+            ClassLoader classLoader = getClass().getClassLoader();
+            InputStream inputStream = classLoader.getResourceAsStream(absolutePath);
+            //return new InputStreamReader(new FileInputStream(new File(absolutePath)), "UTF-8");
+            InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            return reader;
+        } catch (Exception e) {
             throw new IllegalStateException("Unable to read input", e);
         }
     }
