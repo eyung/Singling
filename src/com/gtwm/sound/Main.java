@@ -16,6 +16,7 @@ import simplenlg.lexicon.Lexicon;
 import simplenlg.phrasespec.SPhraseSpec;
 import simplenlg.phrasespec.VPPhraseSpec;
 import simplenlg.realiser.english.Realiser;
+
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -23,6 +24,7 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -153,8 +155,12 @@ public class Main extends JFrame {
             //URL testurl = Main.class.getClassLoader().getResource("/db");
             //System.out.println("File found: " + testurl);
 
+            ClassLoader classLoader = getClass().getClassLoader();
+            URL resource = classLoader.getResource("db");
+
             // Load all database files in directory 'db'
-            Files.walk(Paths.get(workingDirectory.toString() + "/db/"))
+            //Files.walk(Paths.get(workingDirectory.toString() + "/db/"))
+            Files.walk(Paths.get(resource.toURI()))
                     .filter(Files::isRegularFile)
                     .filter(p -> p.toString().endsWith(".csv"))
                     .forEach(p -> {
@@ -169,6 +175,8 @@ public class Main extends JFrame {
                             e.printStackTrace();
                         }
                     });
+
+            
 
             // True if duplicate found in database
             boolean isFound;
@@ -221,11 +229,11 @@ public class Main extends JFrame {
             System.out.println(tempList.size() + " words were processed.");
 
             // Write final results in file for error logging
-            //FileWriter writer = new FileWriter("resultlist.txt");
-            //for (WordMap.Mapping str : tempList) {
-            //    writer.write(str + System.lineSeparator());
-            //}
-            //writer.close();
+            FileWriter writer = new FileWriter("resultlist.txt");
+            for (WordMap.Mapping str : tempList) {
+                writer.write(str + System.lineSeparator());
+            }
+            writer.close();
 
             TextSound.items = tempList;
 
