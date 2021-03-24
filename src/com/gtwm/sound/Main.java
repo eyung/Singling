@@ -131,6 +131,10 @@ public class Main extends JFrame {
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
 
+        // PassingWords
+        PassingWordsForm passingWordsForm = new PassingWordsForm();
+        passingWordsForm.setTitle("Manage Lexicon");
+
         // Add docomentListener to input text panel
         textArea1.getDocument().addDocumentListener(documentListener);
 
@@ -509,8 +513,8 @@ public class Main extends JFrame {
         btnAddPassingWords.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                PassingWordsForm passingWordsForm = new PassingWordsForm();
-                passingWordsForm.setTitle("Manage Lexicon");
+                //PassingWordsForm passingWordsForm = new PassingWordsForm();
+                //passingWordsForm.setTitle("Manage Lexicon");
                 passingWordsForm.pack();
                 passingWordsForm.setLocationRelativeTo(panelTransformationInputs);
                 passingWordsForm.setVisible(true);
