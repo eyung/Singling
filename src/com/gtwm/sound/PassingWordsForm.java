@@ -12,12 +12,13 @@ public class PassingWordsForm extends JDialog {
     private JButton addButton;
     private JButton removeButton;
 
+    static DefaultListModel listModel = new DefaultListModel();
+
     public PassingWordsForm() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        DefaultListModel listModel = new DefaultListModel();
         list1.setModel(listModel);
 
         for (String thisWord : TextSound.passingWords) {

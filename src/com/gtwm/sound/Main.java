@@ -26,7 +26,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -151,8 +150,8 @@ public class Main extends JFrame {
 
             //TODO Read all csv database files when compiled as .jar file
 
-            ClassLoader classLoader = getClass().getClassLoader();
-            URL resource = classLoader.getResource("db");
+            //ClassLoader classLoader = getClass().getClassLoader();
+            //URL resource = classLoader.getResource("db");
 
             //System.out.println(is.toString());
 
@@ -189,7 +188,7 @@ public class Main extends JFrame {
                 //System.out.println("path to string: " + path.toString());
 
                 // read a file from resource folder
-                InputStream is = getFileFromResourceAsStream(filePathInJAR);
+                //InputStream is = getFileFromResourceAsStream(filePathInJAR);
                 //printInputStream(is);
 
                 if (allItems == null) {
@@ -769,6 +768,32 @@ public class Main extends JFrame {
         return null;
     }
 
+    private static String serializeLexicon(Set<String> thisObjectList) {
+        try {
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            ObjectOutputStream so = new ObjectOutputStream(bo);
+            so.writeObject(thisObjectList);
+            so.flush();
+            final byte[] byteArray = bo.toByteArray();
+            return Base64.getEncoder().encodeToString(byteArray);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    private static Set<String> deserializeLexicon(String serializedObject) {
+        try {
+            byte b[] = Base64.getDecoder().decode(serializedObject);
+            ByteArrayInputStream bi = new ByteArrayInputStream(b);
+            ObjectInputStream si = new ObjectInputStream(bi);
+            return (Set<String>) si.readObject();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
     // get a file from the resources folder
     // works everywhere, IDEA, unit test and JAR file.
     private InputStream getFileFromResourceAsStream(String fileName) {
@@ -799,9 +824,10 @@ public class Main extends JFrame {
                 .toURI()
                 .getPath();
 
+        // TODO: find a more elegant way to do this
         // file walks JAR
-        URI uri = URI.create("jar:file:" + jarPath);
-        //URI uri = URI.create("jar:file:" + jarPath + "Singling.jar");
+        //URI uri = URI.create("jar:file:" + jarPath); // uncomment this line for JAR
+        URI uri = URI.create("jar:file:" + jarPath + "Singling.jar"); // uncomment this line for IDE
 
         System.out.println(uri);
         try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
@@ -811,7 +837,7 @@ public class Main extends JFrame {
                     .collect(Collectors.toList());
         }
 
-        //System.out.println(result);
+        System.out.println(result);
 
         return result;
 
@@ -924,6 +950,13 @@ public class Main extends JFrame {
                             Main.listAddInstruction(Main.model, i);
                         }
 
+                        // Load lexicons
+                        TextSound.passingWords = deserializeLexicon(properties.getProperty("lexicons"));
+                        PassingWordsForm.listModel.clear();
+                        for (String i : TextSound.passingWords) {
+                            PassingWordsForm.listModel.addElement(i);
+                        }
+
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -996,6 +1029,9 @@ public class Main extends JFrame {
                     //ObjectOutputStream instructionsList = serializeObject(TextSound.instructions);
                     //properties.setProperty("instructions", instructionsList.toString());
                     properties.setProperty("instructions", serialize(TextSound.instructions));
+
+                    // Saving lexicons
+                    properties.setProperty("lexicons", serializeLexicon(TextSound.passingWords));
 
                     // Saving to file
                     try(FileWriter output = new FileWriter(prefsFile)) {
