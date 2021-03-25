@@ -152,8 +152,6 @@ public class Main extends JFrame {
             //Load test database
             //allItems = myParser.csvtoSenseMap(workingDirectory.toString() + "/db/test.csv");
 
-            //TODO Read all csv database files when compiled as .jar file
-
             //ClassLoader classLoader = getClass().getClassLoader();
             //URL resource = classLoader.getResource("db");
 
@@ -830,16 +828,35 @@ public class Main extends JFrame {
 
         // TODO: find a more elegant way to do this
         // file walks JAR
-        //URI uri = URI.create("jar:file:" + jarPath); // uncomment this line for JAR
-        URI uri = URI.create("jar:file:" + jarPath + "Singling.jar"); // uncomment this line for IDE
+        URI uri;
+        try {
+            uri = URI.create("jar:file:" + jarPath); // uncomment this line for JAR
+            try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
+                //result = Files.walk(fs.getPath(folder))
+                result = Files.walk(fs.getPath(folder))
+                        .filter(Files::isRegularFile)
+                        .collect(Collectors.toList());
+            }
+        } catch(UnsupportedOperationException e) {
+            uri = URI.create("jar:file:" + jarPath + "Singling.jar"); // uncomment this line for IDE
+            try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
+                //result = Files.walk(fs.getPath(folder))
+                result = Files.walk(fs.getPath(folder))
+                        .filter(Files::isRegularFile)
+                        .collect(Collectors.toList());
+            }
+        }
+
+        //URI uri = URI.create("jar:file:" + jarPath + "Singling.jar"); // uncomment this line for IDE
 
         System.out.println(uri);
-        try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
+
+        /*try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
             //result = Files.walk(fs.getPath(folder))
             result = Files.walk(fs.getPath(folder))
                     .filter(Files::isRegularFile)
                     .collect(Collectors.toList());
-        }
+        }*/
 
         System.out.println(result);
 
