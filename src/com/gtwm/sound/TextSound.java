@@ -17,6 +17,8 @@
 
 package com.gtwm.sound;
 
+import edu.stanford.nlp.simple.Document;
+import edu.stanford.nlp.simple.Sentence;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
@@ -292,7 +294,40 @@ public class TextSound {
 	 * Turn the input string into a sound string that can be played by jFugue
 	 */
 	private static Pattern processString(String input, Pattern pattern) {
-		StringBuilder lastSentence = new StringBuilder();
+		Document doc = new Document(input);
+
+		for (Sentence sent : doc.sentences()) {
+
+			List<String> words = sent.words();
+
+			for (String word : words) {
+				System.out.println(word);
+
+				double theRestLength = restLength;
+
+				if (perWord) {
+					sonifyWord(items, word, pattern, true);
+				}
+
+				pattern.add("R/" + String.format("%f", theRestLength) + " ");
+				patternCurrentTime += theRestLength;
+				patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
+			}
+
+			// An extra rest on newlines
+			pattern.add("R/" + String.format("%f", restLengthLineBreak) + " ");
+			patternCurrentTime += restLengthLineBreak;
+		}
+
+		System.out.println(pattern.toString());
+		return pattern;
+	}
+
+	/**
+	 * Turn the input string into a sound string that can be played by jFugue
+	 */
+	private static Pattern processString1(String input, Pattern pattern) {
+		/*StringBuilder lastSentence = new StringBuilder();
 		StringBuilder lastWord = new StringBuilder();
 		int lastWordLength = 0;
 
@@ -364,7 +399,7 @@ public class TextSound {
 				}
 
 			}
-		}
+		}*/
 
 		System.out.println(pattern.toString());
 		return pattern;
@@ -386,10 +421,8 @@ public class TextSound {
 			patternCurrentTime = 0;
 
 			if (isWord) {
-				//sonifyWord(items, lastWord, soundString, false);
-				sonifyWord(items, lastWord, pattern,false);
+				//sonifyWord(items, lastWord, pattern,false);
 			} else {
-				//sonifyCharacter(lastWord, soundString, charNum, ch);
 				sonifyCharacter(lastWord, pattern, charNum, ch);
 			}
 
@@ -407,7 +440,7 @@ public class TextSound {
 		}
 	}
 
-	public static void sonifyWord(List<WordMap.Mapping> items, StringBuilder lastWord, Pattern pattern, boolean doNoteGap) {
+	public static void sonifyWord(List<WordMap.Mapping> items, String lastWord, Pattern pattern, boolean doNoteGap) {
 		// Pattern transformed by sentiment values
 		Pattern transformedPattern = new Pattern();
 
@@ -416,6 +449,7 @@ public class TextSound {
 
 			//theRestLength = restLength * (2d/3d);
 
+			// Insert timestamp
 			pattern.add("V0" + " @" + patternCurrentTime);
 
 			// Convert freq to MIDI music string using reference note and frequency A4 440hz
@@ -447,6 +481,7 @@ public class TextSound {
 			patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
 			patternCurrentTime += noteLength + noteGap;
 
+		// Transform word to jfugue command
 		} else {
 
 			// Lookup database
@@ -464,7 +499,7 @@ public class TextSound {
 						if (offset != -1) {
 							Highlighter hl = Main.textModel.getHighlighter();
 							//hl.removeAllHighlights();
-							//hl.addHighlight(offset, offset+wordHighlight.length(), new ProxyHighlightPainter(new DefaultHighlighter.DefaultHighlightPainter(new Color(230, 230, 230))));
+							//hl.addHighlight(offset, offset+wordHig hlight.length(), new ProxyHighlightPainter(new DefaultHighlighter.DefaultHighlightPainter(new Color(230, 230, 230))));
 							offset += wordHighlight.length();
 						}
 					} catch (Exception e) {}*/

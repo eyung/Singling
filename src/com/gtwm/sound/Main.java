@@ -149,32 +149,7 @@ public class Main extends JFrame {
             g.drawString("Loading databases...", splashx, splashy + 20);
             splash.update();
 
-            //Load test database
-            //allItems = myParser.csvtoSenseMap(workingDirectory.toString() + "/db/test.csv");
-
-            //ClassLoader classLoader = getClass().getClassLoader();
-            //URL resource = classLoader.getResource("db");
-
-            //System.out.println(is.toString());
-
             // Load all database files in directory 'db'
-            //Files.walk(Paths.get(workingDirectory.toString() + "/db/"))
-            /*Files.walk(Paths.get(resource.toURI()))
-                    .filter(Files::isRegularFile)
-                    .filter(p -> p.toString().endsWith(".csv"))
-                    .forEach(p -> {
-                        try {
-                            if (allItems == null) {
-                                allItems = myParser.csvtoSenseMap(p.toString());
-                            } else {
-                                allItems.addAll(myParser.csvtoSenseMap(p.toString()));
-                            }
-                            System.out.println("Reading " + p.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });*/
-
             List<Path> result = getPathsFromResourceJAR("db");
             for (Path path : result) {
                 System.out.println("Path : " + path);
@@ -199,7 +174,6 @@ public class Main extends JFrame {
                     allItems.addAll(myParser.csvtoSenseMap(filePathInJAR));
                 }
             }
-            
 
             // True if duplicate found in database
             boolean isFound;
@@ -249,16 +223,30 @@ public class Main extends JFrame {
                 }
             }
 
-            System.out.println(tempList.size() + " words were processed.");
+            System.out.println(tempList.size() + " words processed.");
 
             // Write final results in file for error logging
-            FileWriter writer = new FileWriter("resultlist.txt");
-            for (WordMap.Mapping str : tempList) {
-                writer.write(str + System.lineSeparator());
-            }
-            writer.close();
+            //FileWriter writer = new FileWriter("resultlist.txt");
+            //for (WordMap.Mapping str : tempList) {
+            //    writer.write(str + System.lineSeparator());
+            //}
+            //writer.close();
 
             TextSound.items = tempList;
+
+            // TEST TEST TEST
+            /*Document doc = new Document("The quick brown fox jumps over the lazy dog... how about this? is this, for exmaple, going to work! This is the third sentence. And, this is the FOURTH!!");
+            for (Sentence sent : doc.sentences()) {  // Will iterate over two sentences
+                // We're only asking for words -- no need to load any models yet
+                //System.out.println("The second word of the sentence '" + sent + "' is " + sent.word(1));
+                // When we ask for the lemma, it will load and run the part of speech tagger
+                System.out.println("The third pos of the sentence '" + sent + "' is " + sent.posTag(2));
+                // ...
+                List<String> words = sent.words();
+                for (String word : words) {
+                    System.out.println(word);
+                }
+            }*/
 
         } catch (
                 Exception ex) {
