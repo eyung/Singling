@@ -339,7 +339,7 @@ public class TextSound {
 
 			// Iterate words
 			for (String word : words) {
-				//System.out.println(word);
+				System.out.println(word);
 				wordCount = words.indexOf(word);
 
 				double theRestLength = restLength;
@@ -348,14 +348,20 @@ public class TextSound {
 					//System.out.println(sent.posTag(wordCount));
 					posletter = sent.posTag(wordCount).charAt(0);
 					//System.out.println(posletter);
-					if ("JNRVS".contains(String.valueOf(posletter))) {
-						sonifyWord(items, sent.lemma(wordCount), posletter, pattern, true);
+					System.out.println("Sent = " + sent.sentiment());
+					if ("JNRV".contains(String.valueOf(posletter))) {
+						sonifyWord(items, sent.lemma(wordCount), posletter, pattern);
+					} else if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
+						sonifyWord(items, word, 'S', pattern);
+					} else {
+						sonifyWord(items, word, posletter, pattern);
 					}
+
 				}
 
 				// Add rest between words
-				//pattern.add("R/" + String.format("%f", theRestLength) + " ");
-				//patternCurrentTime += theRestLength;
+				pattern.add("R/" + String.format("%f", theRestLength) + " ");
+				patternCurrentTime += theRestLength;
 				patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
 			}
 
@@ -364,7 +370,7 @@ public class TextSound {
 			//patternCurrentTime += restLengthLineBreak;
 		}
 
-		System.out.println(pattern.toString());
+		//System.out.println(pattern.toString());
 		return pattern;
 	}
 
@@ -485,7 +491,7 @@ public class TextSound {
 		}
 	}
 
-	public static void sonifyWord(List<WordMap.Mapping> items, String thisWord, char posLetter, Pattern pattern, boolean doNoteGap) {
+	public static void sonifyWord(List<WordMap.Mapping> items, String thisWord, char posLetter, Pattern pattern) {
 		// Pattern transformed by sentiment values
 		Pattern transformedPattern = new Pattern();
 
@@ -493,21 +499,14 @@ public class TextSound {
 		int posNumber = 0;
 
 		// Nouns, verbs, adjectives, adverbs
-		if ("JNRVS".contains(String.valueOf(posLetter))) {
+		if ("JNRV".contains(String.valueOf(posLetter))) {
 			switch (posLetter) {
-				case 'J':
-					posNumber = 3;
-					break;
-				case 'N':
-					posNumber = 1;
-					break;
-				case 'R':
-					posNumber = 4;
-					break;
-				case 'V':
-					posNumber = 2;
-					break;
+				case 'J': posNumber = 3; break;
+				case 'N': posNumber = 1; break;
+				case 'R': posNumber = 4; break;
+				case 'V': posNumber = 2; break;
 			}
+
 			//System.out.println(posNumber);
 			IIndexWord idxWord = dict.getIndexWord(thisWord, POS.getPartOfSpeech(posNumber));
 
@@ -531,133 +530,162 @@ public class TextSound {
 				}
 			}
 
-			// Iterate through list of lexnames for each word
-			for (double thisValue : wordTypes) {
-				//System.out.println(thisValue);
-				// Reset to base settings
-				resetSettings();
-				pattern.add("I[" + instrument + "] ");
-				pattern.add(":CE(935," + (int) volume + ")");
-				pattern.add(":CE(10,64)");
+			//System.out.println(wordTypes);
 
-				// Set voice
-				if (wordTypes.size() > 1) {
-					// Skip Voice channel 9 as that is for percussion instruments
-					if (lexCount == 9) {
-						lexCount++;
-					}
+		// Symbols
+		} else if (posLetter == 'S') {
+			wordTypes.add(46);
 
-					if (lexCount < 15) {
-						pattern.add("V" + lexCount + " @" + patternCurrentTime);
-					}
+		// Other POStags
+		} else {
+			switch (posLetter) {
+				case 'D': wordTypes.add(46); break;
+				case 'M': wordTypes.add(45); break;
+				case 'P': wordTypes.add(51); break;
+			}
+		}
 
-					//if (lexCount > 15) {
-					//	lexCount = 0;
-					//}
-					//pattern.add("V" + lexCount + " @" + patternCurrentTime);
+		// Iterate through list of lexnames for each word
+		for (double thisValue : wordTypes) {
+			//System.out.println(thisValue);
+			// Reset to base settings
+			resetSettings();
+			pattern.add("I[" + instrument + "] ");
+			pattern.add(":CE(935," + (int) volume + ")");
+			pattern.add(":CE(10,64)");
+
+			// Set voice
+			if (wordTypes.size() > 1) {
+				// Skip Voice channel 9 as that is for percussion instruments
+				if (lexCount == 9) {
+					lexCount++;
 				}
 
-				// Word value + 1 because it starts at 0 in the database
-				double targetOctave = Math.ceil(((thisValue + 1) / 45d) * octaves); //26
-				frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
-
-				switch (defaultNoteOperation) {
-					case LEXNAMEFREQ:
-						//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
-						frequency = (thisValue + 1) * baseFrequency;
-						break;
-					case STATICFREQ:
-						// If we want a default tone, leave freq as static
-						break;
-					case MUTE:
-						// Mute tone
-						//noteLength = 0;
-						pattern.add(":CE(935,0)");
-						//volume = 0;
-						break;
+				if (lexCount < 15) {
+					pattern.add("V" + lexCount + " @" + patternCurrentTime);
 				}
 
-				// Go through the instructions queue
-				for (TransformationManager.Instruction i : instructions) {
+				//if (lexCount > 15) {
+				//	lexCount = 0;
+				//}
+				//pattern.add("V" + lexCount + " @" + patternCurrentTime);
+			}
 
-					transformedPattern.clear();
+			// Word value + 1 because it starts at 0 in the database
+			double targetOctave = Math.ceil(((thisValue + 1) / 45d) * octaves); //26
+			frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
 
-					// The main logic part of the program
-					// Make changes based on user instructions
-					if (i.mod == TransformationManager.Instruction.Mods.WORDTYPE) {
+			switch (defaultNoteOperation) {
+				case LEXNAMEFREQ:
+					//System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
+					frequency = (thisValue + 1) * baseFrequency;
+					break;
+				case STATICFREQ:
+					// If we want a default tone, leave freq as static
+					break;
+				case MUTE:
+					// Mute tone
+					//noteLength = 0;
+					pattern.add(":CE(935,0)");
+					//volume = 0;
+					break;
+			}
+
+			// Go through the instructions queue
+			for (TransformationManager.Instruction i : instructions) {
+
+				transformedPattern.clear();
+
+				// The main logic part of the program
+				// Make changes based on user instructions
+				if (i.mod == TransformationManager.Instruction.Mods.WORDTYPE) {
 						/*WordMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
 						for (WordMap.Type m : wordtypes) {
 							if (m != null && m.toString().equals(i.modValue)) {
 								applyMod(i, pattern);
 							}
 						}*/
+					switch (posLetter) {
+						case 'J':
+							if (i.modValue.equals("a")) { applyMod(i, pattern); }
+							break;
+						case 'N':
+							if (i.modValue.equals("n")) { applyMod(i, pattern); }
+							break;
+						case 'R':
+							if (i.modValue.equals("r")) { applyMod(i, pattern); }
+							break;
+						case 'V':
+							if (i.modValue.equals("v")) { applyMod(i, pattern); }
+							break;
+					}
 
-					} else if (i.mod == TransformationManager.Instruction.Mods.WORDLENGTH) {
-						switch (i.getModOperator()) {
-							case EQUALTO:
-								if (Double.parseDouble(i.getModValue()) == thisWord.length()) {
-									applyMod(i, pattern);
-								}
-								break;
-							case LARGERTHAN:
-								if (Double.parseDouble(i.getModValue()) < thisWord.length()) {
-									applyMod(i, pattern);
-								}
-								break;
-							case LESSTHAN:
-								if (Double.parseDouble(i.getModValue()) > thisWord.length()) {
-									applyMod(i, pattern);
-								}
-								break;
-						}
+				} else if (i.mod == TransformationManager.Instruction.Mods.WORDLENGTH) {
+					switch (i.getModOperator()) {
+						case EQUALTO:
+							if (Double.parseDouble(i.getModValue()) == thisWord.length()) {
+								applyMod(i, pattern);
+							}
+							break;
+						case LARGERTHAN:
+							if (Double.parseDouble(i.getModValue()) < thisWord.length()) {
+								applyMod(i, pattern);
+							}
+							break;
+						case LESSTHAN:
+							if (Double.parseDouble(i.getModValue()) > thisWord.length()) {
+								applyMod(i, pattern);
+							}
+							break;
+					}
 
-					} else if (i.mod == TransformationManager.Instruction.Mods.LGC) {
-						//double[] lexnames = convertToArr.toDoubleArr(item.getValue() + 1);
-						//for (double n : lexnames) {
-						//	if (n == Double.parseDouble(i.modValue)) {
+				} else if (i.mod == TransformationManager.Instruction.Mods.LGC) {
+					//double[] lexnames = convertToArr.toDoubleArr(item.getValue() + 1);
+					//for (double n : lexnames) {
+					//	if (n == Double.parseDouble(i.modValue)) {
+					//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+					//		applyMod(i, soundString);
+					//	}
+					//}
+					if (thisValue == Double.parseDouble(i.modValue)) {
 						//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-						//		applyMod(i, soundString);
-						//	}
-						//}
-						if (thisValue == Double.parseDouble(i.modValue)) {
-							//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-							applyMod(i, pattern);
-						}
+						applyMod(i, pattern);
+					}
 
-					} else if (i.mod == TransformationManager.Instruction.Mods.PUNCTUATION) {
-						//String[] punctuations = convertToArr.toStringArr(item.getValue());
+				} else if (i.mod == TransformationManager.Instruction.Mods.PUNCTUATION) {
+					//String[] punctuations = convertToArr.toStringArr(item.getValue());
 
-						//for (String n : punctuations) {
-						if (thisWord.equals(i.modValue)) {
-							//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
-							applyMod(i, pattern);
-						}
+					//for (String n : punctuations) {
+					if (thisWord.equals(i.modValue)) {
+						//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+						applyMod(i, pattern);
+					}
+					//}
+				} else if (i.mod == TransformationManager.Instruction.Mods.SENTIMENT) {
+					if (i.getSentimentType().equals(TransformationManager.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
+						//if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL") {
+						//	transformedPattern = applySentimentMod(i, thisValue, item.getSentimentPos(), pattern);
 						//}
-					} else if (i.mod == TransformationManager.Instruction.Mods.SENTIMENT) {
-						if (i.getSentimentType().equals(TransformationManager.Instruction.SentimentTypes.POSITIVESENTIMENT)) {
-							//if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL") {
-							//	transformedPattern = applySentimentMod(i, thisValue, item.getSentimentPos(), pattern);
-							//}
-						} else if (i.getSentimentType().equals(TransformationManager.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
-							//if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
-							//	transformedPattern = applySentimentMod(i, thisValue, item.getSentimentNeg(), pattern);
-							//}
-						}
+					} else if (i.getSentimentType().equals(TransformationManager.Instruction.SentimentTypes.NEGATIVESENTIMENT)) {
+						//if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
+						//	transformedPattern = applySentimentMod(i, thisValue, item.getSentimentNeg(), pattern);
+						//}
 					}
 				}
+			}
 
-				//frequency = Math.round(frequency * 100.0) / 100.0;
+			//frequency = Math.round(frequency * 100.0) / 100.0;
 
-				// Make chord based on sentiment analysis value
-				String sentimentChord = "";
-				double sumSentimentValue;
-				//if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && !item.getSentimentPos().equalsIgnoreCase("0")) {
-				//	//System.out.println(makeMajorChord(Double.parseDouble(item.wordSentimentPos)));
-				//	sentimentChord = makeMajorChord(Double.parseDouble(item.wordSentimentPos));
-				//} else if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL" && !item.getSentimentNeg().equalsIgnoreCase("0")) {
-				//	//System.out.println(makeMinorChord(Double.parseDouble(item.wordSentimentNeg)));
-				//	sentimentChord = makeMinorChord(Double.parseDouble(item.wordSentimentNeg));
-				//}
+			// Make chord based on sentiment analysis value
+			String sentimentChord = "";
+			double sumSentimentValue;
+			//if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && !item.getSentimentPos().equalsIgnoreCase("0")) {
+			//	//System.out.println(makeMajorChord(Double.parseDouble(item.wordSentimentPos)));
+			//	sentimentChord = makeMajorChord(Double.parseDouble(item.wordSentimentPos));
+			//} else if (item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL" && !item.getSentimentNeg().equalsIgnoreCase("0")) {
+			//	//System.out.println(makeMinorChord(Double.parseDouble(item.wordSentimentNeg)));
+			//	sentimentChord = makeMinorChord(Double.parseDouble(item.wordSentimentNeg));
+			//}
 				/*if (item.getSentimentPos() != null && item.getSentimentPos() != "NULL" && item.getSentimentNeg() != null && item.getSentimentNeg() != "NULL") {
 					sumSentimentValue = Double.parseDouble(item.getSentimentPos()) + (Double.parseDouble(item.getSentimentNeg()) * -1);
 
@@ -668,82 +696,74 @@ public class TextSound {
 					}
 				}*/
 
-				// Normalise to fit in the range
-				double topFrequency = baseFrequency;
-				for (int j = 0; j < targetOctave; j++) {
-					topFrequency = topFrequency * 2;
-				}
-				while (frequency > topFrequency) {
-					frequency = frequency / 2;
-				}
-
-				// Convert freq to MIDI music string using reference note and frequency A4 440hz
-				int midiNumber = (int) Math.rint(12 * logCalc.log(frequency / 440.0f, 2) + 69.0f);
-				int baseMidiNumber = (int) Math.rint(12 * logCalc.log(baseFrequency / 440.0f, 2) + 69.0f);
-
-				// Find pitch using base midi note number
-				pitchBend = Math.round(8192 + 4096 * 12 * logCalc.log(frequency / (440.0f * Math.pow(2.0f, ((double) midiNumber - 69.0f) / 12.0f)), 2));
-				//System.out.println("Pitch bend: " + pitchBend);
-				//System.out.println("Frequency: " + frequency);
-				//System.out.println("Midi Number: " + midiNumber);
-
-				// Hacky hack hack so that we are capping voices at 16
-				//if (lexCount < 15) {
-				//	if (transformedPattern != null && !transformedPattern.toString().equals("")) {
-				//		// Note + Duration + Attack + Decay
-				//		pattern.add(transformedPattern + "/" + noteLength + "a" + attack + "d" + decay + "");
-				//	} else {
-				// Note + Duration + Attack + Decay
-
-				// JFugue's implementation which adds microtones as pitch bend events
-				//pattern.add("m" + frequency + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + "");
-				//pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
-				//pattern.add("m512.3q");
-				//pattern.add(":PitchWheel(5192) 72/0.25 :PitchWheel(8192)");
-
-				//pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
-				//pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " '" + lastWord);
-				//pattern.add(":PW(" + pitchBend + ") " + midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
-
-				//System.out.println("sentiment" + sentimentChord);
-				// Midi message to send to player
-				// If sentiment values are found, use the base (fundamental) frequency without pitchbend to create a chord
-				// Otherwise, use the LGC as a variable to create a midi note
-
-				if (sentimentState && sentimentChord != "") {
-					pattern.add(baseMidiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
-				} else {
-					pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
-				}
-
-				// First LGC of word will inherit the word as lyric item
-				if (lexCount == 0) {
-					pattern.add(" '" + thisWord);
-				}
-				//	}
-				//}
-
-				//System.out.println("Convert frequency: " + frequency + " to note: " + midiNumber);
-
-				lexCount++;
+			// Normalise to fit in the range
+			double topFrequency = baseFrequency;
+			for (int j = 0; j < targetOctave; j++) {
+				topFrequency = topFrequency * 2;
+			}
+			while (frequency > topFrequency) {
+				frequency = frequency / 2;
 			}
 
-			if (doNoteGap) {
-				pattern.add("R/" + String.format("%f", noteGap) + " ");
-				pattern.add("V0");
+			// Convert freq to MIDI music string using reference note and frequency A4 440hz
+			int midiNumber = (int) Math.rint(12 * logCalc.log(frequency / 440.0f, 2) + 69.0f);
+			int baseMidiNumber = (int) Math.rint(12 * logCalc.log(baseFrequency / 440.0f, 2) + 69.0f);
+
+			// Find pitch using base midi note number
+			pitchBend = Math.round(8192 + 4096 * 12 * logCalc.log(frequency / (440.0f * Math.pow(2.0f, ((double) midiNumber - 69.0f) / 12.0f)), 2));
+			//System.out.println("Pitch bend: " + pitchBend);
+			//System.out.println("Frequency: " + frequency);
+			//System.out.println("Midi Number: " + midiNumber);
+
+			// Hacky hack hack so that we are capping voices at 16
+			//if (lexCount < 15) {
+			//	if (transformedPattern != null && !transformedPattern.toString().equals("")) {
+			//		// Note + Duration + Attack + Decay
+			//		pattern.add(transformedPattern + "/" + noteLength + "a" + attack + "d" + decay + "");
+			//	} else {
+			// Note + Duration + Attack + Decay
+
+			// JFugue's implementation which adds microtones as pitch bend events
+			//pattern.add("m" + frequency + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + "");
+			//pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
+			//pattern.add("m512.3q");
+			//pattern.add(":PitchWheel(5192) 72/0.25 :PitchWheel(8192)");
+
+			//pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
+			//pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " '" + lastWord);
+			//pattern.add(":PW(" + pitchBend + ") " + midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
+
+			//System.out.println("sentiment" + sentimentChord);
+			// Midi message to send to player
+			// If sentiment values are found, use the base (fundamental) frequency without pitchbend to create a chord
+			// Otherwise, use the LGC as a variable to create a midi note
+
+			if (sentimentState && sentimentChord != "") {
+				pattern.add(baseMidiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
+			} else {
+				pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 			}
 
-			patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
-			patternCurrentTime += noteLength + noteGap;
+			// First LGC of word will inherit the word as lyric item
+			if (lexCount == 0) {
+				pattern.add(" '" + thisWord);
+			}
+			//	}
+			//}
 
-			lexCount = 0;
+			//System.out.println("Convert frequency: " + frequency + " to note: " + midiNumber);
 
-
-		// Symbols
-		} else if (posLetter == 'S') {
-			System.out.println("Symbol!");
+			lexCount++;
 		}
 
+		// Note gap
+		pattern.add("R/" + String.format("%f", noteGap) + " ");
+		pattern.add("V0");
+
+		patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
+		patternCurrentTime += noteLength + noteGap;
+
+		lexCount = 0;
 
 	}
 
