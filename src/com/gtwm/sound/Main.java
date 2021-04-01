@@ -150,7 +150,7 @@ public class Main extends JFrame {
             splash.update();
 
             // Load all database files in directory 'db'
-            List<Path> result = getPathsFromResourceJAR("db");
+            /*List<Path> result = getPathsFromResourceJAR("db");
             for (Path path : result) {
                 System.out.println("Path : " + path);
 
@@ -226,27 +226,15 @@ public class Main extends JFrame {
             System.out.println(tempList.size() + " words processed.");
 
             // Write final results in file for error logging
-            FileWriter writer = new FileWriter("resultlist.txt");
-            for (WordMap.Mapping str : tempList) {
-                writer.write(str + System.lineSeparator());
-            }
-            writer.close();
+            //FileWriter writer = new FileWriter("resultlist.txt");
+            //for (WordMap.Mapping str : tempList) {
+            //    writer.write(str + System.lineSeparator());
+            //}
+            //writer.close();
 
-            TextSound.items = tempList;
+            TextSound.items = tempList;*/
 
-            // TEST TEST TEST
-            /*Document doc = new Document("The quick brown fox jumps over the lazy dog... how about this? is this, for exmaple, going to work! This is the third sentence. And, this is the FOURTH!!");
-            for (Sentence sent : doc.sentences()) {  // Will iterate over two sentences
-                // We're only asking for words -- no need to load any models yet
-                //System.out.println("The second word of the sentence '" + sent + "' is " + sent.word(1));
-                // When we ask for the lemma, it will load and run the part of speech tagger
-                System.out.println("The third pos of the sentence '" + sent + "' is " + sent.posTag(2));
-                // ...
-                List<String> words = sent.words();
-                for (String word : words) {
-                    System.out.println(word);
-                }
-            }*/
+          
 
         } catch (
                 Exception ex) {
