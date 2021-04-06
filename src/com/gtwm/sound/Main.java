@@ -525,13 +525,6 @@ public class Main extends JFrame {
                 }
             }
         });
-
-        try {
-            //DBHandler test = new DBHandler();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
     }
 
     public static void listAddInstruction(DefaultListModel thisModel, TransformationManager.Instruction thisInstruction) {

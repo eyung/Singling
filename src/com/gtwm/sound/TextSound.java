@@ -347,11 +347,17 @@ public class TextSound {
 				if (perWord) {
 					//System.out.println(sent.posTag(wordCount));
 					posletter = sent.posTag(wordCount).charAt(0);
-					//System.out.println(posletter);
+					System.out.println(posletter);
 					System.out.println("Sent = " + sent.sentiment());
-					if ("JNRV".contains(String.valueOf(posletter))) {
+					/*if ("JNRV".contains(String.valueOf(posletter))) {
 						sonifyWord(items, sent.lemma(wordCount), posletter, pattern);
 					} else if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
+						sonifyWord(items, word, 'S', pattern);
+					} else {
+						sonifyWord(items, word, posletter, pattern);
+					}*/
+
+					if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
 						sonifyWord(items, word, 'S', pattern);
 					} else {
 						sonifyWord(items, word, posletter, pattern);
@@ -496,38 +502,36 @@ public class TextSound {
 		Pattern transformedPattern = new Pattern();
 
 		Set<Integer> wordTypes = new HashSet<>();
+		
 		int posNumber = 0;
 
 		// Nouns, verbs, adjectives, adverbs
 		if ("JNRV".contains(String.valueOf(posLetter))) {
 			switch (posLetter) {
-				case 'J': posNumber = 3; break;
-				case 'N': posNumber = 1; break;
-				case 'R': posNumber = 4; break;
-				case 'V': posNumber = 2; break;
+				case 'J': posNumber = POS.NUM_ADJECTIVE; break;
+				case 'N': posNumber = POS.NUM_NOUN; break;
+				case 'R': posNumber = POS.NUM_ADVERB; break;
+				case 'V': posNumber = POS.NUM_VERB; break;
 			}
 
-			//System.out.println(posNumber);
+			System.out.println(posNumber);
 			IIndexWord idxWord = dict.getIndexWord(thisWord, POS.getPartOfSpeech(posNumber));
+			System.out.println("idxWord : " + idxWord);
 
 			// Loop to find all lexnames
-			int x = 0;
-			while (true) {
-				try {
-					IWordID wordID = idxWord.getWordIDs().get(x);
-					IWord word = dict.getWord(wordID);
-					//System.out.println("Id = " + wordID);
-					//System.out.println(" Lemma = " + word.getLemma());
-					//System.out.println(" Gloss = " + word.getSynset().getGloss());
-					ISynset synset = word.getSynset();
-					String LexFileName = synset.getLexicalFile().getName();
-					//System.out.println("Lexical Name : "+ LexFileName + ":" + synset.getLexicalFile().getNumber());
-					wordTypes.add(synset.getLexicalFile().getNumber());
-					x++;
-				} catch (Exception e) {
-					System.err.println(e);
-					break;
-				}
+			int x = idxWord.getTagSenseCount();
+			System.out.println("Number of : " + x);
+			for (int i = 0; i < x; i++) {
+				IWordID wordID = idxWord.getWordIDs().get(i);
+				IWord word = dict.getWord(wordID);
+
+				//System.out.println("Id = " + wordID);
+				//System.out.println(" Lemma = " + word.getLemma());
+				//System.out.println(" Gloss = " + word.getSynset().getGloss());
+				ISynset synset = word.getSynset();
+				String LexFileName = synset.getLexicalFile().getName();
+				System.out.println("Lexical Name : "+ LexFileName + ":" + synset.getLexicalFile().getNumber());
+				wordTypes.add(synset.getLexicalFile().getNumber());
 			}
 
 			//System.out.println(wordTypes);
