@@ -253,15 +253,15 @@
         </constraints>
         <properties>
           <model>
-            <item value="n"/>
-            <item value="v"/>
-            <item value="a"/>
-            <item value="r"/>
-            <item value="m"/>
-            <item value="s"/>
-            <item value="pn"/>
-            <item value="ar"/>
-            <item value="c"/>
+            <item value="noun"/>
+            <item value="verb"/>
+            <item value="adjective"/>
+            <item value="adverb"/>
+            <item value="modal"/>
+            <item value="symbol"/>
+            <item value="pronoun"/>
+            <item value="determiner"/>
+            <item value="preposition"/>
           </model>
         </properties>
       </component>

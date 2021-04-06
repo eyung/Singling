@@ -347,8 +347,8 @@ public class TextSound {
 				if (perWord) {
 					//System.out.println(sent.posTag(wordCount));
 					posletter = sent.posTag(wordCount).charAt(0);
-					System.out.println(posletter);
-					System.out.println("Sent = " + sent.sentiment());
+					//System.out.println(posletter);
+					//System.out.println("Sent = " + sent.sentiment());
 					/*if ("JNRV".contains(String.valueOf(posletter))) {
 						sonifyWord(items, sent.lemma(wordCount), posletter, pattern);
 					} else if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
@@ -360,7 +360,8 @@ public class TextSound {
 					if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
 						sonifyWord(items, word, 'S', pattern);
 					} else {
-						sonifyWord(items, word, posletter, pattern);
+						System.out.println("POS : " + posletter);
+						sonifyWord(items, sent.lemma(wordCount), posletter, pattern);
 					}
 
 				}
@@ -502,7 +503,7 @@ public class TextSound {
 		Pattern transformedPattern = new Pattern();
 
 		Set<Integer> wordTypes = new HashSet<>();
-		
+
 		int posNumber = 0;
 
 		// Nouns, verbs, adjectives, adverbs
@@ -536,16 +537,19 @@ public class TextSound {
 
 			//System.out.println(wordTypes);
 
-		// Symbols
-		} else if (posLetter == 'S') {
-			wordTypes.add(46);
-
 		// Other POStags
 		} else {
 			switch (posLetter) {
+				// Determiner
 				case 'D': wordTypes.add(46); break;
+				// Modal
 				case 'M': wordTypes.add(45); break;
+				// Pronouns / Predeterminer / Possessive ending
 				case 'P': wordTypes.add(51); break;
+				// Preposition
+				case 'I': wordTypes.add(48); break;
+				// Symbols
+				case 'S' : wordTypes.add(46); break;
 			}
 		}
 
@@ -611,16 +615,31 @@ public class TextSound {
 						}*/
 					switch (posLetter) {
 						case 'J':
-							if (i.modValue.equals("a")) { applyMod(i, pattern); }
+							if (i.modValue.equals("adjective")) { applyMod(i, pattern); }
 							break;
 						case 'N':
-							if (i.modValue.equals("n")) { applyMod(i, pattern); }
+							if (i.modValue.equals("noun")) { applyMod(i, pattern); }
 							break;
 						case 'R':
-							if (i.modValue.equals("r")) { applyMod(i, pattern); }
+							if (i.modValue.equals("adverb")) { applyMod(i, pattern); }
 							break;
 						case 'V':
-							if (i.modValue.equals("v")) { applyMod(i, pattern); }
+							if (i.modValue.equals("verb")) { applyMod(i, pattern); }
+							break;
+						case 'M':
+							if (i.modValue.equals("modal")) { applyMod(i, pattern); }
+							break;
+						case 'S':
+							if (i.modValue.equals("symbol")) { applyMod(i, pattern); }
+							break;
+						case 'D':
+							if (i.modValue.equals("determiner")) { applyMod(i, pattern); }
+							break;
+						case 'I':
+							if (i.modValue.equals("preposition")) { applyMod(i, pattern); }
+							break;
+						case 'P':
+							if (i.modValue.equals("pronoun")) { applyMod(i, pattern); }
 							break;
 					}
 
