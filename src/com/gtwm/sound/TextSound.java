@@ -339,7 +339,7 @@ public class TextSound {
 
 			// Iterate words
 			for (String word : words) {
-				System.out.println(word);
+				//System.out.println(word);
 				wordCount = words.indexOf(word);
 
 				double theRestLength = restLength;
@@ -358,12 +358,11 @@ public class TextSound {
 					}*/
 
 					if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
-						sonifyWord(items, word, 'S', pattern);
+						sonifyWord(word, sent.lemma(wordCount), 'S', pattern);
 					} else {
-						System.out.println("POS : " + posletter);
-						sonifyWord(items, sent.lemma(wordCount), posletter, pattern);
+						//System.out.println("POS : " + posletter);
+						sonifyWord(word, sent.lemma(wordCount), posletter, pattern);
 					}
-
 				}
 
 				// Add rest between words
@@ -377,7 +376,7 @@ public class TextSound {
 			//patternCurrentTime += restLengthLineBreak;
 		}
 
-		//System.out.println(pattern.toString());
+		System.out.println(pattern.toString());
 		return pattern;
 	}
 
@@ -498,7 +497,7 @@ public class TextSound {
 		}
 	}
 
-	public static void sonifyWord(List<WordMap.Mapping> items, String thisWord, char posLetter, Pattern pattern) {
+	public static void sonifyWord(String originalWord, String wordLemma, char posLetter, Pattern pattern) {
 		// Pattern transformed by sentiment values
 		Pattern transformedPattern = new Pattern();
 
@@ -515,26 +514,30 @@ public class TextSound {
 				case 'V': posNumber = POS.NUM_VERB; break;
 			}
 
-			System.out.println(posNumber);
-			IIndexWord idxWord = dict.getIndexWord(thisWord, POS.getPartOfSpeech(posNumber));
+			//System.out.println(posNumber);
+			IIndexWord idxWord = dict.getIndexWord(wordLemma, POS.getPartOfSpeech(posNumber));
 			System.out.println("idxWord : " + idxWord);
 
-			// Loop to find all lexnames
-			int x = idxWord.getTagSenseCount();
-			System.out.println("Number of : " + x);
-			for (int i = 0; i < x; i++) {
-				IWordID wordID = idxWord.getWordIDs().get(i);
-				IWord word = dict.getWord(wordID);
+			// Found in WordNet so store the associated lexnames
+			if (idxWord != null) {
+				// Loop to find all lexnames
+				//int x = idxWord.getTagSenseCount();
+				int x = idxWord.getWordIDs().size();
+				System.out.println("Number of wordIDs : " + idxWord.getWordIDs().size());
 
-				//System.out.println("Id = " + wordID);
-				//System.out.println(" Lemma = " + word.getLemma());
-				//System.out.println(" Gloss = " + word.getSynset().getGloss());
-				ISynset synset = word.getSynset();
-				String LexFileName = synset.getLexicalFile().getName();
-				System.out.println("Lexical Name : "+ LexFileName + ":" + synset.getLexicalFile().getNumber());
-				wordTypes.add(synset.getLexicalFile().getNumber());
+				for (int i = 0; i < x; i++) {
+					IWordID wordID = idxWord.getWordIDs().get(i);
+					IWord word = dict.getWord(wordID);
+
+					//System.out.println("Id = " + wordID);
+					//System.out.println(" Lemma = " + word.getLemma());
+					//System.out.println(" Gloss = " + word.getSynset().getGloss());
+					ISynset synset = word.getSynset();
+					String LexFileName = synset.getLexicalFile().getName();
+					System.out.println("Lexical Name : "+ LexFileName + ":" + synset.getLexicalFile().getNumber());
+					wordTypes.add(synset.getLexicalFile().getNumber());
+				}
 			}
-
 			//System.out.println(wordTypes);
 
 		// Other POStags
@@ -572,11 +575,6 @@ public class TextSound {
 				if (lexCount < 15) {
 					pattern.add("V" + lexCount + " @" + patternCurrentTime);
 				}
-
-				//if (lexCount > 15) {
-				//	lexCount = 0;
-				//}
-				//pattern.add("V" + lexCount + " @" + patternCurrentTime);
 			}
 
 			// Word value + 1 because it starts at 0 in the database
@@ -604,7 +602,6 @@ public class TextSound {
 
 				transformedPattern.clear();
 
-				// The main logic part of the program
 				// Make changes based on user instructions
 				if (i.mod == TransformationManager.Instruction.Mods.WORDTYPE) {
 						/*WordMap.Type[] wordtypes = convertToArr.toTypeArr(item.getType());
@@ -646,17 +643,17 @@ public class TextSound {
 				} else if (i.mod == TransformationManager.Instruction.Mods.WORDLENGTH) {
 					switch (i.getModOperator()) {
 						case EQUALTO:
-							if (Double.parseDouble(i.getModValue()) == thisWord.length()) {
+							if (Double.parseDouble(i.getModValue()) == originalWord.length()) {
 								applyMod(i, pattern);
 							}
 							break;
 						case LARGERTHAN:
-							if (Double.parseDouble(i.getModValue()) < thisWord.length()) {
+							if (Double.parseDouble(i.getModValue()) < originalWord.length()) {
 								applyMod(i, pattern);
 							}
 							break;
 						case LESSTHAN:
-							if (Double.parseDouble(i.getModValue()) > thisWord.length()) {
+							if (Double.parseDouble(i.getModValue()) > originalWord.length()) {
 								applyMod(i, pattern);
 							}
 							break;
@@ -679,7 +676,7 @@ public class TextSound {
 					//String[] punctuations = convertToArr.toStringArr(item.getValue());
 
 					//for (String n : punctuations) {
-					if (thisWord.equals(i.modValue)) {
+					if (wordLemma.equals(i.modValue)) {
 						//System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
 						applyMod(i, pattern);
 					}
@@ -769,7 +766,7 @@ public class TextSound {
 
 			// First LGC of word will inherit the word as lyric item
 			if (lexCount == 0) {
-				pattern.add(" '" + thisWord);
+				pattern.add(" '" + originalWord);
 			}
 			//	}
 			//}

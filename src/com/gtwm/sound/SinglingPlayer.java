@@ -79,8 +79,9 @@ class LyricParserListener extends ParserListenerAdapter {
                     e.printStackTrace();
                 }
             }
+            System.out.println(lyric);
+            doHighlight(lyric);
         }
-        doHighlight(lyric);
     }
 
     public void stop() {
