@@ -13,7 +13,8 @@
 ## Installation
 
 - Download the latest release from `https://github.com/eyung/Singling/releases` 
-- Unzip the jar and database folder to the same directory
+- Unzip the jar to the same directory as the WordNet database folder
+- Download the current version of WordNet from their website `https://wordnet.princeton.edu/download/current-version`
 - Run the jar file
 
 ---
