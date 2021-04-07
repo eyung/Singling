@@ -5,17 +5,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
 import org.jfugue.theory.Note;
-import simplenlg.features.Feature;
-import simplenlg.features.Form;
-import simplenlg.features.Tense;
-import simplenlg.framework.InflectedWordElement;
-import simplenlg.framework.LexicalCategory;
-import simplenlg.framework.NLGFactory;
-import simplenlg.framework.WordElement;
-import simplenlg.lexicon.Lexicon;
-import simplenlg.phrasespec.SPhraseSpec;
-import simplenlg.phrasespec.VPPhraseSpec;
-import simplenlg.realiser.english.Realiser;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
@@ -97,9 +86,9 @@ public class Main extends JFrame {
     static RealtimePlayer realtimePlayer;
 
     // Initialising simplenlg classes for parsing and transforming text
-    final Lexicon lexicon = Lexicon.getDefaultLexicon();
-    final NLGFactory nlgFactory = new NLGFactory(lexicon);
-    final Realiser realiser = new Realiser(lexicon);
+    //final Lexicon lexicon = Lexicon.getDefaultLexicon();
+    //final NLGFactory nlgFactory = new NLGFactory(lexicon);
+    //final Realiser realiser = new Realiser(lexicon);
 
     // Prefs
     private static String prefsFilename = "userinstructions";
@@ -698,30 +687,30 @@ public class Main extends JFrame {
         TextSound.ordering = setOrdering.getSelectedIndex();
     }
 
-    private String doPluralize(String input) {
-        WordElement WE = lexicon.getWord(input, LexicalCategory.NOUN);
-        InflectedWordElement infl = new InflectedWordElement(WE);
-        infl.setPlural(true);
+    //private String doPluralize(String input) {
+        //WordElement WE = lexicon.getWord(input, LexicalCategory.NOUN);
+        //InflectedWordElement infl = new InflectedWordElement(WE);
+        //infl.setPlural(true);
         //System.out.println(realiser.realise(infl));
-        return realiser.realise(infl).toString();
-    }
+        //return realiser.realise(infl).toString();
+    //}
 
-    private String doPastTense(String input) {
-        WordElement WE = lexicon.getWord(input, LexicalCategory.VERB);
-        InflectedWordElement infl = new InflectedWordElement(WE);
-        infl.setFeature(Feature.TENSE, Tense.PAST);
+    //private String doPastTense(String input) {
+        //WordElement WE = lexicon.getWord(input, LexicalCategory.VERB);
+        //InflectedWordElement infl = new InflectedWordElement(WE);
+        //infl.setFeature(Feature.TENSE, Tense.PAST);
         //System.out.println(realiser.realise(infl));
-        return realiser.realise(infl).toString();
-    }
+        //return realiser.realise(infl).toString();
+    //}
 
-    private String doGerund(String input) {
-        VPPhraseSpec word = nlgFactory.createVerbPhrase(input);
-        SPhraseSpec clause = nlgFactory.createClause();
-        clause.setVerbPhrase(word);
-        clause.setFeature(Feature.FORM, Form.GERUND);
-        //System.out.println(realiser.realise(clause));
-        return realiser.realise(clause).toString();
-    }
+//    private String doGerund(String input) {
+//        VPPhraseSpec word = nlgFactory.createVerbPhrase(input);
+//        SPhraseSpec clause = nlgFactory.createClause();
+//        clause.setVerbPhrase(word);
+//        clause.setFeature(Feature.FORM, Form.GERUND);
+//        //System.out.println(realiser.realise(clause));
+//        return realiser.realise(clause).toString();
+//    }
 
     private static String serialize(List<TransformationManager.Instruction> thisObjectList) {
         try {
