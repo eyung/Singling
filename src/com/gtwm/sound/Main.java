@@ -72,6 +72,9 @@ public class Main extends JFrame {
     // Set default database directory
     final File workingDirectory = new File(System.getProperty("user.dir"));
 
+    // Version
+    private static String currVersion = "Singling ver 0.7";
+
     // Input file name
     private String inputText = "";
 
@@ -114,7 +117,7 @@ public class Main extends JFrame {
             System.out.println("g is null");
             return;
         }
-        g.drawString("DLC Singling ver 0.4", splashx, splashy - 20);
+        g.drawString(currVersion, splashx, splashy - 20);
         g.drawString("Starting up...", splashx, splashy);
         splash.update();
 
@@ -1056,7 +1059,7 @@ public class Main extends JFrame {
         menuBar.add(fileMenu);
 
         // Frame
-        JFrame frame = new JFrame("Singling v0.4");
+        JFrame frame = new JFrame(currVersion);
         frame.setJMenuBar(menuBar);
         frame.setContentPane(mainForm.panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

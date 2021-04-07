@@ -20,8 +20,15 @@ package com.gtwm.sound;
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
 import edu.mit.jwi.item.*;
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
+import edu.stanford.nlp.trees.Tree;
+import edu.stanford.nlp.util.CoreMap;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
@@ -38,10 +45,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Transforms a stream of text into sound using the overtone series and synset types
@@ -348,7 +353,6 @@ public class TextSound {
 					//System.out.println(sent.posTag(wordCount));
 					posletter = sent.posTag(wordCount).charAt(0);
 					//System.out.println(posletter);
-					//System.out.println("Sent = " + sent.sentiment());
 					/*if ("JNRV".contains(String.valueOf(posletter))) {
 						sonifyWord(items, sent.lemma(wordCount), posletter, pattern);
 					} else if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
@@ -363,6 +367,7 @@ public class TextSound {
 						//System.out.println("POS : " + posletter);
 						sonifyWord(word, sent.lemma(wordCount), posletter, pattern);
 					}
+					System.out.println("Sentiment Analysis (" + word + ") : " + analyse(word));
 				}
 
 				// Add rest between words
@@ -374,6 +379,9 @@ public class TextSound {
 			// An extra rest on newlines
 			//pattern.add("R/" + String.format("%f", restLengthLineBreak) + " ");
 			//patternCurrentTime += restLengthLineBreak;
+
+			// Sentiment analysis
+			System.out.println("Sentiment of sentence : " + sent.sentiment());
 		}
 
 		System.out.println(pattern.toString());
@@ -463,6 +471,28 @@ public class TextSound {
 	}
 
 	public static void streamText(RealtimePlayer realtimePlayer, StringBuilder lastWord, boolean isWord, char ch, int charNum) {
+		// Construct URL to WordNet Dictionary directory on the computer
+		String wordNetDirectory = "WordNet-3.0";
+		String path = wordNetDirectory + File.separator + "dict";
+		URL url = null;
+		try {
+			url = new URL("file", null, path);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		// Construct the Dictionary object and open it
+		dict = new Dictionary(url);
+		try {
+			dict.open();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Count
+		int wordCount;
+		char posletter;
+
 		//StreamingPlayer streamingPlayer = new StreamingPlayer();
 		try {
 			//RealtimePlayer realtimePlayer = new RealtimePlayer();
@@ -478,7 +508,7 @@ public class TextSound {
 			patternCurrentTime = 0;
 
 			if (isWord) {
-				//sonifyWord(items, lastWord, pattern,false);
+				//sonifyWord(lastWord, sent.lemma(wordCount), pattern,false);
 			} else {
 				sonifyCharacter(lastWord, pattern, charNum, ch);
 			}
@@ -1447,6 +1477,18 @@ public class TextSound {
 			}
 		}
 		return false;
+	}
+
+	private static int analyse(String text) {
+		Properties props = new Properties();
+		props.setProperty("annotators", "tokenize, ssplit, pos, parse, sentiment");
+		StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+		Annotation annotation = pipeline.process(text);
+		for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
+			Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
+			return RNNCoreAnnotations.getPredictedClass(tree);
+		}
+		return 0;
 	}
 }
 
