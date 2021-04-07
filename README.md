@@ -12,10 +12,10 @@
 
 ## Installation
 
-- Download the latest release from `https://github.com/eyung/Singling/releases` 
-- Unzip the jar to the same directory as the WordNet database folder
-- Download the current version of WordNet from their website `https://wordnet.princeton.edu/download/current-version`
-- Run the jar file
+- Download WordNet 3.0 from their website `https://wordnet.princeton.edu/download/current-version`
+- Unzip the folder "WordNet-3.0"
+- Download the latest release from `https://github.com/eyung/Singling/releases` to the same directory as "WordNet-3.0"
+- Run jar file
 
 ---
 
