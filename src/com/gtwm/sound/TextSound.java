@@ -367,7 +367,7 @@ public class TextSound {
 						//System.out.println("POS : " + posletter);
 						sonifyWord(word, sent.lemma(wordCount), posletter, pattern);
 					}
-					System.out.println("Sentiment Analysis (" + word + ") : " + analyse(word));
+					//System.out.println("Sentiment Analysis (" + word + ") : " + analyse(word));
 				}
 
 				// Add rest between words
@@ -380,8 +380,9 @@ public class TextSound {
 			//pattern.add("R/" + String.format("%f", restLengthLineBreak) + " ");
 			//patternCurrentTime += restLengthLineBreak;
 
-			// Sentiment analysis
-			System.out.println("Sentiment of sentence : " + sent.sentiment());
+			// Sentiment Analysis
+			//System.out.println("Sentiment of sentence : " + sent.sentiment());
+			pattern.add(" #(SENTENCE[" + sent.sentiment() + "])");
 		}
 
 		System.out.println(pattern.toString());
@@ -464,14 +465,14 @@ public class TextSound {
 
 			//System.out.println(posNumber);
 			IIndexWord idxWord = dict.getIndexWord(wordLemma, POS.getPartOfSpeech(posNumber));
-			System.out.println("idxWord : " + idxWord);
+			//System.out.println("idxWord : " + idxWord);
 
 			// Found in WordNet so store the associated lexnames
 			if (idxWord != null) {
 				// Loop to find all lexnames
 				//int x = idxWord.getTagSenseCount();
 				int x = idxWord.getWordIDs().size();
-				System.out.println("Number of wordIDs : " + idxWord.getWordIDs().size());
+				//System.out.println("Number of wordIDs : " + idxWord.getWordIDs().size());
 
 				for (int i = 0; i < x; i++) {
 					IWordID wordID = idxWord.getWordIDs().get(i);
@@ -712,9 +713,10 @@ public class TextSound {
 				pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 			}
 
-			// First LGC of word will inherit the word as lyric item
+			// First LGC of word will inherit the word as lyric item, sentiment analysis value, and any other NLP related data
 			if (lexCount == 0) {
-				pattern.add(" '" + originalWord);
+				pattern.add(" '(" + originalWord + ")");
+				pattern.add(" #(SA[" + analyse(originalWord) + "], " + "LGC" + wordTypes + ")");
 			}
 			//	}
 			//}

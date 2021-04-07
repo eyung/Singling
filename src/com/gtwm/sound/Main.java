@@ -326,6 +326,13 @@ public class Main extends JFrame {
                             TextSound.runStuff();
                             TextSound.doStartPlayer(textArea1.getText());
                             //TextSound.doPlay();
+
+                            // Create new NLPConsole
+                            DialogNLPConsole dialogNLPConsole = new DialogNLPConsole();
+                            dialogNLPConsole.setTitle("NLP Console");
+                            dialogNLPConsole.pack();
+                            dialogNLPConsole.setLocationRelativeTo(panelTransformationInputs);
+                            dialogNLPConsole.setVisible(true);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
