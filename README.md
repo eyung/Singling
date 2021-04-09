@@ -53,3 +53,12 @@ Interactive interface for the sonification of text which can be transformed acco
 <a href="https://lled.educ.ubc.ca" target="_blank">`lled.educ.ubc.ca/`</a> <a href="https://twitter.com/ubc_lled" target="_blank">`@UBC_LLED`</a>
 - Email 
 <a href="mailto:effiamyung@gmail.com" target="_blank">`effiamyung@gmail.com`</a>
+
+---
+
+## License
+
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+
+- **[MIT license](http://opensource.org/licenses/mit-license.php)**
+- Copyright 2020 © Effiam Yung
