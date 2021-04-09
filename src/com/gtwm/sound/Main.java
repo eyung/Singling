@@ -5,6 +5,10 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
 import org.jfugue.theory.Note;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.Styler;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
@@ -74,6 +78,10 @@ public class Main extends JFrame {
     static DefaultListModel model = new DefaultListModel();
     static JTextArea textModel;
     MyMouseAdaptor myMouseAdaptor = new MyMouseAdaptor();
+
+    // NLP Console model
+    static JTextArea consoleTextModel;
+    //static JTextArea consoleTextModel;
 
     // Storing database words and values to list item
     private List<WordMap.Mapping> allItems;
@@ -226,8 +234,6 @@ public class Main extends JFrame {
 
             TextSound.items = tempList;*/
 
-
-
         } catch (
                 Exception ex) {
             ex.printStackTrace();
@@ -301,6 +307,7 @@ public class Main extends JFrame {
             }
         });
 
+        // Sonify text
         btnPlay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -317,11 +324,64 @@ public class Main extends JFrame {
                             //TextSound.doPlay();
 
                             // Create new NLPConsole
-                            DialogNLPConsole dialogNLPConsole = new DialogNLPConsole();
-                            dialogNLPConsole.setTitle("NLP Console");
-                            dialogNLPConsole.pack();
-                            dialogNLPConsole.setLocationRelativeTo(panelTransformationInputs);
-                            dialogNLPConsole.setVisible(true);
+                            //DialogNLPConsole dialogNLPConsole = new DialogNLPConsole();
+                            //dialogNLPConsole.setTitle("NLP Console");
+                            //dialogNLPConsole.pack();
+                            //dialogNLPConsole.setLocationRelativeTo(panelTransformationInputs);
+                            //dialogNLPConsole.setVisible(true);
+
+                            // Create Chart
+                            final XYChart chart = new XYChartBuilder().width(600).height(400).title("Area Chart").xAxisTitle("X").yAxisTitle("Y").build();
+
+                            // Customize Chart
+                            chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
+                            chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Area);
+
+                            // Series
+                            chart.addSeries("a", new double[] { 0, 3, 5, 7, 9 }, new double[] { -3, 5, 9, 6, 5 });
+                            chart.addSeries("b", new double[] { 0, 2, 4, 6, 9 }, new double[] { -1, 6, 4, 0, 4 });
+                            chart.addSeries("c", new double[] { 0, 1, 3, 8, 9 }, new double[] { -2, -1, 1, 0, 1 });
+
+                            // TextArea
+                            JTextArea consoleText = new JTextArea();
+
+                            // Set textarea model to receive and update NLP data
+                            consoleTextModel = consoleText;
+
+                            // Create and set up the window.
+                            JFrame frame = new JFrame("NLP Console");
+                            frame.setLayout(new BorderLayout());
+                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                            // Add console text area to frame
+                            JPanel consolePanel = new JPanel();
+                            consolePanel.add(consoleText);
+                            frame.add(consolePanel, BorderLayout.WEST);
+
+                            // Add chart to frame
+                            //JPanel chartPanel = new XChartPanel<XYChart>(chart);
+                            //frame.add(chartPanel, BorderLayout.EAST);
+
+                            // Labels
+                            //JLabel label = new JLabel("Blah blah blah.", SwingConstants.CENTER);
+                            //frame.add(label, BorderLayout.SOUTH);
+
+                            // get the screen size as a java dimension
+                            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+                            // get 2/3 of the height, and 2/3 of the width
+                            int height = screenSize.height * 1 / 3;
+                            int width = screenSize.width * 1 / 5;
+
+                            // set the jframe height and width
+                            frame.setPreferredSize(new Dimension(width, height));
+
+                            // Display the window.
+                            frame.pack();
+                            frame.setLocationRelativeTo(null);
+                            frame.setVisible(true);
+                            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -437,7 +497,6 @@ public class Main extends JFrame {
         offRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
                 realtimePlayer.close();
             }
         });
@@ -445,9 +504,7 @@ public class Main extends JFrame {
         btnTogglePause.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
                 TextSound.doPause();
-
             }
         });
 

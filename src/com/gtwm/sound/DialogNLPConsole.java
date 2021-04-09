@@ -8,8 +8,10 @@ public class DialogNLPConsole extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JTextArea textArea1;
+    private JPanel chartpanel;
 
     static JTextArea textModel;
+    static JPanel chartModel;
 
     public DialogNLPConsole() {
         setContentPane(contentPane);
@@ -17,6 +19,7 @@ public class DialogNLPConsole extends JDialog {
         getRootPane().setDefaultButton(buttonOK);
 
         textModel = this.textArea1;
+        chartModel = this.chartpanel;
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

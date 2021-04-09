@@ -124,10 +124,7 @@ class LyricParserListener extends ParserListenerAdapter {
     }
 
     private void sendNLPOutput(String lyric) {
-        //int docLength = Main.textModel.getDocument().getLength();
         try {
-            //String textToSearch = Main.textModel.getDocument().getText(0, docLength);
-            //System.out.println("Highlight: " + lyric + " | Offset: " + offset);
             DialogNLPConsole.textModel.append(lyric + ": ");
         } catch (Exception e) {}
     }
@@ -171,11 +168,8 @@ class MarkerParserListener extends ParserListenerAdapter {
     }
 
     private void sendNLPOutput(String marker) {
-        //int docLength = Main.textModel.getDocument().getLength();
         try {
-            //String textToSearch = Main.textModel.getDocument().getText(0, docLength);
-            //System.out.println("Highlight: " + lyric + " | Offset: " + offset);
-            DialogNLPConsole.textModel.append(marker + "\n");
+            Main.consoleTextModel.append(marker + "\n");
         } catch (Exception e) {}
     }
 }
