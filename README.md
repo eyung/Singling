@@ -2,7 +2,7 @@
 
 # Singling
 
-> Interactive interface for the sonification of text which can be transformed according to various triggers and parameters to facilitate the learning and analysis of *literacoustics*, reading by listening.
+Interactive interface for the sonification of text which can be transformed according to various triggers and parameters to facilitate the learning and analysis of *literacoustics*, reading by listening. The app uses <a href="http://www.jfugue.org/">JFugue</a>, <a href="https://wordnet.princeton.edu/">WordNet</a>, and <a href="https://stanfordnlp.github.io/CoreNLP/">CoreNLP</a>. 
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/eyung/singling) ![GitHub repo size](https://img.shields.io/github/repo-size/eyung/singling) ![GitHub](https://img.shields.io/github/license/eyung/singling)
 
