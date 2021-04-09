@@ -713,7 +713,8 @@ public class TextSound {
 				pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 			}*/
 
-			pattern.add(":PW(" + pitchBend + ") " + midiNumber + "maj/" + noteLength + "a" + attack + "d" + decay);
+			pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+			//pattern.add(baseMidiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 
 			//	}
 			//}
