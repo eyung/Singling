@@ -467,7 +467,7 @@ public class TextSound {
 			IIndexWord idxWord = dict.getIndexWord(wordLemma, POS.getPartOfSpeech(posNumber));
 			//System.out.println("idxWord : " + idxWord);
 
-			// Found in WordNet so store the associated lexnames
+			// Store associated lexnames if found in WordNet
 			if (idxWord != null) {
 				// Loop to find all lexnames
 				//int x = idxWord.getTagSenseCount();
@@ -483,7 +483,7 @@ public class TextSound {
 					//System.out.println(" Gloss = " + word.getSynset().getGloss());
 					ISynset synset = word.getSynset();
 					String LexFileName = synset.getLexicalFile().getName();
-					System.out.println("Lexical Name : "+ LexFileName + ":" + synset.getLexicalFile().getNumber());
+					//System.out.println("Lexical Name : "+ LexFileName + ":" + synset.getLexicalFile().getNumber());
 					wordTypes.add(synset.getLexicalFile().getNumber());
 				}
 			}
@@ -716,7 +716,7 @@ public class TextSound {
 			// First LGC of word will inherit the word as lyric item, sentiment analysis value, and any other NLP related data
 			if (lexCount == 0) {
 				pattern.add(" '(" + originalWord + ")");
-				pattern.add(" #(SA[" + analyse(originalWord) + "], " + "LGC" + wordTypes + ")");
+				pattern.add(" #(SA[" + analyse(originalWord) + "], " + "LGC" + wordTypes + ", POS[" + posLetter + "]" + ")");
 			}
 			//	}
 			//}

@@ -125,7 +125,7 @@ class LyricParserListener extends ParserListenerAdapter {
 
     private void sendNLPOutput(String lyric) {
         try {
-            DialogNLPConsole.textModel.append(lyric + ": ");
+            Main.consoleTextModel.append(lyric + ": ");
         } catch (Exception e) {}
     }
 }

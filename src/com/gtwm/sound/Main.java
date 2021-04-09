@@ -140,7 +140,7 @@ public class Main extends JFrame {
 
         // Initializing things
         JFileChooser fc = new JFileChooser();
-        csvparser myParser = new csvparser();
+        //csvparser myParser = new csvparser();
         List<WordMap.Mapping> tempList = new ArrayList<>();
 
         // Load database files

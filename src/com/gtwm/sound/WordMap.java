@@ -1,15 +1,7 @@
 package com.gtwm.sound;
 
-import com.univocity.parsers.annotations.Parsed;
-import com.univocity.parsers.common.processor.BeanListProcessor;
-import com.univocity.parsers.csv.CsvParser;
-import com.univocity.parsers.csv.CsvParserSettings;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class WordMap {
@@ -17,19 +9,19 @@ public class WordMap {
     enum Type { n, v, a, r, m, p, s, pn, ar, c }
 
     static class Mapping {
-        @Parsed(index = 0)
+        //@Parsed(index = 0)
         String wordKey;
 
-        @Parsed(index = 1)
+        //@Parsed(index = 1)
         String wordType;
 
-        @Parsed(index = 2)
+        //@Parsed(index = 2)
         String wordValue;
 
-        @Parsed(index = 3)
+        //@Parsed(index = 3)
         String wordSentimentPos;
 
-        @Parsed(index = 4)
+        //@Parsed(index = 4)
         String wordSentimentNeg;
 
         public Mapping() {
@@ -146,6 +138,7 @@ public class WordMap {
 
 }
 
+/*
 class csvparser {
 
     public List<WordMap.Mapping> csvtoSenseMap(final String filePath) throws IOException {
@@ -186,3 +179,4 @@ class csvparser {
         }
     }
 }
+*/
