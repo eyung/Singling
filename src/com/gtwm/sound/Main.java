@@ -5,10 +5,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jfugue.realtime.RealtimePlayer;
 import org.jfugue.theory.Note;
-import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.XYSeries;
-import org.knowm.xchart.style.Styler;
 
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
@@ -141,7 +137,7 @@ public class Main extends JFrame {
         // Initializing things
         JFileChooser fc = new JFileChooser();
         //csvparser myParser = new csvparser();
-        List<WordMap.Mapping> tempList = new ArrayList<>();
+        //List<WordMap.Mapping> tempList = new ArrayList<>();
 
         // Load database files
         try {
@@ -330,7 +326,7 @@ public class Main extends JFrame {
                             //dialogNLPConsole.setLocationRelativeTo(panelTransformationInputs);
                             //dialogNLPConsole.setVisible(true);
 
-                            // Create Chart
+                     /*       // Create Chart
                             final XYChart chart = new XYChartBuilder().width(600).height(400).title("Area Chart").xAxisTitle("X").yAxisTitle("Y").build();
 
                             // Customize Chart
@@ -340,7 +336,7 @@ public class Main extends JFrame {
                             // Series
                             chart.addSeries("a", new double[] { 0, 3, 5, 7, 9 }, new double[] { -3, 5, 9, 6, 5 });
                             chart.addSeries("b", new double[] { 0, 2, 4, 6, 9 }, new double[] { -1, 6, 4, 0, 4 });
-                            chart.addSeries("c", new double[] { 0, 1, 3, 8, 9 }, new double[] { -2, -1, 1, 0, 1 });
+                            chart.addSeries("c", new double[] { 0, 1, 3, 8, 9 }, new double[] { -2, -1, 1, 0, 1 });*/
 
                             // TextArea
                             JTextArea consoleText = new JTextArea();

@@ -505,6 +505,12 @@ public class TextSound {
 			}
 		}
 
+		// First LGC of word will inherit the word as lyric item, sentiment analysis value, and any other NLP related data
+		if (lexCount == 0) {
+			pattern.add(" '(" + originalWord + ")");
+			pattern.add(" #(SA[" + analyse(originalWord) + "], " + "LGC" + wordTypes + ", POS[" + posLetter + "]" +  ")");
+		}
+
 		// Iterate through list of lexnames for each word
 		for (double thisValue : wordTypes) {
 			//System.out.println(thisValue);
@@ -684,14 +690,6 @@ public class TextSound {
 			//System.out.println("Frequency: " + frequency);
 			//System.out.println("Midi Number: " + midiNumber);
 
-			// Hacky hack hack so that we are capping voices at 16
-			//if (lexCount < 15) {
-			//	if (transformedPattern != null && !transformedPattern.toString().equals("")) {
-			//		// Note + Duration + Attack + Decay
-			//		pattern.add(transformedPattern + "/" + noteLength + "a" + attack + "d" + decay + "");
-			//	} else {
-			// Note + Duration + Attack + Decay
-
 			// JFugue's implementation which adds microtones as pitch bend events
 			//pattern.add("m" + frequency + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + "");
 			//pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
@@ -707,17 +705,16 @@ public class TextSound {
 			// If sentiment values are found, use the base (fundamental) frequency without pitchbend to create a chord
 			// Otherwise, use the LGC as a variable to create a midi note
 
-			if (sentimentState && sentimentChord != "") {
+			// Sentiment Analysis
+
+			/*if (sentimentState && sentimentChord != "") {
 				pattern.add(baseMidiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
 			} else {
 				pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
-			}
+			}*/
 
-			// First LGC of word will inherit the word as lyric item, sentiment analysis value, and any other NLP related data
-			if (lexCount == 0) {
-				pattern.add(" '(" + originalWord + ")");
-				pattern.add(" #(SA[" + analyse(originalWord) + "], " + "LGC" + wordTypes + ", POS[" + posLetter + "]" + ")");
-			}
+			pattern.add(":PW(" + pitchBend + ") " + midiNumber + "maj/" + noteLength + "a" + attack + "d" + decay);
+
 			//	}
 			//}
 
