@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class Main extends JFrame {
     private JPanel panel1;
     private JTextArea textArea1;
-    private JButton btnProcess;
+    private JButton btnSaveMIDI;
     private JComboBox setBaseInstrument;
     private JComboBox setDuration;
     private JSlider setOctaves;
@@ -235,11 +235,11 @@ public class Main extends JFrame {
             ex.printStackTrace();
         }
 
-        btnProcess.addActionListener(new ActionListener() {
+        btnSaveMIDI.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                  // Handle open button action
-                 if (e.getSource() == btnProcess) {
+                 if (e.getSource() == btnSaveMIDI) {
                      if (textArea1.getLineCount() > 0) {
 
                          fc.setCurrentDirectory(workingDirectory);
@@ -315,9 +315,12 @@ public class Main extends JFrame {
                             setBaseValues();
 
                             // Process text
-                            TextSound.runStuff();
-                            TextSound.doStartPlayer(textArea1.getText());
-                            //TextSound.doPlay();
+                            //TextSound.runStuff();
+                            //TextSound.doStartPlayer(textArea1.getText());
+                            Composer composer = new Composer(textArea1.getText());
+                            Producer producer = new Producer(composer.getPattern());
+                            producer.doStartPlayer(composer.getNoteLength());
+
 
                             // Create new NLPConsole
                             //DialogNLPConsole dialogNLPConsole = new DialogNLPConsole();
@@ -1368,9 +1371,9 @@ public class Main extends JFrame {
         btnPlay = new JButton();
         btnPlay.setText("Play");
         panelProcessBtns.add(btnPlay, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        btnProcess = new JButton();
-        btnProcess.setText("Convert to MIDI");
-        panelProcessBtns.add(btnProcess, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        btnSaveMIDI = new JButton();
+        btnSaveMIDI.setText("Convert to MIDI");
+        panelProcessBtns.add(btnSaveMIDI, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         panelProcessBtns.add(spacer1, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         btnTogglePause = new JButton();
