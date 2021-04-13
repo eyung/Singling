@@ -713,8 +713,15 @@ public class TextSound {
 				pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 			}*/
 
+			Note note = new Note(":PW(" + pitchBend + ") " + midiNumber);
+			//Chord chord = new Chord(":PW(" + pitchBend + ") " + midiNumber, new Intervals("1 3 5"));
+
+			//pattern.add(note);
+			//pattern.add("/" + noteLength);
+			//pattern.add("a" + attack + "d" + decay);
+
 			pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
-			//pattern.add(baseMidiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+			//pattern.add(midiNumber + "maj/" + noteLength + "a" + attack + "d" + decay);
 
 			//	}
 			//}

@@ -346,13 +346,23 @@ public class Main extends JFrame {
 
                             // Create and set up the window.
                             JFrame frame = new JFrame("NLP Console");
-                            frame.setLayout(new BorderLayout());
                             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            Container contentPane = frame.getContentPane();
 
                             // Add console text area to frame
+                            JScrollPane scrollPane = new JScrollPane();
                             JPanel consolePanel = new JPanel();
+
+                            GridBagLayout layout = new GridBagLayout();
+                            consolePanel.setLayout(layout);
+                            frame.setLayout(new BorderLayout());
+
+                            contentPane.add(new JScrollPane(consolePanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+                            //contentPane.add(consolePanel);
                             consolePanel.add(consoleText);
-                            frame.add(consolePanel, BorderLayout.WEST);
+
+                            //frame.add(consolePanel, BorderLayout.WEST);
+                            //frame.add(contentPane, BorderLayout.CENTER);
 
                             // Add chart to frame
                             //JPanel chartPanel = new XChartPanel<XYChart>(chart);
