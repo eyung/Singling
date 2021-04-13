@@ -13,7 +13,6 @@ import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 import org.jfugue.pattern.Pattern;
-import org.jfugue.player.Player;
 import org.jfugue.theory.Note;
 
 import java.io.File;
@@ -113,14 +112,46 @@ public class Composer {
     private URL url;
 
     /**
-     *
+     * TODO
+     * @param builder
      */
-    public Composer() {
-        orderings = new ArrayList<>();
+    private Composer(ComposerBuilder builder) {
+        this.baseNoteLength = builder.baseNoteLength;
+        this.baseInstrument = builder.baseInstrument;
+        this.baseFrequency = builder.baseFrequency;
+        this.baseOctaves = builder.baseOctaves;
+        this.baseTempo = builder.baseTempo;
+        this.restLength = builder.restLength;
+        this.restLengthLineBreak = builder.restLengthLineBreak;
+        this.isWord = builder.isWord;
+        this.defaultNoteOperation = builder.operationType;
+        this.ordering = builder.ordering;
+
+        //orderings = new ArrayList<>();
+        this.orderings = builder.orderings;
+
         passingWords = new HashSet<>();
         instructions = new ArrayList<>();
         patternCurrentTime = 0;
         lexCount = 0;
+
+        // Set settings to base values
+        resetSettings();
+
+        // Each ordering gives a different character
+        // Mayzner's
+        //orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
+        // standard order frequency used by typesetters (https://en.wikipedia.org/wiki/Letter_frequency)
+        //orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
+        // letter frequency based upon Oxford dictionary (https://languages.oup.com/)
+        //orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
+
+        pattern = new Pattern();
+        pattern.setVoice(0);
+        pattern.setInstrument(instrument);
+        pattern.setTempo((int) tempo);
+        patternCurrentTime = 0;
+        volume = 10200d;
 
         // Construct URL to WordNet Dictionary directory on the computer
         wordNetDirectory = "WordNet-3.0";
@@ -130,6 +161,95 @@ public class Composer {
             url = new URL("file", null, path);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     */
+    public static class ComposerBuilder {
+        private double baseNoteLength;
+        private double baseFrequency;
+        private double baseOctaves;
+        private double baseTempo;
+        private String baseInstrument;
+        private double restLength;
+        private double restLengthLineBreak ;
+        private double baseVolume;
+        private int baseAttack;
+        private int baseDecay;
+        private long pitchBend;
+        private int basePan;
+        private noteOperationType operationType;
+        private boolean isWord;
+        private int ordering;
+        private List<String> orderings;
+
+        public ComposerBuilder() {
+            this.baseVolume = 10200d;
+            this.baseAttack = 64;
+            this.baseDecay = 64;
+            this.pitchBend = 8192;
+            this.basePan = 64;
+
+            orderings = new ArrayList<>();
+            this.orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
+            this.orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
+            this.orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
+        }
+
+        public ComposerBuilder setNoteLength(double noteLength) {
+            this.baseNoteLength = noteLength;
+            return this;
+        }
+
+        public ComposerBuilder setFrequency(double frequency) {
+            this.baseFrequency = frequency;
+            return this;
+        }
+
+        public ComposerBuilder setOctave(double octave) {
+            this.baseOctaves = octave;
+            return this;
+        }
+
+        public ComposerBuilder setTempo(double tempo) {
+            this.baseTempo = tempo;
+            return this;
+        }
+
+        public ComposerBuilder setInstrument(String instrument) {
+            this.baseInstrument = instrument;
+            return this;
+        }
+
+        public ComposerBuilder setRestLength(double restLength) {
+            this.restLength = restLength;
+            return this;
+        }
+
+        public ComposerBuilder setRestLengthLineBreak(double restLengthLineBreak) {
+            this.restLengthLineBreak = restLengthLineBreak;
+            return this;
+        }
+
+        public ComposerBuilder wantWord(boolean isWord) {
+            this.isWord = isWord;
+            return this;
+        }
+
+        public ComposerBuilder withOperation(String type) {
+            this.operationType = noteOperationType.valueOf(type);
+            return this;
+        }
+
+        public ComposerBuilder withOrdering(int ordering) {
+            this.ordering = ordering;
+            return this;
+        }
+
+        public Composer build() {
+            return new Composer(this);
         }
     }
 
@@ -215,42 +335,10 @@ public class Composer {
 
     /**
      * Turn the input string into a sound string that can be played by jFugue
+     * @param input
+     * @return
      */
-    public Composer(String input) {
-        orderings = new ArrayList<String>();
-        passingWords = new HashSet<String>();
-        instructions = new ArrayList<>();
-        patternCurrentTime = 0;
-        lexCount = 0;
-
-        // Set settings to base values
-        resetSettings();
-
-        // Each ordering gives a different character
-        // Mayzner's
-        //orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
-        // standard order frequency used by typesetters (https://en.wikipedia.org/wiki/Letter_frequency)
-        //orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
-        // letter frequency based upon Oxford dictionary (https://languages.oup.com/)
-        //orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
-
-        pattern = new Pattern();
-        pattern.setVoice(0);
-        pattern.setInstrument(instrument);
-        pattern.setTempo((int) tempo);
-        patternCurrentTime = 0;
-        volume = 10200d;
-
-        // Construct URL to WordNet Dictionary directory on the computer
-        wordNetDirectory = "WordNet-3.0";
-        path = wordNetDirectory + File.separator + "dict";
-        url = null;
-        try {
-            url = new URL("file", null, path);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
+    public Pattern processString(String input) {
         // Construct the Dictionary object and open it
         dict = new Dictionary(url);
         try {
@@ -312,7 +400,7 @@ public class Composer {
         }
 
         //System.out.println(pattern.toString());
-        //return pattern;
+        return pattern;
     }
 
     /**
@@ -732,9 +820,6 @@ public class Composer {
         return pattern;
     }
 
-    public double getNoteLength() {
-        return this.baseNoteLength;
-    }
 }
 
 /*

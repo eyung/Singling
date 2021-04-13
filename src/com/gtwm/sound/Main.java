@@ -311,16 +311,49 @@ public class Main extends JFrame {
                 if (e.getSource() == btnPlay) {
                     if (textArea1.getLineCount() > 0) {
                         try {
+
                             // Get initial settings from user inputs
-                            setBaseValues();
+                            //setBaseValues();
 
-                            // Process text
-                            //TextSound.runStuff();
-                            //TextSound.doStartPlayer(textArea1.getText());
-                            Composer composer = new Composer(textArea1.getText());
+                            boolean isWord = true;
+                            if (wordRadioButton.isSelected()) {
+                                isWord = true;
+                            } else if (characterRadioButton.isSelected()) {
+                                isWord = false;
+                            }
+
+                            String operationType = "";
+                            if (lexnamesRadioButton.isSelected()) {
+                                operationType = "LEXNAMEFREQ";
+                            } else if (staticRadioButton.isSelected()) {
+                                operationType = "STATICFREQ";
+                            } else if (muteRadioButton.isSelected()) {
+                                operationType = "MUTE";
+                            }
+
+                            // Create and init Composer
+                            Composer composer = new Composer
+                                    .ComposerBuilder()
+                                    .setInstrument(String.valueOf(setBaseInstrument.getSelectedItem()))
+                                    .setNoteLength(Double.parseDouble(String.valueOf(setDuration.getSelectedItem())))
+                                    .setOctave((double) setOctaves.getValue())
+                                    .setTempo((double) setTempo.getValue())
+                                    .setFrequency((double) setFrequency.getValue())
+                                    .setRestLength(Double.parseDouble(String.valueOf(setRestLengthSpace.getSelectedItem())))
+                                    .setRestLengthLineBreak(Double.parseDouble(String.valueOf(setRestLengthLineBreak.getSelectedItem())))
+                                    .wantWord(isWord)
+                                    .withOperation(operationType)
+                                    .withOrdering(setOrdering.getSelectedIndex())
+                                    .build();
+
+                            // Process user input text
+                            composer.processString(textArea1.getText());
+
+                            // Create Producer using pattern created by Composer
                             Producer producer = new Producer(composer.getPattern());
-                            producer.doStartPlayer(composer.getNoteLength());
 
+                            // Start player
+                            producer.doStartPlayer(Double.parseDouble(String.valueOf(setDuration.getSelectedItem())));
 
                             // Create new NLPConsole
                             //DialogNLPConsole dialogNLPConsole = new DialogNLPConsole();
@@ -728,9 +761,9 @@ public class Main extends JFrame {
     private void setBaseValues() {
         TextSound.baseInstrument = String.valueOf(setBaseInstrument.getSelectedItem());
         TextSound.baseNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
-        TextSound.baseOctaves = Double.valueOf(setOctaves.getValue());
-        TextSound.baseTempo = Double.valueOf(setTempo.getValue());
-        TextSound.baseFrequency = Double.valueOf(setFrequency.getValue());
+        TextSound.baseOctaves = (double) setOctaves.getValue();
+        TextSound.baseTempo = (double) setTempo.getValue();
+        TextSound.baseFrequency = (double) setFrequency.getValue();
         TextSound.restLength = Double.parseDouble(String.valueOf(setRestLengthSpace.getSelectedItem()));
         TextSound.restLengthLineBreak = Double.parseDouble(String.valueOf(setRestLengthLineBreak.getSelectedItem()));
 
