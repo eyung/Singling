@@ -85,6 +85,8 @@ public class Main extends JFrame {
 
     static Console console;
 
+    Composer composer;
+
     /**
      *
      */
@@ -166,7 +168,7 @@ public class Main extends JFrame {
                             }
 
                             // Create and init Composer
-                            Composer composer = new Composer
+                            composer = new Composer
                                     .ComposerBuilder()
                                     .setInstrument(String.valueOf(setBaseInstrument.getSelectedItem()))
                                     .setNoteLength(Double.parseDouble(String.valueOf(setDuration.getSelectedItem())))
@@ -269,7 +271,7 @@ public class Main extends JFrame {
                                 }
 
                                 // Create and init Composer
-                                Composer composer = new Composer
+                                composer = new Composer
                                         .ComposerBuilder()
                                         .setInstrument(String.valueOf(setBaseInstrument.getSelectedItem()))
                                         .setNoteLength(Double.parseDouble(String.valueOf(setDuration.getSelectedItem())))
@@ -344,7 +346,7 @@ public class Main extends JFrame {
                                 }
 
                                 // Create and init Composer
-                                Composer composer = new Composer
+                                composer = new Composer
                                         .ComposerBuilder()
                                         .setInstrument(String.valueOf(setBaseInstrument.getSelectedItem()))
                                         .setNoteLength(Double.parseDouble(String.valueOf(setDuration.getSelectedItem())))
@@ -403,7 +405,10 @@ public class Main extends JFrame {
            @Override
            public void actionPerformed(ActionEvent e) {
                TransformationManager.Instruction selectedInstruction = list1.getSelectedValue();
-               TextSound.instructions.remove(selectedInstruction);
+               //TextSound.instructions.remove(selectedInstruction);
+
+               composer.removeInstruction(selectedInstruction);
+
                model.removeElement(selectedInstruction);
            }
         });
@@ -480,7 +485,7 @@ public class Main extends JFrame {
         characterRadioButton.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent actionEvent) {
-               TextSound.perChar = !TextSound.perChar;
+               //TextSound.perChar = !TextSound.perChar;
 
                setOrdering.setVisible(true);
            }
@@ -489,7 +494,7 @@ public class Main extends JFrame {
         wordRadioButton.addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent actionEvent) {
-              TextSound.perWord = !TextSound.perWord;
+              //TextSound.perWord = !TextSound.perWord;
 
               setOrdering.setVisible(false);
           }
@@ -870,9 +875,8 @@ public class Main extends JFrame {
                         mainForm.textModel.setText(properties.getProperty("textinput"));
 
                         // Load instructions
-                        //String instructionsList = properties.getProperty("instructions");
-                        //TextSound.instructions = deserializeObject();
                         TextSound.instructions = deserialize(properties.getProperty("instructions"));
+                        //composer.instructions = deserialize(properties.getProperty("instructions"));
                         Main.model.clear();
                         for (TransformationManager.Instruction i : TextSound.instructions) {
                             Main.listAddInstruction(Main.model, i);

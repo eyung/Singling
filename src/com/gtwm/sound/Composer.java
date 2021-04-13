@@ -806,7 +806,7 @@ public class Composer {
 
         switch (i.soundMod) {
             case TEMPO:
-                TextSound.Setting settingTempo = TextSound.Setting.TEMPO;
+                Setting settingTempo = Setting.TEMPO;
                 //if (lexCount <= 0) {
                 if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
                     tempo = Double.parseDouble(i.soundModValue);
@@ -824,7 +824,7 @@ public class Composer {
                 break;
 
             case NOTE_DURATION:
-                TextSound.Setting settingNoteDuration = TextSound.Setting.NOTE_LENGTH;
+                Setting settingNoteDuration = Setting.NOTE_LENGTH;
                 if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
                     noteLength = settingNoteDuration.keepInRange(noteLength);
                     noteLength = Double.parseDouble(i.soundModValue);
@@ -837,7 +837,7 @@ public class Composer {
                 break;
 
             case OCTAVE:
-                TextSound.Setting settingOctaves = TextSound.Setting.OCTAVES;
+                Setting settingOctaves = Setting.OCTAVES;
                 if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
                     octaves = settingOctaves.keepInRange(octaves);
                     octaves = Double.parseDouble(i.soundModValue);
@@ -859,7 +859,7 @@ public class Composer {
                 break;
 
             case VOLUME:
-                TextSound.Setting settingVolume = TextSound.Setting.VOLUME;
+                Setting settingVolume = Setting.VOLUME;
                 //if (lexCount <= 0) {
                 volume = Double.parseDouble(i.soundModValue);
                 volume = settingVolume.keepInRange(volume);
@@ -880,7 +880,7 @@ public class Composer {
                 //	frequency += Double.parseDouble(i.soundModValue);
                 //	baseFrequency = frequency;
                 //}
-                TextSound.Setting settingsFrequency = TextSound.Setting.BASE_FREQUENCY;
+                Setting settingsFrequency = Setting.BASE_FREQUENCY;
                 //double midiNoteNumber = Double.parseDouble(i.soundModValue);
 
                 //if (i.changeMode == TransformationManager.Instruction.ChangeModes.SET) {
@@ -898,13 +898,13 @@ public class Composer {
                 break;
 
             case ATTACK:
-                TextSound.Setting settingsAttack = TextSound.Setting.ATTACK;
+                Setting settingsAttack = Setting.ATTACK;
                 attack = Integer.parseInt(i.soundModValue);
                 attack = (int) settingsAttack.keepInRange(attack);
                 break;
 
             case DECAY:
-                TextSound.Setting settingsDecay = TextSound.Setting.ATTACK;
+                Setting settingsDecay = Setting.ATTACK;
                 decay = Integer.parseInt(i.soundModValue);
                 decay = (int) settingsDecay.keepInRange(decay);
                 break;
@@ -945,8 +945,19 @@ public class Composer {
         return pattern;
     }
 
-}
+    public List<TransformationManager.Instruction> getInstructions() {
+        return this.instructions;
+    }
 
+
+    public void addInstruction(TransformationManager.Instruction instruction) {
+        this.instructions.add(instruction);
+    }
+
+    public void removeInstruction(TransformationManager.Instruction instruction) {
+        this.instructions.remove(instruction);
+    }
+}
 
 class logCalc {
     static double log(double x, double base) {
