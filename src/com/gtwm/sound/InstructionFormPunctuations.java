@@ -134,7 +134,8 @@ public class InstructionFormPunctuations extends JDialog {
                 if (instructionCheck) {
                     //System.out.println(instruction.toString());
                     TextSound.instructions.add(instruction);
-                    Main.listAddInstruction(Main.model, instruction);
+                    //Main.listAddInstruction(Main.model, instruction);
+                    Main.listAddInstruction(instruction);
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "There is already an existing instruction that uses the same modifiers, please use something else.",

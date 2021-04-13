@@ -126,6 +126,7 @@ public class Composer {
         this.isWord = builder.isWord;
         this.defaultNoteOperation = builder.operationType;
         this.ordering = builder.ordering;
+        this.instructions = builder.instructions;
 
         //orderings = new ArrayList<>();
         this.orderings = builder.orderings;
@@ -177,6 +178,7 @@ public class Composer {
         private boolean isWord;
         private int ordering;
         private List<String> orderings;
+        private List<TransformationManager.Instruction> instructions;
 
         public ComposerBuilder() {
             this.baseVolume = 10200d;
@@ -238,6 +240,11 @@ public class Composer {
 
         public ComposerBuilder withOrdering(int ordering) {
             this.ordering = ordering;
+            return this;
+        }
+
+        public ComposerBuilder useTransformations(List<TransformationManager.Instruction> instructions) {
+            this.instructions = instructions;
             return this;
         }
 
@@ -948,7 +955,6 @@ public class Composer {
     public List<TransformationManager.Instruction> getInstructions() {
         return this.instructions;
     }
-
 
     public void addInstruction(TransformationManager.Instruction instruction) {
         this.instructions.add(instruction);

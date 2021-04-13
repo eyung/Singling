@@ -85,7 +85,7 @@ public class Main extends JFrame {
 
     static Console console;
 
-    Composer composer;
+    static Composer composer;
 
     /**
      *
@@ -112,6 +112,7 @@ public class Main extends JFrame {
         list1.setModel(model);
         list1.addMouseListener(myMouseAdaptor);
         list1.addMouseMotionListener(myMouseAdaptor);
+
         setBaseInstrument.setModel(InstructionFormModels.modelSetBaseInstrument);
         //cbSetFrequency.setModel(InstructionFormModels.modelSetFrequency);
         //cbSetFrequency.setSelectedItem("A4");
@@ -134,6 +135,9 @@ public class Main extends JFrame {
         Producer producer = new Producer();
 
         console = new Console();
+
+        // Create and init Composer
+        //composer = new Composer.ComposerBuilder().build();
 
         /**
          *
@@ -180,6 +184,7 @@ public class Main extends JFrame {
                                     .wantWord(isWord)
                                     .withOperation(operationType)
                                     .withOrdering(setOrdering.getSelectedIndex())
+                                    .useTransformations((List<TransformationManager.Instruction>) model)
                                     .build();
 
                             // Process user input text
@@ -593,8 +598,12 @@ public class Main extends JFrame {
         });
     }
 
-    public static void listAddInstruction(DefaultListModel thisModel, TransformationManager.Instruction thisInstruction) {
-        thisModel.addElement(thisInstruction);
+    public static void listAddInstruction(TransformationManager.Instruction thisInstruction) {
+        model.addElement(thisInstruction);
+    }
+
+    public static DefaultListModel getInstructionsListModel() {
+        return model;
     }
 
     /**
@@ -879,7 +888,7 @@ public class Main extends JFrame {
                         //composer.instructions = deserialize(properties.getProperty("instructions"));
                         Main.model.clear();
                         for (TransformationManager.Instruction i : TextSound.instructions) {
-                            Main.listAddInstruction(Main.model, i);
+                            Main.listAddInstruction(i);
                         }
 
                         // Load lexicons

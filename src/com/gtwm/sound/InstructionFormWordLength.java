@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class InstructionFormWordLength extends JDialog {
     private JPanel contentPane;
@@ -131,18 +132,20 @@ public class InstructionFormWordLength extends JDialog {
                 }
 
                 //TODO Check against duplicate instruction
-                for (TransformationManager.Instruction i : TextSound.instructions) {
-                    if (i.getSoundMod() == instruction.getSoundMod() &&
-                            i.getModOperator() == instruction.getModOperator() &&
-                            i.getSoundModValue() == instruction.getSoundModValue()) {
-                        instructionCheck = false;
-                    }
-                }
+                //for (TransformationManager.Instruction i : Main.getInstructionsList()) {
+                //    if (i.getSoundMod() == instruction.getSoundMod() &&
+                //            i.getModOperator() == instruction.getModOperator() &&
+                //            i.getSoundModValue() == instruction.getSoundModValue()) {
+                //        instructionCheck = false;
+                //    }
+                //}
 
                 if (instructionCheck) {
                     //System.out.println(instruction.toString());
-                    TextSound.instructions.add(instruction);
-                    Main.listAddInstruction(Main.model, instruction);
+                    //TextSound.instructions.add(instruction);
+
+                    //Main.listAddInstruction(Main.model, instruction);
+                    Main.listAddInstruction(instruction);
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "There is already an existing instruction that uses the same modifiers, please use something else.",
