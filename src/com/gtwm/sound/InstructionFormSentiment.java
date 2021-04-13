@@ -41,7 +41,7 @@ public class InstructionFormSentiment extends JDialog {
                 }
 
                 //TODO Check against duplicate instruction
-                for (TransformationManager.Instruction i : TextSound.instructions) {
+                for (TransformationManager.Instruction i : Main.instructions) {
                     if (i.getSentimentType() == instruction.getSentimentType() && i.getSoundMod() == instruction.getSoundMod()) {
                         instructionCheck = false;
                     }
@@ -49,7 +49,7 @@ public class InstructionFormSentiment extends JDialog {
 
                 if (instructionCheck) {
                     //System.out.println(instruction.toString());
-                    TextSound.instructions.add(instruction);
+                    //TextSound.instructions.add(instruction);
                     //Main.listAddInstruction(Main.model, instruction);
                     Main.listAddInstruction(instruction);
                 } else {

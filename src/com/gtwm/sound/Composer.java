@@ -127,12 +127,13 @@ public class Composer {
         this.defaultNoteOperation = builder.operationType;
         this.ordering = builder.ordering;
         this.instructions = builder.instructions;
+        this.passingWords = builder.passingWords;
 
         //orderings = new ArrayList<>();
         this.orderings = builder.orderings;
 
-        passingWords = new HashSet<>();
-        instructions = new ArrayList<>();
+        //passingWords = new HashSet<>();
+        //instructions = new ArrayList<>();
         patternCurrentTime = 0;
         lexCount = 0;
 
@@ -179,6 +180,7 @@ public class Composer {
         private int ordering;
         private List<String> orderings;
         private List<TransformationManager.Instruction> instructions;
+        private Set<String> passingWords;
 
         public ComposerBuilder() {
             this.baseVolume = 10200d;
@@ -191,6 +193,10 @@ public class Composer {
             this.orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
             this.orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
             this.orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
+
+            instructions = new ArrayList<>();
+
+            passingWords = new HashSet<>();
         }
 
         public ComposerBuilder setNoteLength(double noteLength) {
@@ -245,6 +251,11 @@ public class Composer {
 
         public ComposerBuilder useTransformations(List<TransformationManager.Instruction> instructions) {
             this.instructions = instructions;
+            return this;
+        }
+
+        public ComposerBuilder excludeWords(Set<String> passingWords) {
+            this.passingWords = passingWords;
             return this;
         }
 
@@ -339,6 +350,7 @@ public class Composer {
      * @return
      */
     public Pattern processString(String input) {
+
         // Construct the Dictionary object and open it
         dict = new Dictionary(url);
         try {

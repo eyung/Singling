@@ -130,7 +130,7 @@ public class InstructionFormWordType extends JDialog {
                 }
 
                 // Check against duplicate instruction
-                for (TransformationManager.Instruction i : TextSound.instructions) {
+                for (TransformationManager.Instruction i : Main.instructions) {
                     if (i.getModValue() == instruction.getModValue() && i.getSoundMod() == instruction.getSoundMod()) {
                         //System.out.println("already exist   ");
                         instructionCheck = false;
@@ -139,7 +139,7 @@ public class InstructionFormWordType extends JDialog {
 
                 if (instructionCheck) {
                     //System.out.println(instruction.toString());
-                    TextSound.instructions.add(instruction);
+                    //TextSound.instructions.add(instruction);
                     //Main.listAddInstruction(Main.model, instruction);
                     Main.listAddInstruction(instruction);
                 } else {

@@ -13,10 +13,8 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.Base64;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 public class Main extends JFrame {
     private JPanel panel1;
@@ -87,6 +85,8 @@ public class Main extends JFrame {
 
     static Composer composer;
 
+    static List<TransformationManager.Instruction> instructions;
+
     /**
      *
      */
@@ -136,6 +136,8 @@ public class Main extends JFrame {
 
         console = new Console();
 
+        instructions = new ArrayList<>();
+
         // Create and init Composer
         //composer = new Composer.ComposerBuilder().build();
 
@@ -184,15 +186,13 @@ public class Main extends JFrame {
                                     .wantWord(isWord)
                                     .withOperation(operationType)
                                     .withOrdering(setOrdering.getSelectedIndex())
-                                    .useTransformations((List<TransformationManager.Instruction>) model)
+                                    .useTransformations(instructions)
                                     .build();
 
                             // Process user input text
                             composer.processString(textArea1.getText());
 
-                            // Create Producer using pattern created by Composer
-                            //Producer producer = new Producer();
-
+                            // Init Producer using pattern created by Composer
                             producer.setPlayer();
 
                             // Pass created sound pattern to producer
@@ -412,8 +412,8 @@ public class Main extends JFrame {
                TransformationManager.Instruction selectedInstruction = list1.getSelectedValue();
                //TextSound.instructions.remove(selectedInstruction);
 
-               composer.removeInstruction(selectedInstruction);
-
+               //composer.removeInstruction(selectedInstruction);
+               instructions.remove(selectedInstruction);
                model.removeElement(selectedInstruction);
            }
         });
@@ -600,6 +600,7 @@ public class Main extends JFrame {
 
     public static void listAddInstruction(TransformationManager.Instruction thisInstruction) {
         model.addElement(thisInstruction);
+        instructions.add(thisInstruction);
     }
 
     public static DefaultListModel getInstructionsListModel() {

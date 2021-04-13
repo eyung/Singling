@@ -6,7 +6,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 
 public class InstructionFormWordLength extends JDialog {
     private JPanel contentPane;
@@ -131,14 +130,14 @@ public class InstructionFormWordLength extends JDialog {
                     }
                 }
 
-                //TODO Check against duplicate instruction
-                //for (TransformationManager.Instruction i : Main.getInstructionsList()) {
-                //    if (i.getSoundMod() == instruction.getSoundMod() &&
-                //            i.getModOperator() == instruction.getModOperator() &&
-                //            i.getSoundModValue() == instruction.getSoundModValue()) {
-                //        instructionCheck = false;
-                //    }
-                //}
+                // Check against duplicate instruction
+                for (TransformationManager.Instruction i : Main.instructions) {
+                    if (i.getSoundMod() == instruction.getSoundMod() &&
+                            i.getModOperator() == instruction.getModOperator() &&
+                            i.getSoundModValue() == instruction.getSoundModValue()) {
+                        instructionCheck = false;
+                    }
+                }
 
                 if (instructionCheck) {
                     //System.out.println(instruction.toString());
