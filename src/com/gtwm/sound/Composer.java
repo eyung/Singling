@@ -349,20 +349,20 @@ public class Composer {
         // Part-of-speech variable
         char posletter;
 
-        // Iterate sentences in input text
-        for (Sentence sent : doc.sentences()) {
+        // Doing per word operation
+        if (isWord) {
 
-            // Find words in sentence
-            List<String> words = sent.words();
+            // Iterate sentences in input text
+            for (Sentence sent : doc.sentences()) {
 
-            // Iterate words in sentence
-            for (String word : words) {
+                // Find words in sentence
+                List<String> words = sent.words();
 
-                // Get position of word
-                wordPosition = words.indexOf(word);
+                // Iterate words in sentence
+                for (String word : words) {
 
-                // Doing per word operation
-                if (isWord) {
+                    // Get position of word
+                    wordPosition = words.indexOf(word);
 
                     // First letter of pos tag per Penntree Bank notation is used to query WordNet
                     posletter = sent.posTag(wordPosition).charAt(0);
@@ -374,25 +374,42 @@ public class Composer {
                         sonifyWord(word, sent.lemma(wordPosition), posletter, pattern);
                     }
                     //System.out.println("Sentiment Analysis (" + word + ") : " + analyse(word));
+
+                    // Add rest between words
+                    pattern.add("R/" + String.format("%f", restLength) + " ");
+                    patternCurrentTime += restLength;
+                    patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
                 }
 
-                // Add rest between words
-                pattern.add("R/" + String.format("%f", restLength) + " ");
-                patternCurrentTime += restLength;
+                // An extra rest on newlines
+                pattern.add("R/" + String.format("%f", restLengthLineBreak) + " ");
+                patternCurrentTime += restLengthLineBreak;
                 patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
+
+                // Sentiment Analysis
+                // Add JFugue marker for SinglingPlayer parser to read
+                pattern.add(" #(SENTENCE[" + sent.sentiment() + "])");
             }
 
-            // An extra rest on newlines
-            pattern.add("R/" + String.format("%f", restLengthLineBreak) + " ");
-            patternCurrentTime += restLengthLineBreak;
-            patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
+        // Per character operation
+        } else {
+            StringBuilder lastWord = new StringBuilder();
 
-            // Sentiment Analysis
-            // Add JFugue marker for SinglingPlayer parser to read
-            pattern.add(" #(SENTENCE[" + sent.sentiment() + "])");
+            for (int charIndex = 0; charIndex < input.length(); charIndex++) {
+                char ch = input.charAt(charIndex);
+                char upperCh = Character.toUpperCase(ch);
+                String charString = String.valueOf(ch);
+                // A = 1, B = 2, ...
+                String lastCharString;
+                int charNum = orderings.get(ordering).indexOf(upperCh) + 1;
+
+                lastWord.append(upperCh);
+
+                sonifyCharacter(lastWord, pattern, charNum, ch);
+            }
         }
 
-        //System.out.println(pattern.toString());
+        System.out.println(pattern.toString());
         return pattern;
     }
 
@@ -662,6 +679,121 @@ public class Composer {
 
         lexCount = 0;
     }
+
+    /**
+     *
+     * @param lastWord
+     * @param pattern
+     * @param charNum
+     * @param ch
+     */
+    public void sonifyCharacter(StringBuilder lastWord, Pattern pattern, double charNum, char ch) {
+        double targetOctave = Math.ceil((charNum / 26d) * octaves); //26
+        frequency = baseFrequency; // = convertToArr.toDoubleArr(item.getValue())[0]+1 * baseFrequency;
+
+        switch (defaultNoteOperation) {
+            case LEXNAMEFREQ:
+                //System.out.println("freq: " + convertToArr.toDoubleArr(item.getValue())[0]);
+                frequency = charNum * baseFrequency;
+                break;
+            case STATICFREQ:
+                // If we want a default tone, leave freq as static
+                break;
+            case MUTE:
+                // Mute tone
+                pattern.add(":CE(935,0)");
+                break;
+        }
+
+        // Go through the instructions queue
+        for (TransformationManager.Instruction i : instructions) {
+
+            // The main logic part of the program
+            // Make changes based on user instructions
+            if (i.mod == TransformationManager.Instruction.Mods.CHARACTER) {
+                //System.out.println("AEIOUaeiou".indexOf(ch));
+                if (i.modValue.equals("vowels") && "AEIOUaeiou".indexOf(ch) != -1) {
+                    applyMod(i, pattern);
+                } else if (i.modValue.equals("consonants") && "AEIOUaeiou".indexOf(ch) < 0) {
+                    applyMod(i, pattern);
+                } else if (i.modValue.equals("uppercase") && Character.isUpperCase(ch)) {
+                    applyMod(i, pattern);
+                    //System.out.println("uppercase");
+                } else if (i.modValue.equals("lowercase") && Character.isLowerCase(ch)) {
+                    applyMod(i, pattern);
+                    //System.out.println("lowercase");
+                }
+
+            } else if (i.mod == TransformationManager.Instruction.Mods.PUNCTUATION) {
+                //String[] punctuations = convertToArr.toStringArr(item.getValue());
+
+                //for (String n : punctuations) {
+                if (ch == i.modValue.charAt(0)) {
+                    //System.out.println("Equal: " + convertToArr.toDoubleArr(item.getValue())[0] + " | " + Double.parseDouble(i.modValue));
+                    applyMod(i, pattern);
+                }
+                //}
+            }
+        }
+
+        // Normalise to fit in the range
+        double topFrequency = baseFrequency;
+        for (int j = 0; j < targetOctave; j++) {
+            topFrequency = topFrequency * 2;
+        }
+        while (frequency > topFrequency) {
+            frequency = frequency / 2;
+        }
+
+        // Convert freq to MIDI music string using reference note and frequency A4 440hz
+        int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
+
+        // Find pitch using base midi note number
+        pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
+
+        // Set frequency of punctuations/symbols to frequency of lexname = 46
+        if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
+            targetOctave = Math.ceil((46/45d) * octaves); //26
+            frequency = 46 * baseFrequency;
+        }
+
+        //pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay);
+        //System.out.println("Convert frequency: " + frequency + ", note length: " + noteLength);
+        pattern.add(":PW(" + pitchBend + ") " +  midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+
+        //pattern.add(" '" + ch);
+
+        // Testing
+        System.out.println("Frequency for " + lastWord + "=" + charNum +
+                " normalized to octave "
+                + octaves + ", top frequency " + topFrequency + ": " +
+                frequency);
+        //if (Character.isUpperCase(ch)) {
+        //System.out.println("notelength: " + noteLength);
+        //soundString.append("/" + String.format("%f", noteLength * 4)); // If it's an uppercase letter increase note length
+        //System.out.println("soundString: " + soundString);
+        //} else {
+        //soundString.append("/" + String.format("%f", noteLength));
+        //}
+
+        //double theNoteGap = noteGap;
+        //if (theNoteGap > 0.2) {
+        //	theNoteGap = theNoteGap / lastWord.length();
+        //} else if ((theNoteGap > 0.1) && passingWords.contains(lastWord.toString())) {
+        //	theNoteGap = theNoteGap * 0.5;
+        //}
+        //soundString.append("+R/" + String.format("%f", noteGap) + " "); // Note + Resting gap
+        pattern.add("+R/" + String.format("%f", noteGap) + " "); // Note + Resting gap
+
+        // Reset to base settings
+        resetSettings();
+        //soundString.append("I[" + instrument + "] ");
+        pattern.add("I[" + instrument + "] ");
+        pattern.add("V0");
+        pattern.add(":CE(935," + (int) volume + ")");
+        pattern.add(":CE(10,64)");
+    }
+
 
     /**
      *

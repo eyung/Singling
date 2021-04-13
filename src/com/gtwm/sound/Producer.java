@@ -18,14 +18,28 @@ public class Producer {
     private Player player;
     private SinglingPlayer singlingPlayer;
     private Thread threadPlayer;
-
     private Pattern pattern;
 
     /**
      *
-     * @param thisPattern
+     * @param
      */
-    public Producer(Pattern thisPattern) {
+    public Producer() {
+        //pattern = thisPattern;
+    }
+
+    /**
+     *
+     * @param pattern
+     */
+    public void setPattern(Pattern pattern) {
+        this.pattern = pattern;
+    }
+
+    /**
+     *
+     */
+    public void setPlayer() {
         if (player == null) {
             player = new Player();
         } else if (player != null) {
@@ -43,12 +57,7 @@ public class Producer {
             singlingPlayer = new SinglingPlayer();
         }
 
-        //player = new Player();
-        //singlingPlayer = new SinglingPlayer();
-
         threadPlayer = new Thread(singlingPlayer);
-
-        pattern = thisPattern;
     }
 
     /**
@@ -58,17 +67,35 @@ public class Producer {
     public void doStartPlayer(double baseNoteLength) {
         singlingPlayer.setPattern(pattern, player, baseNoteLength);
 
-        //System.out.println("Start player:" + threadPlayer.getId());
-        threadPlayer.start();
+        System.out.println("Start player:" + threadPlayer.getId());
+        if (threadPlayer.getState() == Thread.State.NEW) {
+            threadPlayer.start();
+        }
     }
 
     /**
      *
      */
-    public void doPlay() {
-        player.play(pattern);
-        player.getManagedPlayer().finish();
+    public void doPause() {
+        try {
+            if (player.getManagedPlayer().isPlaying()) {
+                player.getManagedPlayer().pause();
+                singlingPlayer.stop();
+            } else if (player.getManagedPlayer().isPaused()) {
+                player.getManagedPlayer().resume();
+                singlingPlayer.resume();
+            }
+        } catch (Exception e) {
+        }
     }
+
+    /**
+     *
+     */
+    //public void doPlay() {
+    //    player.play(pattern);
+    //    player.getManagedPlayer().finish();
+    //}
 
     /**
      *
@@ -106,19 +133,4 @@ public class Producer {
         stream.close();
     }
 
-    /**
-     *
-     */
-    public void doPause() {
-        try {
-            if (player.getManagedPlayer().isPlaying()) {
-                player.getManagedPlayer().pause();
-                singlingPlayer.stop();
-            } else if (player.getManagedPlayer().isPaused()) {
-                player.getManagedPlayer().resume();
-                singlingPlayer.resume();
-            }
-        } catch (Exception e) {
-        }
-    }
 }

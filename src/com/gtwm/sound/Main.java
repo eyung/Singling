@@ -13,15 +13,10 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Base64;
 import java.util.List;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Properties;
+import java.util.Set;
 
 public class Main extends JFrame {
     private JPanel panel1;
@@ -73,11 +68,10 @@ public class Main extends JFrame {
     // Set models
     static DefaultListModel model = new DefaultListModel();
     static JTextArea textModel;
-    MyMouseAdaptor myMouseAdaptor = new MyMouseAdaptor();
+    private MyMouseAdaptor myMouseAdaptor = new MyMouseAdaptor();
 
     // NLP Console model
     static JTextArea consoleTextModel;
-    //static JTextArea consoleTextModel;
 
     // Storing database words and values to list item
     private List<WordMap.Mapping> allItems;
@@ -89,14 +83,12 @@ public class Main extends JFrame {
     // For streaming text to notes in real-time
     static RealtimePlayer realtimePlayer;
 
-    // Initialising simplenlg classes for parsing and transforming text
-    //final Lexicon lexicon = Lexicon.getDefaultLexicon();
-    //final NLGFactory nlgFactory = new NLGFactory(lexicon);
-    //final Realiser realiser = new Realiser(lexicon);
-
     // Prefs
     private static String prefsFilename = "userinstructions";
 
+    /**
+     *
+     */
     public Main() {
 
         // Load splash
@@ -112,198 +104,36 @@ public class Main extends JFrame {
         }
         g.drawString(currVersion, splashx, splashy - 20);
         g.drawString("Starting up...", splashx, splashy);
+        g.drawString("Loading databases...", splashx, splashy + 20);
         splash.update();
 
         // Set models
         list1.setModel(model);
-        textModel = this.textArea1;
-        //setBaseInstrument.setModel(InstructionFormModels.modelSetInstrument);
         list1.addMouseListener(myMouseAdaptor);
         list1.addMouseMotionListener(myMouseAdaptor);
         setBaseInstrument.setModel(InstructionFormModels.modelSetBaseInstrument);
         //cbSetFrequency.setModel(InstructionFormModels.modelSetFrequency);
         //cbSetFrequency.setSelectedItem("A4");
+        textModel = this.textArea1;
 
         //Icon a = new ImageIcon(getClass().getResource("/com/resources/iconfinder_ic_play_circle_fill_48px_352073.png"));
         //btnPlay.setIcon(a);
 
-        // PassingWords
+        // Init PassingWords
         PassingWordsForm passingWordsForm = new PassingWordsForm();
         passingWordsForm.setTitle("Manage Lexicon");
 
         // Add docomentListener to input text panel
         textArea1.getDocument().addDocumentListener(documentListener);
 
-        // Initializing things
+        // Create file chooser
         JFileChooser fc = new JFileChooser();
-        //csvparser myParser = new csvparser();
-        //List<WordMap.Mapping> tempList = new ArrayList<>();
 
-        // Load database files
-        try {
-            // Update splash screen
-            g.drawString("Loading databases...", splashx, splashy + 20);
-            splash.update();
+        Producer producer = new Producer();
 
-            // Load all database files in directory 'db'
-            /*List<Path> result = getPathsFromResourceJAR("db");
-            for (Path path : result) {
-                System.out.println("Path : " + path);
-
-                String filePathInJAR = path.toString();
-                // Windows will returns /json/file1.json, cut the first /
-                // the correct path should be json/file1.json
-                if (filePathInJAR.startsWith("/")) {
-                    filePathInJAR = filePathInJAR.substring(1, filePathInJAR.length());
-                }
-
-                System.out.println("filePathInJAR : " + filePathInJAR);
-                //System.out.println("path to string: " + path.toString());
-
-                // read a file from resource folder
-                //InputStream is = getFileFromResourceAsStream(filePathInJAR);
-                //printInputStream(is);
-
-                if (allItems == null) {
-                    allItems = myParser.csvtoSenseMap(filePathInJAR);
-                } else {
-                    allItems.addAll(myParser.csvtoSenseMap(filePathInJAR));
-                }
-            }
-
-            // True if duplicate found in database
-            boolean isFound;
-
-            for (WordMap.Mapping i : allItems) {
-                isFound = false;
-
-                // To find words that belong to multiple lexnames,
-                // loop through the database, add to word type and value if key is found
-                for (WordMap.Mapping j : tempList) {
-                    if (j.getKey().equalsIgnoreCase(i.getKey())) {
-
-                        j.addType(i.wordType);
-                        j.addValue(i.wordValue);
-
-                        isFound = true;
-                    }
-                }
-
-                // Add a new entry to database using unique word/key
-                if (!isFound) {
-                    tempList.add(i);
-                }
-
-                // Get past tense version of verb and add to list if it doesn't exist already
-                if (i.getType().equals(WordMap.Type.v.toString())) {
-
-                    WordMap.Mapping iPastTense = new WordMap.Mapping(doPastTense(i.getKey()),
-                            i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
-                    if (!tempList.contains(iPastTense)) {
-                        tempList.add(iPastTense);
-                    }
-
-                    WordMap.Mapping iGerund = new WordMap.Mapping(doGerund(i.getKey()),
-                            i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
-                    if (!tempList.contains(iGerund)) {
-                        tempList.add(iGerund);
-                    }
-
-                // Get pluralized noun and add to list if it doesn't exist already
-                } else if (i.getType().equals(WordMap.Type.n.toString())) {
-                    WordMap.Mapping iPlural = new WordMap.Mapping(doPluralize(i.getKey()),
-                            i.getType(), i.getValue(), i.getSentimentPos(), i.getSentimentNeg());
-                    if (!tempList.contains(iPlural)) {
-                        tempList.add(iPlural);
-                    }
-                }
-            }
-
-            System.out.println(tempList.size() + " words processed.");
-
-            // Write final results in file for error logging
-            //FileWriter writer = new FileWriter("resultlist.txt");
-            //for (WordMap.Mapping str : tempList) {
-            //    writer.write(str + System.lineSeparator());
-            //}
-            //writer.close();
-
-            TextSound.items = tempList;*/
-
-        } catch (
-                Exception ex) {
-            ex.printStackTrace();
-        }
-
-        btnSaveMIDI.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                 // Handle open button action
-                 if (e.getSource() == btnSaveMIDI) {
-                     if (textArea1.getLineCount() > 0) {
-
-                         fc.setCurrentDirectory(workingDirectory);
-
-                         int returnVal = fc.showSaveDialog(panel1);
-
-                         if (returnVal == JFileChooser.APPROVE_OPTION) {
-                             File fileToSave = fc.getSelectedFile();
-                             outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
-                             System.out.println("Save as file: " + outFilename);
-
-                             try {
-                                 // Get initial settings from user inputs
-                                 setBaseValues();
-
-                                 // Process text
-                                 TextSound.runStuff();
-                                 TextSound.doSaveAsMidi(textArea1.getText(), outFilename);
-                             } catch (Exception ex) {
-                                 ex.printStackTrace();
-                             }
-                         } else {
-                             System.out.println("Save command cancelled by user.");
-                         }
-                     }
-                 }
-            }
-         });
-
-        btnSaveWAV.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle open button action
-                if (e.getSource() == btnSaveWAV) {
-                    if (textArea1.getLineCount() > 0) {
-
-                        fc.setCurrentDirectory(workingDirectory);
-
-                        int returnVal = fc.showSaveDialog(panel1);
-
-                        if (returnVal == JFileChooser.APPROVE_OPTION) {
-                            File fileToSave = fc.getSelectedFile();
-                            outFilename = fileToSave.getAbsoluteFile().toString();
-                            System.out.println("Save as file: " + outFilename);
-
-                            try {
-                                // Get initial settings from user inputs
-                                setBaseValues();
-
-                                // Process text
-                                TextSound.runStuff();
-                                TextSound.doSaveAsWAV(textArea1.getText(), outFilename);
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        } else {
-                            System.out.println("Save command cancelled by user.");
-                        }
-                    }
-                }
-            }
-        });
-
-        // Sonify text
+        /**
+         *
+         */
         btnPlay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -350,7 +180,12 @@ public class Main extends JFrame {
                             composer.processString(textArea1.getText());
 
                             // Create Producer using pattern created by Composer
-                            Producer producer = new Producer(composer.getPattern());
+                            //Producer producer = new Producer();
+
+                            producer.setPlayer();
+
+                            // Pass created sound pattern to producer
+                            producer.setPattern(composer.getPattern());
 
                             // Start player
                             producer.doStartPlayer(Double.parseDouble(String.valueOf(setDuration.getSelectedItem())));
@@ -432,6 +267,180 @@ public class Main extends JFrame {
             }
         });
 
+        /**
+         *
+         */
+        btnSaveMIDI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle open button action
+                if (e.getSource() == btnSaveMIDI) {
+                    if (textArea1.getLineCount() > 0) {
+
+                        fc.setCurrentDirectory(workingDirectory);
+
+                        int returnVal = fc.showSaveDialog(panel1);
+
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            File fileToSave = fc.getSelectedFile();
+                            outFilename = fileToSave.getAbsoluteFile().toString() + ".mid";
+                            System.out.println("Save as file: " + outFilename);
+
+                            try {
+                                // Get initial settings from user inputs
+                                //setBaseValues();
+
+                                // Process text
+                                //TextSound.runStuff();
+                                //TextSound.doSaveAsMidi(textArea1.getText(), outFilename);
+
+                                boolean isWord = true;
+                                if (wordRadioButton.isSelected()) {
+                                    isWord = true;
+                                } else if (characterRadioButton.isSelected()) {
+                                    isWord = false;
+                                }
+
+                                String operationType = "";
+                                if (lexnamesRadioButton.isSelected()) {
+                                    operationType = "LEXNAMEFREQ";
+                                } else if (staticRadioButton.isSelected()) {
+                                    operationType = "STATICFREQ";
+                                } else if (muteRadioButton.isSelected()) {
+                                    operationType = "MUTE";
+                                }
+
+                                // Create and init Composer
+                                Composer composer = new Composer
+                                        .ComposerBuilder()
+                                        .setInstrument(String.valueOf(setBaseInstrument.getSelectedItem()))
+                                        .setNoteLength(Double.parseDouble(String.valueOf(setDuration.getSelectedItem())))
+                                        .setOctave((double) setOctaves.getValue())
+                                        .setTempo((double) setTempo.getValue())
+                                        .setFrequency((double) setFrequency.getValue())
+                                        .setRestLength(Double.parseDouble(String.valueOf(setRestLengthSpace.getSelectedItem())))
+                                        .setRestLengthLineBreak(Double.parseDouble(String.valueOf(setRestLengthLineBreak.getSelectedItem())))
+                                        .wantWord(isWord)
+                                        .withOperation(operationType)
+                                        .withOrdering(setOrdering.getSelectedIndex())
+                                        .build();
+
+                                // Process user input text
+                                composer.processString(textArea1.getText());
+
+                                // Create Producer using pattern created by Composer
+                                //Producer producer = new Producer();
+                                producer.setPlayer();
+
+                                // Pass created sound pattern to producer
+                                producer.setPattern(composer.getPattern());
+
+                                // Start player
+                                producer.doSaveAsMidi(textArea1.getText(), outFilename);
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            System.out.println("Save command cancelled by user.");
+                        }
+                    }
+                }
+            }
+        });
+
+        /**
+         *
+         */
+        btnSaveWAV.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle open button action
+                if (e.getSource() == btnSaveWAV) {
+                    if (textArea1.getLineCount() > 0) {
+
+                        fc.setCurrentDirectory(workingDirectory);
+
+                        int returnVal = fc.showSaveDialog(panel1);
+
+                        if (returnVal == JFileChooser.APPROVE_OPTION) {
+                            File fileToSave = fc.getSelectedFile();
+                            outFilename = fileToSave.getAbsoluteFile().toString();
+                            System.out.println("Save as file: " + outFilename);
+
+                            try {
+                                boolean isWord = true;
+                                if (wordRadioButton.isSelected()) {
+                                    isWord = true;
+                                } else if (characterRadioButton.isSelected()) {
+                                    isWord = false;
+                                }
+
+                                String operationType = "";
+                                if (lexnamesRadioButton.isSelected()) {
+                                    operationType = "LEXNAMEFREQ";
+                                } else if (staticRadioButton.isSelected()) {
+                                    operationType = "STATICFREQ";
+                                } else if (muteRadioButton.isSelected()) {
+                                    operationType = "MUTE";
+                                }
+
+                                // Create and init Composer
+                                Composer composer = new Composer
+                                        .ComposerBuilder()
+                                        .setInstrument(String.valueOf(setBaseInstrument.getSelectedItem()))
+                                        .setNoteLength(Double.parseDouble(String.valueOf(setDuration.getSelectedItem())))
+                                        .setOctave((double) setOctaves.getValue())
+                                        .setTempo((double) setTempo.getValue())
+                                        .setFrequency((double) setFrequency.getValue())
+                                        .setRestLength(Double.parseDouble(String.valueOf(setRestLengthSpace.getSelectedItem())))
+                                        .setRestLengthLineBreak(Double.parseDouble(String.valueOf(setRestLengthLineBreak.getSelectedItem())))
+                                        .wantWord(isWord)
+                                        .withOperation(operationType)
+                                        .withOrdering(setOrdering.getSelectedIndex())
+                                        .build();
+
+                                // Process user input text
+                                composer.processString(textArea1.getText());
+
+                                // Create Producer using pattern created by Composer
+                                //Producer producer = new Producer();
+
+                                producer.setPlayer();
+
+                                // Pass created sound pattern to producer
+                                producer.setPattern(composer.getPattern());
+
+                                // Start player
+                                producer.doSaveAsWAV(textArea1.getText(), outFilename);
+
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            System.out.println("Save command cancelled by user.");
+                        }
+                    }
+                }
+            }
+        });
+
+        /**
+         *
+         */
+        btnTogglePause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                //TextSound.doPause();
+                // Create Producer using pattern created by Composer
+                //Producer producer = new Producer();
+                producer.doPause();
+            }
+        });
+
+        /**
+         *
+         */
         btnRemoveInstruction.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
@@ -443,6 +452,9 @@ public class Main extends JFrame {
 
         btnRemoveInstruction.setMnemonic(KeyEvent.VK_DELETE);
 
+        /**
+         *
+         */
         btnAddInstruction.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -543,13 +555,6 @@ public class Main extends JFrame {
             }
         });
 
-        btnTogglePause.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                TextSound.doPause();
-            }
-        });
-
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -629,7 +634,9 @@ public class Main extends JFrame {
         thisModel.addElement(thisInstruction);
     }
 
-    // To enable drag/drop of transformations
+    /**
+     * To enable drag/drop of transformations
+     */
     private class MyMouseAdaptor extends MouseInputAdapter {
         private boolean mouseDragging = false;
         private int dragSourceIndex;
@@ -664,7 +671,9 @@ public class Main extends JFrame {
         }
     }
 
-    // Listen for changes to the text area for real-time processing
+    /**
+     * Listen for changes to the text area for real-time processing
+     */
     private DocumentListener documentListener = new DocumentListener() {
         int wordLen = 0;
         int lastWordLen;
@@ -713,7 +722,7 @@ public class Main extends JFrame {
 
                             try {
                                 // Get initial settings from user inputs
-                                setBaseValues();
+                                //Values();
                                 // Process text
                                 TextSound.streamText(realtimePlayer, currentWord, true, 'x', 0);
                             } catch (Exception ex) {
@@ -729,7 +738,7 @@ public class Main extends JFrame {
                     } else if (characterRadioButton.isSelected()) {
                         try {
                             // Get initial settings from user inputs
-                            setBaseValues();
+                            //setBaseValues();
                             char ch = cursor.charAt(0);
                             char upperCh = Character.toUpperCase(ch);
                             int charNum = TextSound.orderings.get(TextSound.ordering).indexOf(upperCh) + 1;
@@ -748,68 +757,6 @@ public class Main extends JFrame {
             }
         }
     };
-
-    private void renderSplashFrame(Graphics2D g, int frame) {
-        final String[] comps = {".", "..", "..."};
-        g.setComposite(AlphaComposite.Clear);
-        g.fillRect(120, 140, 200, 40);
-        g.setPaintMode();
-        g.setColor(Color.WHITE);
-        g.drawString("Loading " + comps[(frame / 5) % 3], 120, 150);
-    }
-
-    private void setBaseValues() {
-        TextSound.baseInstrument = String.valueOf(setBaseInstrument.getSelectedItem());
-        TextSound.baseNoteLength = Double.parseDouble(String.valueOf(setDuration.getSelectedItem()));
-        TextSound.baseOctaves = (double) setOctaves.getValue();
-        TextSound.baseTempo = (double) setTempo.getValue();
-        TextSound.baseFrequency = (double) setFrequency.getValue();
-        TextSound.restLength = Double.parseDouble(String.valueOf(setRestLengthSpace.getSelectedItem()));
-        TextSound.restLengthLineBreak = Double.parseDouble(String.valueOf(setRestLengthLineBreak.getSelectedItem()));
-
-        TextSound.perWord = wordRadioButton.isSelected();
-        TextSound.perChar = characterRadioButton.isSelected();
-
-        TextSound.sentimentState = btnSentiment.isSelected();
-
-        if (lexnamesRadioButton.isSelected()) {
-            TextSound.defaultNoteOperation = TextSound.noteOperationType.LEXNAMEFREQ;
-        } else if (staticRadioButton.isSelected()) {
-            TextSound.defaultNoteOperation = TextSound.noteOperationType.STATICFREQ;
-        } else if (muteRadioButton.isSelected()) {
-            TextSound.defaultNoteOperation = TextSound.noteOperationType.MUTE;
-        }
-
-        TextSound.orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
-        TextSound.orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
-        TextSound.orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
-        TextSound.ordering = setOrdering.getSelectedIndex();
-    }
-
-    //private String doPluralize(String input) {
-        //WordElement WE = lexicon.getWord(input, LexicalCategory.NOUN);
-        //InflectedWordElement infl = new InflectedWordElement(WE);
-        //infl.setPlural(true);
-        //System.out.println(realiser.realise(infl));
-        //return realiser.realise(infl).toString();
-    //}
-
-    //private String doPastTense(String input) {
-        //WordElement WE = lexicon.getWord(input, LexicalCategory.VERB);
-        //InflectedWordElement infl = new InflectedWordElement(WE);
-        //infl.setFeature(Feature.TENSE, Tense.PAST);
-        //System.out.println(realiser.realise(infl));
-        //return realiser.realise(infl).toString();
-    //}
-
-//    private String doGerund(String input) {
-//        VPPhraseSpec word = nlgFactory.createVerbPhrase(input);
-//        SPhraseSpec clause = nlgFactory.createClause();
-//        clause.setVerbPhrase(word);
-//        clause.setFeature(Feature.FORM, Form.GERUND);
-//        //System.out.println(realiser.realise(clause));
-//        return realiser.realise(clause).toString();
-//    }
 
     private static String serialize(List<TransformationManager.Instruction> thisObjectList) {
         try {
@@ -863,74 +810,9 @@ public class Main extends JFrame {
         return null;
     }
 
-    // get a file from the resources folder
-    // works everywhere, IDEA, unit test and JAR file.
-    private InputStream getFileFromResourceAsStream(String fileName) {
-
-        // The class loader that loaded the class
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
-
-        // the stream holding the file content
-        if (inputStream == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
-        } else {
-            return inputStream;
-        }
-
-    }
-
-    // Get all paths from a folder that inside the JAR file
-    private List<Path> getPathsFromResourceJAR(String folder)
-            throws URISyntaxException, IOException {
-
-        List<Path> result;
-
-        // get path of the current running JAR
-        String jarPath = getClass().getProtectionDomain()
-                .getCodeSource()
-                .getLocation()
-                .toURI()
-                .getPath();
-
-        // TODO: find a more elegant way to do this
-        // file walks JAR
-        URI uri;
-        try {
-            uri = URI.create("jar:file:" + jarPath); // uncomment this line for JAR
-            try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
-                //result = Files.walk(fs.getPath(folder))
-                result = Files.walk(fs.getPath(folder))
-                        .filter(Files::isRegularFile)
-                        .collect(Collectors.toList());
-            }
-        } catch(UnsupportedOperationException e) {
-            uri = URI.create("jar:file:" + jarPath + "Singling.jar"); // uncomment this line for IDE
-            try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
-                //result = Files.walk(fs.getPath(folder))
-                result = Files.walk(fs.getPath(folder))
-                        .filter(Files::isRegularFile)
-                        .collect(Collectors.toList());
-            }
-        }
-
-        //URI uri = URI.create("jar:file:" + jarPath + "Singling.jar"); // uncomment this line for IDE
-
-        System.out.println(uri);
-
-        /*try (FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap())) {
-            //result = Files.walk(fs.getPath(folder))
-            result = Files.walk(fs.getPath(folder))
-                    .filter(Files::isRegularFile)
-                    .collect(Collectors.toList());
-        }*/
-
-        System.out.println(result);
-
-        return result;
-
-    }
-
+    /**
+     *
+     */
     private static void createAndShowGUI() {
         Main mainForm = new Main();
         JFileChooser fc = new JFileChooser();
