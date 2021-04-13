@@ -306,6 +306,7 @@
             <properties>
               <selected value="false"/>
               <text value="On"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="e4a6f" class="javax.swing.JRadioButton" binding="offRadioButton" default-binding="true">
@@ -315,6 +316,7 @@
             <properties>
               <selected value="true"/>
               <text value="Off"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="32b68" class="javax.swing.JLabel">
@@ -323,6 +325,7 @@
             </constraints>
             <properties>
               <text value="Stream Mode:"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="4de54" class="javax.swing.JComboBox" binding="setOrdering">
@@ -344,6 +347,7 @@
             </constraints>
             <properties>
               <text value="Sentiment"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="3f7f3" class="javax.swing.JLabel">

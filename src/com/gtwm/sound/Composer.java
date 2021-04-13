@@ -138,14 +138,7 @@ public class Composer {
         // Set settings to base values
         resetSettings();
 
-        // Each ordering gives a different character
-        // Mayzner's
-        //orderings.add("ETAOINSRHLDCUMFPGWYBVKXJQZ");
-        // standard order frequency used by typesetters (https://en.wikipedia.org/wiki/Letter_frequency)
-        //orderings.add("ETAONRISHDLFCMUGYPWBVKXJQZ");
-        // letter frequency based upon Oxford dictionary (https://languages.oup.com/)
-        //orderings.add("EARIOTNSLCUDPMHGBFYWKVXZJQ");
-
+        // Create JFuge pattern
         pattern = new Pattern();
         pattern.setVoice(0);
         pattern.setInstrument(instrument);
