@@ -125,7 +125,7 @@ class LyricParserListener extends ParserListenerAdapter {
 
     private void sendNLPOutput(String lyric) {
         try {
-            Main.consoleTextModel.append(lyric + ": ");
+            Main.console.appendText(lyric + ": ");
         } catch (Exception e) {}
     }
 }
@@ -169,7 +169,8 @@ class MarkerParserListener extends ParserListenerAdapter {
 
     private void sendNLPOutput(String marker) {
         try {
-            Main.consoleTextModel.append(marker + "\n");
+            //Main.consoleTextModel.append(marker + "\n");
+            Main.console.appendText(marker + "\n");
         } catch (Exception e) {}
     }
 }

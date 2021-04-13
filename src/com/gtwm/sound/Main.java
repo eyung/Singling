@@ -73,9 +73,6 @@ public class Main extends JFrame {
     // NLP Console model
     static JTextArea consoleTextModel;
 
-    // Storing database words and values to list item
-    private List<WordMap.Mapping> allItems;
-
     // Splash screen coordinates
     final int splashx = 100;
     final int splashy = 450;
@@ -85,6 +82,8 @@ public class Main extends JFrame {
 
     // Prefs
     private static String prefsFilename = "userinstructions";
+
+    static Console console;
 
     /**
      *
@@ -129,7 +128,10 @@ public class Main extends JFrame {
         // Create file chooser
         JFileChooser fc = new JFileChooser();
 
+        // Create and init producer
         Producer producer = new Producer();
+
+        console = new Console();
 
         /**
          *
@@ -145,6 +147,7 @@ public class Main extends JFrame {
                             // Get initial settings from user inputs
                             //setBaseValues();
 
+                            // Get word/character value from user
                             boolean isWord = true;
                             if (wordRadioButton.isSelected()) {
                                 isWord = true;
@@ -152,6 +155,7 @@ public class Main extends JFrame {
                                 isWord = false;
                             }
 
+                            // Get operation type value from user
                             String operationType = "";
                             if (lexnamesRadioButton.isSelected()) {
                                 operationType = "LEXNAMEFREQ";
@@ -209,55 +213,9 @@ public class Main extends JFrame {
                             chart.addSeries("b", new double[] { 0, 2, 4, 6, 9 }, new double[] { -1, 6, 4, 0, 4 });
                             chart.addSeries("c", new double[] { 0, 1, 3, 8, 9 }, new double[] { -2, -1, 1, 0, 1 });*/
 
-                            // TextArea
-                            JTextArea consoleText = new JTextArea();
-
-                            // Set textarea model to receive and update NLP data
-                            consoleTextModel = consoleText;
-
-                            // Create and set up the window.
-                            JFrame frame = new JFrame("NLP Console");
-                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                            Container contentPane = frame.getContentPane();
-
-                            // Add console text area to frame
-                            JScrollPane scrollPane = new JScrollPane();
-                            JPanel consolePanel = new JPanel();
-
-                            GridBagLayout layout = new GridBagLayout();
-                            consolePanel.setLayout(layout);
-                            frame.setLayout(new BorderLayout());
-
-                            contentPane.add(new JScrollPane(consolePanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
-                            //contentPane.add(consolePanel);
-                            consolePanel.add(consoleText);
-
-                            //frame.add(consolePanel, BorderLayout.WEST);
-                            //frame.add(contentPane, BorderLayout.CENTER);
-
-                            // Add chart to frame
-                            //JPanel chartPanel = new XChartPanel<XYChart>(chart);
-                            //frame.add(chartPanel, BorderLayout.EAST);
-
-                            // Labels
-                            //JLabel label = new JLabel("Blah blah blah.", SwingConstants.CENTER);
-                            //frame.add(label, BorderLayout.SOUTH);
-
-                            // get the screen size as a java dimension
-                            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-                            // get 2/3 of the height, and 2/3 of the width
-                            int height = screenSize.height * 1 / 3;
-                            int width = screenSize.width * 1 / 5;
-
-                            // set the jframe height and width
-                            frame.setPreferredSize(new Dimension(width, height));
-
-                            // Display the window.
-                            frame.pack();
-                            frame.setLocationRelativeTo(null);
-                            frame.setVisible(true);
-                            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                            //Console console = new Console();
+                            console.clear();
+                            console.doDisplay();
 
                         } catch (Exception ex) {
                             ex.printStackTrace();

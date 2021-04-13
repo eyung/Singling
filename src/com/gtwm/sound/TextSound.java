@@ -132,7 +132,7 @@ public class TextSound {
 	//static Set<String> passingWords = new HashSet<String>(Arrays.asList("THE","A","AND","OR","NOT","WITH","THIS","IN","INTO","IS","THAT","THEN","OF","BUT","BY","DID","TO","IT","ALL"));
 	static Set<String> passingWords = new HashSet<String>();
 
-	static List<WordMap.Mapping> items;
+	//static List<WordMap.Mapping> items;
 	static List<TransformationManager.Instruction> instructions = new ArrayList<>();
 
 	// Keeping track of how many categories a word falls under
@@ -1119,51 +1119,5 @@ public class TextSound {
 	}
 }
 
-class convertToArr {
-	static double[] toDoubleArr(String inString) {
-		String[] tokens = inString.split(",");
-		double[] arr = new double[tokens.length];
-		double[] arr2 = new double[15];
 
-		if (tokens.length > 15) {
-			for (int j=0; j<15; j++) {
-				arr[j] = Double.valueOf(tokens[j]);
-			}
-			return arr2;
-		} else {
-			int i=0;
-			for (String st : tokens) {
-				arr[i++] = Double.valueOf(st);
-			}
-			return arr;
-		}
-	}
-
-	static WordMap.Type[] toTypeArr(String inString) {
-		String[] tokens = inString.split(",");
-		WordMap.Type[] arr = new WordMap.Type[tokens.length];
-		int i=0;
-		for (String st : tokens) {
-			arr[i++] = WordMap.Type.valueOf(st);
-		}
-		return arr;
-	}
-
-	static String[] toStringArr(String inString) {
-		String[] tokens = inString.split(",");
-		String[] arr = new String[tokens.length];
-		int i=0;
-		for (String st : tokens) {
-			arr[i++] = st;
-		}
-		return arr;
-	}
-}
-
-class logCalc {
-	static double log(double x, double base)
-	{
-		return (Math.log(x) / Math.log(base));
-	}
-}
 

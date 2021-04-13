@@ -947,10 +947,9 @@ public class Composer {
 
 }
 
-/*
+
 class logCalc {
-    static double log(double x, double base)
-    {
+    static double log(double x, double base) {
         return (Math.log(x) / Math.log(base));
     }
-}*/
+}

@@ -374,7 +374,7 @@
                 <item value="0.015625"/>
                 <item value="0.0078125"/>
               </model>
-              <selectedIndex value="0"/>
+              <selectedIndex value="1"/>
             </properties>
           </component>
           <component id="97e41" class="javax.swing.JLabel">
@@ -521,14 +521,14 @@
             </constraints>
             <properties>
               <majorTickSpacing value="100"/>
-              <maximum value="350"/>
+              <maximum value="450"/>
               <minimum value="50"/>
               <minorTickSpacing value="10"/>
               <paintLabels value="true"/>
               <paintTicks value="true"/>
               <requestFocusEnabled value="false"/>
               <snapToTicks value="true"/>
-              <value value="150"/>
+              <value value="350"/>
             </properties>
           </component>
           <component id="6e58d" class="javax.swing.JLabel">
