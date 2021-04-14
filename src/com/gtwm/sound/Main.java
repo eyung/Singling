@@ -187,6 +187,7 @@ public class Main extends JFrame {
                                     .withOperation(operationType)
                                     .withOrdering(setOrdering.getSelectedIndex())
                                     .useTransformations(instructions)
+                                    //.excludeWords(pas)
                                     .build();
 
                             // Process user input text
@@ -569,7 +570,7 @@ public class Main extends JFrame {
         setFrequency.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent changeEvent) {
-                int midiNumber = (int) Math.rint(12 * logCalc.log(setFrequency.getValue() / 440.0f, 2) + 69.0f);
+                int midiNumber = (int) Math.rint(12 * getLog(setFrequency.getValue() / 440.0f, 2) + 69.0f);
                 tfSetFrequency.setText(String.valueOf(setFrequency.getValue()));
                 //cbSetFrequency.setSelectedIndex(midiNumber-21);
             }
@@ -596,6 +597,7 @@ public class Main extends JFrame {
                 }
             }
         });
+
     }
 
     public static void listAddInstruction(TransformationManager.Instruction thisInstruction) {
@@ -605,6 +607,10 @@ public class Main extends JFrame {
 
     public static DefaultListModel getInstructionsListModel() {
         return model;
+    }
+
+    public double getLog(double x, double base) {
+        return (Math.log(x) / Math.log(base));
     }
 
     /**
@@ -885,10 +891,10 @@ public class Main extends JFrame {
                         mainForm.textModel.setText(properties.getProperty("textinput"));
 
                         // Load instructions
-                        TextSound.instructions = deserialize(properties.getProperty("instructions"));
+                        instructions = deserialize(properties.getProperty("instructions"));
                         //composer.instructions = deserialize(properties.getProperty("instructions"));
                         Main.model.clear();
-                        for (TransformationManager.Instruction i : TextSound.instructions) {
+                        for (TransformationManager.Instruction i : instructions) {
                             Main.listAddInstruction(i);
                         }
 
@@ -970,7 +976,7 @@ public class Main extends JFrame {
                     // Saving instructions
                     //ObjectOutputStream instructionsList = serializeObject(TextSound.instructions);
                     //properties.setProperty("instructions", instructionsList.toString());
-                    properties.setProperty("instructions", serialize(TextSound.instructions));
+                    properties.setProperty("instructions", serialize(instructions));
 
                     // Saving lexicons
                     properties.setProperty("lexicons", serializeLexicon(TextSound.passingWords));

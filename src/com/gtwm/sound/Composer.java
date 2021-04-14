@@ -646,11 +646,11 @@ public class Composer {
             }
 
             // Convert freq to MIDI music string using reference note and frequency A4 440hz
-            int midiNumber = (int) Math.rint(12 * logCalc.log(frequency / 440.0f, 2) + 69.0f);
-            int baseMidiNumber = (int) Math.rint(12 * logCalc.log(baseFrequency / 440.0f, 2) + 69.0f);
+            int midiNumber = (int) Math.rint(12 * getLog(frequency / 440.0f, 2) + 69.0f);
+            int baseMidiNumber = (int) Math.rint(12 * getLog(baseFrequency / 440.0f, 2) + 69.0f);
 
             // Find pitch using base midi note number
-            pitchBend = Math.round(8192 + 4096 * 12 * logCalc.log(frequency / (440.0f * Math.pow(2.0f, ((double) midiNumber - 69.0f) / 12.0f)), 2));
+            pitchBend = Math.round(8192 + 4096 * 12 * getLog(frequency / (440.0f * Math.pow(2.0f, ((double) midiNumber - 69.0f) / 12.0f)), 2));
             //System.out.println("Pitch bend: " + pitchBend);
             //System.out.println("Frequency: " + frequency);
             //System.out.println("Midi Number: " + midiNumber);
@@ -765,10 +765,10 @@ public class Composer {
         }
 
         // Convert freq to MIDI music string using reference note and frequency A4 440hz
-        int midiNumber = (int) Math.rint(12*logCalc.log(frequency/440.0f, 2) + 69.0f);
+        int midiNumber = (int) Math.rint(12 * getLog(frequency/440.0f, 2) + 69.0f);
 
         // Find pitch using base midi note number
-        pitchBend = Math.round(8192+4096*12*logCalc.log(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
+        pitchBend = Math.round(8192+4096*12 * getLog(frequency/(440.0f*Math.pow(2.0f, ((double)midiNumber-69.0f)/12.0f)), 2));
 
         // Set frequency of punctuations/symbols to frequency of lexname = 46
         if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", String.valueOf(ch))) {
@@ -975,10 +975,8 @@ public class Composer {
     public void removeInstruction(TransformationManager.Instruction instruction) {
         this.instructions.remove(instruction);
     }
-}
 
-class logCalc {
-    static double log(double x, double base) {
+    public double getLog(double x, double base) {
         return (Math.log(x) / Math.log(base));
     }
 }
