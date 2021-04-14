@@ -402,12 +402,6 @@ public class Composer {
                         int baseMidiNumber = (int) Math.rint(12 * getLog(baseFrequency / 440.0f, 2) + 69.0f);
                         pattern.add("I[MUSIC_BOX] :PW(" + pitchBend + ") " + baseMidiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 
-                        //resetSettings();
-                        pattern.add("I[" + instrument + "] ");
-                        //pattern.add("V0");
-                        //pattern.add(":CE(935," + (int) volume + ")");
-                        pattern.add(" '" + word);
-
                         // Insert at end of musicstring: Note + Resting gap
                         //soundString.append("R/" + String.format("%f", noteGap) + " ");
                         pattern.add("R/" + String.format("%f", noteGap) + " ");
@@ -418,7 +412,6 @@ public class Composer {
                         pattern.add("V0");
                         pattern.add(":CE(935," + (int) volume + ")");
                         pattern.add(":CE(10,64)");
-                        //pattern.setInstrument(instrument);
 
                         patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
                         patternCurrentTime += noteLength + noteGap;
