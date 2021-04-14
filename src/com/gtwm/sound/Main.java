@@ -87,6 +87,8 @@ public class Main extends JFrame {
 
     static List<TransformationManager.Instruction> instructions;
 
+    static Set<String> passingWords = new HashSet<String>();
+
     /**
      *
      */
@@ -187,7 +189,7 @@ public class Main extends JFrame {
                                     .withOperation(operationType)
                                     .withOrdering(setOrdering.getSelectedIndex())
                                     .useTransformations(instructions)
-                                    //.excludeWords(pas)
+                                    .excludeWords(passingWords)
                                     .build();
 
                             // Process user input text
@@ -289,6 +291,8 @@ public class Main extends JFrame {
                                         .wantWord(isWord)
                                         .withOperation(operationType)
                                         .withOrdering(setOrdering.getSelectedIndex())
+                                        .useTransformations(instructions)
+                                        .excludeWords(passingWords)
                                         .build();
 
                                 // Process user input text
@@ -364,6 +368,8 @@ public class Main extends JFrame {
                                         .wantWord(isWord)
                                         .withOperation(operationType)
                                         .withOrdering(setOrdering.getSelectedIndex())
+                                        .useTransformations(instructions)
+                                        .excludeWords(passingWords)
                                         .build();
 
                                 // Process user input text
@@ -899,9 +905,9 @@ public class Main extends JFrame {
                         }
 
                         // Load lexicons
-                        TextSound.passingWords = deserializeLexicon(properties.getProperty("lexicons"));
+                        passingWords = deserializeLexicon(properties.getProperty("lexicons"));
                         PassingWordsForm.listModel.clear();
-                        for (String i : TextSound.passingWords) {
+                        for (String i : passingWords) {
                             PassingWordsForm.listModel.addElement(i);
                         }
 
@@ -979,7 +985,7 @@ public class Main extends JFrame {
                     properties.setProperty("instructions", serialize(instructions));
 
                     // Saving lexicons
-                    properties.setProperty("lexicons", serializeLexicon(TextSound.passingWords));
+                    properties.setProperty("lexicons", serializeLexicon(passingWords));
 
                     // Saving to file
                     try(FileWriter output = new FileWriter(prefsFile)) {

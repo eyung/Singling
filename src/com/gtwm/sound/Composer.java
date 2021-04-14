@@ -389,6 +389,41 @@ public class Composer {
                     // Give pos tag of "S" if punctuation is found
                     if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
                         sonifyWord(word, sent.lemma(wordPosition), 'S', pattern);
+
+                    // PassingWord is found
+                    } else if (passingWords.contains(word)) {
+
+                        pattern.add(" '(" + word + ")");
+                        pattern.add(" #(SA[" + getSentimentAnalysis(word) + "])");
+
+                        pattern.add("V0" + " @" + patternCurrentTime);
+
+                        // Convert freq to MIDI music string using reference note and frequency A4 440hz
+                        int baseMidiNumber = (int) Math.rint(12 * getLog(baseFrequency / 440.0f, 2) + 69.0f);
+                        pattern.add("I[MUSIC_BOX] :PW(" + pitchBend + ") " + baseMidiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+
+                        //resetSettings();
+                        pattern.add("I[" + instrument + "] ");
+                        //pattern.add("V0");
+                        //pattern.add(":CE(935," + (int) volume + ")");
+                        pattern.add(" '" + word);
+
+                        // Insert at end of musicstring: Note + Resting gap
+                        //soundString.append("R/" + String.format("%f", noteGap) + " ");
+                        pattern.add("R/" + String.format("%f", noteGap) + " ");
+
+                        // Reset to base settings
+                        resetSettings();
+                        pattern.add("I[" + instrument + "] ");
+                        pattern.add("V0");
+                        pattern.add(":CE(935," + (int) volume + ")");
+                        pattern.add(":CE(10,64)");
+                        //pattern.setInstrument(instrument);
+
+                        patternCurrentTime = Math.round(patternCurrentTime * 100.0) / 100.0;
+                        patternCurrentTime += noteLength + noteGap;
+
+                    // Sonify word using WordNet
                     } else {
                         sonifyWord(word, sent.lemma(wordPosition), posletter, pattern);
                     }

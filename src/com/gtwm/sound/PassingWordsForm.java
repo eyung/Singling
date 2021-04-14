@@ -21,7 +21,7 @@ public class PassingWordsForm extends JDialog {
 
         list1.setModel(listModel);
 
-        for (String thisWord : TextSound.passingWords) {
+        for (String thisWord : Main.passingWords) {
             listModel.addElement(thisWord);
         }
 
@@ -59,7 +59,7 @@ public class PassingWordsForm extends JDialog {
 
                 if (!userText.equals("")) {
                     listModel.addElement(userText);
-                    TextSound.passingWords.add(userText);
+                    Main.passingWords.add(userText);
                 }
 
                 textField1.setText("");
@@ -69,7 +69,7 @@ public class PassingWordsForm extends JDialog {
         removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                TextSound.passingWords.remove(list1.getSelectedValue());
+                Main.passingWords.remove(list1.getSelectedValue());
                 listModel.removeElement(list1.getSelectedValue());
             }
         });
