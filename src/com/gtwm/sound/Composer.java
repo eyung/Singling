@@ -13,6 +13,9 @@ import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 import org.jfugue.pattern.Pattern;
+import org.jfugue.theory.Chord;
+import org.jfugue.theory.ChordProgression;
+import org.jfugue.theory.Key;
 import org.jfugue.theory.Note;
 
 import java.io.File;
@@ -675,39 +678,57 @@ public class Composer {
 
             // Convert freq to MIDI music string using reference note and frequency A4 440hz
             int midiNumber = (int) Math.rint(12 * getLog(frequency / 440.0f, 2) + 69.0f);
-            int baseMidiNumber = (int) Math.rint(12 * getLog(baseFrequency / 440.0f, 2) + 69.0f);
+            //int baseMidiNumber = (int) Math.rint(12 * getLog(baseFrequency / 440.0f, 2) + 69.0f);
 
-            // Find pitch using base midi note number
+            // Find pitch using midi note number
             pitchBend = Math.round(8192 + 4096 * 12 * getLog(frequency / (440.0f * Math.pow(2.0f, ((double) midiNumber - 69.0f) / 12.0f)), 2));
-            //System.out.println("Pitch bend: " + pitchBend);
-            //System.out.println("Frequency: " + frequency);
+            System.out.println("Pitch bend: " + pitchBend);
+            System.out.println("Frequency: " + frequency);
+            //System.out.println("Base Freq: " + baseFrequency);
             //System.out.println("Midi Number: " + midiNumber);
 
-            // JFugue's implementation which adds microtones as pitch bend events
-            //pattern.add("m" + frequency + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + "");
-            //pattern.add("m" + frequency + "/" + noteLength + "a" + attack + "d" + decay + "");
-            //pattern.add("m512.3q");
-            //pattern.add(":PitchWheel(5192) 72/0.25 :PitchWheel(8192)");
-
-            //pattern.add(":PW(" + (int) pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + ":PW(8192)");
-            //pattern.add(":PW(" + pitchBend + ") " +  midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay + " '" + lastWord);
-            //pattern.add(":PW(" + pitchBend + ") " + midiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
-
-            //System.out.println("sentiment" + sentimentChord);
-            // Midi message to send to player
-            // If sentiment values are found, use the base (fundamental) frequency without pitchbend to create a chord
-            // Otherwise, use the LGC as a variable to create a midi note
-
             // Sentiment Analysis
-
+            // TODO
 			/*if (sentimentState && sentimentChord != "") {
 				pattern.add(baseMidiNumber + sentimentChord + "/" + noteLength + "a" + attack + "d" + decay);
 			} else {
 				pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 			}*/
 
+            // use getSentimentAnalysis(originalWord) as variable to determine major or minor chords
+            final double semitone = 1.059463;
+
+            double freqMajorThird = frequency * Math.pow(semitone,4);
+            int midiNumMajThird = (int) Math.rint(12 * getLog(freqMajorThird / 440.0f, 2) + 69.0f);
+            long pitchBendMajThird = Math.round(8192 + 4096 * 12 * getLog(freqMajorThird / (440.0f * Math.pow(2.0f, ((double) midiNumMajThird - 69.0f) / 12.0f)), 2));
+            System.out.println("Major Third Frequency: " + freqMajorThird);
+            System.out.println("Major Third Midi Num: " + midiNumMajThird);
+            System.out.println("Major Third Pitch bend: " + pitchBendMajThird);
+
+            double freqPerfectFifth = frequency * Math.pow(semitone,7);
+            int midiNumPerfectFifth = (int) Math.rint(12 * getLog(freqPerfectFifth / 440.0f, 2) + 69.0f);
+            long pitchBendPerfectFifth = Math.round(8192 + 4096 * 12 * getLog(freqPerfectFifth / (440.0f * Math.pow(2.0f, ((double) midiNumPerfectFifth - 69.0f) / 12.0f)), 2));
+            System.out.println("Perfect Fifth Frequency: " + freqPerfectFifth);
+            System.out.println("Perfect Fifth Midi Num: " + midiNumPerfectFifth);
+            System.out.println("Perfect Fifth Pitch bend: " + pitchBendPerfectFifth);
+
             pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+
             //pattern.add(baseMidiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+
+            Note note = new Note(midiNumber);
+
+            ChordProgression cp = new ChordProgression("I IV V");
+
+            Chord[] chords = cp.setKey(note.getToneString()).getChords();
+
+            System.out.print("Chord "+chords[0]+" has these notes: ");
+            Note[] notes = chords[0].getNotes();
+            for (Note thisnote : notes) {
+                System.out.print(thisnote+" ");
+            }
+            System.out.println();
+
 
             //	}
             //}
