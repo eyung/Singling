@@ -13,9 +13,6 @@ import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 import org.jfugue.pattern.Pattern;
-import org.jfugue.theory.Chord;
-import org.jfugue.theory.ChordProgression;
-import org.jfugue.theory.Key;
 import org.jfugue.theory.Note;
 
 import java.io.File;
@@ -712,23 +709,11 @@ public class Composer {
             System.out.println("Perfect Fifth Midi Num: " + midiNumPerfectFifth);
             System.out.println("Perfect Fifth Pitch bend: " + pitchBendPerfectFifth);
 
-            pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+            pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay +
+                    "+" + midiNumMajThird + "/"  + noteLength + "a" + attack + "d" + decay +
+                    "+" + midiNumPerfectFifth + "/" + noteLength + "a" + attack + "d" + decay);
 
-            //pattern.add(baseMidiNumber + "/" + noteLength + "a" + attack + "d" + decay);
-
-            Note note = new Note(midiNumber);
-
-            ChordProgression cp = new ChordProgression("I IV V");
-
-            Chord[] chords = cp.setKey(note.getToneString()).getChords();
-
-            System.out.print("Chord "+chords[0]+" has these notes: ");
-            Note[] notes = chords[0].getNotes();
-            for (Note thisnote : notes) {
-                System.out.print(thisnote+" ");
-            }
-            System.out.println();
-
+            //pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 
             //	}
             //}
