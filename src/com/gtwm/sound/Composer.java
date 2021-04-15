@@ -511,16 +511,18 @@ public class Composer {
         // Other POStags
         } else {
             switch (posLetter) {
-                // Determiner
-                case 'D': wordTypes.add(46); break;
                 // Modal
                 case 'M': wordTypes.add(45); break;
-                // Pronouns / Predeterminer / Possessive ending
-                case 'P': wordTypes.add(51); break;
-                // Preposition
-                case 'I': wordTypes.add(48); break;
                 // Symbols
                 case 'S' : wordTypes.add(46); break;
+                // Determiner
+                case 'D': wordTypes.add(47); break;
+                // Preposition
+                case 'I': wordTypes.add(48); break;
+                // Pronouns / Predeterminer / Possessive ending
+                case 'P': wordTypes.add(51); break;
+                // To
+                case 'T' : wordTypes.add(52); break;
             }
         }
 
@@ -679,10 +681,10 @@ public class Composer {
 
             // Find pitch using midi note number
             pitchBend = Math.round(8192 + 4096 * 12 * getLog(frequency / (440.0f * Math.pow(2.0f, ((double) midiNumber - 69.0f) / 12.0f)), 2));
-            System.out.println("Pitch bend: " + pitchBend);
-            System.out.println("Frequency: " + frequency);
-            //System.out.println("Base Freq: " + baseFrequency);
+            //System.out.println("Pitch bend: " + pitchBend);
+            //System.out.println("Frequency: " + frequency);
             //System.out.println("Midi Number: " + midiNumber);
+            //System.out.println("Base Freq: " + baseFrequency);
 
             // Sentiment Analysis
             // TODO
@@ -693,25 +695,51 @@ public class Composer {
 			}*/
 
             // use getSentimentAnalysis(originalWord) as variable to determine major or minor chords
+            // pitchbend (Cents to represent the remainder of midinumber/frequency) will be the same for all the notes in a chord
+
             final double semitone = 1.059463;
+            int halfstepsThird=0, halfstepsFifth=0;
 
-            double freqMajorThird = frequency * Math.pow(semitone,4);
-            int midiNumMajThird = (int) Math.rint(12 * getLog(freqMajorThird / 440.0f, 2) + 69.0f);
-            long pitchBendMajThird = Math.round(8192 + 4096 * 12 * getLog(freqMajorThird / (440.0f * Math.pow(2.0f, ((double) midiNumMajThird - 69.0f) / 12.0f)), 2));
-            System.out.println("Major Third Frequency: " + freqMajorThird);
-            System.out.println("Major Third Midi Num: " + midiNumMajThird);
-            System.out.println("Major Third Pitch bend: " + pitchBendMajThird);
+            switch (getSentimentAnalysis(originalWord)) {
+                case 0:
+                    halfstepsThird = 3;
+                    halfstepsFifth = 6;
+                    break;
+                case 1:
+                    halfstepsThird = 3;
+                    halfstepsFifth = 7;
+                    break;
+                case 2:
+                    halfstepsThird = 0;
+                    halfstepsFifth = 0;
+                    break;
+                case 3:
+                    halfstepsThird = 4;
+                    halfstepsFifth = 7;
+                    break;
+                case 4:
+                    halfstepsThird = 4;
+                    halfstepsFifth = 8;
+                    break;
+            }
 
-            double freqPerfectFifth = frequency * Math.pow(semitone,7);
-            int midiNumPerfectFifth = (int) Math.rint(12 * getLog(freqPerfectFifth / 440.0f, 2) + 69.0f);
-            long pitchBendPerfectFifth = Math.round(8192 + 4096 * 12 * getLog(freqPerfectFifth / (440.0f * Math.pow(2.0f, ((double) midiNumPerfectFifth - 69.0f) / 12.0f)), 2));
-            System.out.println("Perfect Fifth Frequency: " + freqPerfectFifth);
-            System.out.println("Perfect Fifth Midi Num: " + midiNumPerfectFifth);
-            System.out.println("Perfect Fifth Pitch bend: " + pitchBendPerfectFifth);
+            double freqThird = frequency * Math.pow(semitone,halfstepsThird);
+            int midiNumThird = (int) Math.rint(12 * getLog(freqThird / 440.0f, 2) + 69.0f);
+            //long pitchBendMajThird = Math.round(8192 + 4096 * 12 * getLog(freqMajorThird / (440.0f * Math.pow(2.0f, ((double) midiNumMajThird - 69.0f) / 12.0f)), 2));
+            //System.out.println("Major Third Frequency: " + freqMajorThird);
+            //System.out.println("Major Third Midi Num: " + midiNumMajThird);
+            //System.out.println("Major Third Pitch bend: " + pitchBendMajThird);
+
+            double freqFifth = frequency * Math.pow(semitone,halfstepsFifth);
+            int midiNumFifth = (int) Math.rint(12 * getLog(freqFifth / 440.0f, 2) + 69.0f);
+            //long pitchBendPerfectFifth = Math.round(8192 + 4096 * 12 * getLog(freqPerfectFifth / (440.0f * Math.pow(2.0f, ((double) midiNumPerfectFifth - 69.0f) / 12.0f)), 2));
+            //System.out.println("Perfect Fifth Frequency: " + freqPerfectFifth);
+            //System.out.println("Perfect Fifth Midi Num: " + midiNumPerfectFifth);
+            //System.out.println("Perfect Fifth Pitch bend: " + pitchBendPerfectFifth);
 
             pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay +
-                    "+" + midiNumMajThird + "/"  + noteLength + "a" + attack + "d" + decay +
-                    "+" + midiNumPerfectFifth + "/" + noteLength + "a" + attack + "d" + decay);
+                    "+" + midiNumThird + "/"  + noteLength + "a" + attack + "d" + decay +
+                    "+" + midiNumFifth + "/" + noteLength + "a" + attack + "d" + decay);
 
             //pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 
