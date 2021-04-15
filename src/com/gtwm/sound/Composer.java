@@ -380,6 +380,9 @@ public class Composer {
                 // Iterate words in sentence
                 for (String word : words) {
 
+                    // CoreNLP is case sensitive
+                    //word = word.toLowerCase();
+
                     // Get position of word
                     wordPosition = words.indexOf(word);
 
@@ -519,16 +522,21 @@ public class Composer {
                 case 'D': wordTypes.add(47); break;
                 // Preposition
                 case 'I': wordTypes.add(48); break;
+                // Coordinating conjunction / Cardinal number
+                case 'C': wordTypes.add(49); break;
                 // Pronouns / Predeterminer / Possessive ending
                 case 'P': wordTypes.add(51); break;
                 // To
                 case 'T' : wordTypes.add(52); break;
+                // Wh-determiner / Wh-pronoun / Wh-adverb
+                case 'W' : wordTypes.add(53); break;
             }
         }
 
         // First LGC of word will inherit the word as lyric item, sentiment analysis value, and other NLP related data
         if (lexCount == 0) {
-            pattern.add(" '(" + originalWord + ")");
+            //pattern.add(" '(" + originalWord + ")");
+            pattern.add(" '" + originalWord);
             pattern.add(" #(SA[" + getSentimentAnalysis(originalWord) + "], " + "LGC" + wordTypes + ", POS[" + posLetter + "]" +  ")");
         }
 
@@ -737,11 +745,11 @@ public class Composer {
             //System.out.println("Perfect Fifth Midi Num: " + midiNumPerfectFifth);
             //System.out.println("Perfect Fifth Pitch bend: " + pitchBendPerfectFifth);
 
-            pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay +
-                    "+" + midiNumThird + "/"  + noteLength + "a" + attack + "d" + decay +
-                    "+" + midiNumFifth + "/" + noteLength + "a" + attack + "d" + decay);
+            //pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay +
+            //        "+" + midiNumThird + "/"  + noteLength + "a" + attack + "d" + decay +
+            //        "+" + midiNumFifth + "/" + noteLength + "a" + attack + "d" + decay);
 
-            //pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+            pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 
             //	}
             //}
