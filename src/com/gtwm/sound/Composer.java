@@ -745,11 +745,11 @@ public class Composer {
             //System.out.println("Perfect Fifth Midi Num: " + midiNumPerfectFifth);
             //System.out.println("Perfect Fifth Pitch bend: " + pitchBendPerfectFifth);
 
-            //pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay +
-            //        "+" + midiNumThird + "/"  + noteLength + "a" + attack + "d" + decay +
-            //        "+" + midiNumFifth + "/" + noteLength + "a" + attack + "d" + decay);
+            pattern.add(":PW(" + pitchBend + ") " + midiNumber +
+                    "+" + midiNumThird +
+                    "+" + midiNumFifth + "/" + noteLength + "a" + attack + "d" + decay);
 
-            pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+            //pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
 
             //	}
             //}
