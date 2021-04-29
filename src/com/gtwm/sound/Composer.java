@@ -13,6 +13,8 @@ import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 import org.jfugue.pattern.Pattern;
+import org.jfugue.theory.Chord;
+import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Note;
 
 import java.io.File;
@@ -731,14 +733,14 @@ public class Composer {
                     break;
             }
 
-            double freqThird = frequency * Math.pow(semitone,halfstepsThird);
+            double freqThird = frequency * Math.pow(semitone,4);
             int midiNumThird = (int) Math.rint(12 * getLog(freqThird / 440.0f, 2) + 69.0f);
             //long pitchBendMajThird = Math.round(8192 + 4096 * 12 * getLog(freqMajorThird / (440.0f * Math.pow(2.0f, ((double) midiNumMajThird - 69.0f) / 12.0f)), 2));
             //System.out.println("Major Third Frequency: " + freqMajorThird);
             //System.out.println("Major Third Midi Num: " + midiNumMajThird);
             //System.out.println("Major Third Pitch bend: " + pitchBendMajThird);
 
-            double freqFifth = frequency * Math.pow(semitone,halfstepsFifth);
+            double freqFifth = frequency * Math.pow(semitone,7);
             int midiNumFifth = (int) Math.rint(12 * getLog(freqFifth / 440.0f, 2) + 69.0f);
             //long pitchBendPerfectFifth = Math.round(8192 + 4096 * 12 * getLog(freqPerfectFifth / (440.0f * Math.pow(2.0f, ((double) midiNumPerfectFifth - 69.0f) / 12.0f)), 2));
             //System.out.println("Perfect Fifth Frequency: " + freqPerfectFifth);
@@ -750,6 +752,23 @@ public class Composer {
                     "+" + midiNumFifth + "/" + noteLength + "a" + attack + "d" + decay);
 
             //pattern.add(":PW(" + pitchBend + ") " + midiNumber + "/" + noteLength + "a" + attack + "d" + decay);
+
+     /*       Note note = new Note(midiNumber);
+
+            ChordProgression cp = new ChordProgression("I IV V");
+            Chord[] chords = cp.setKey(note.getToneString()+note.getOctave()).getChords();
+
+            String str = "";
+            System.out.println("Chord "+chords[0]+" has these notes: ");
+            Note[] notes = chords[0].getNotes();
+            for (Note thisNote : notes) {
+                System.out.print(thisNote+" ");
+                str += thisNote.toString() + "+";
+            }
+            str = str.substring(0, str.length() - 1);
+            pattern.add(str + "/" + noteLength + "a" + attack + "d" + decay);*/
+
+
 
             //	}
             //}
