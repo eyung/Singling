@@ -174,6 +174,48 @@ public class InstructionFormModels {
             "51. time prepositions"
     };
 
+    final static String[] POSlist = {
+            "1. Coordinating conjunction",
+            "2. Cardinal number",
+            "3. Determiner",
+            "4. Existential there",
+            "5. Foreign word",
+            "6. Preposition or subordinating conjunction",
+            "7. Adjective",
+            "8. Adjective, comparative",
+            "9. Adjective, superlative",
+            "10. List item marker",
+            "11. Modal",
+            "12. Noun, singular or mass",
+            "13. Noun, plural",
+            "14. Proper noun, singular",
+            "15. Proper noun, plural",
+            "16. Predeterminer",
+            "17. Possessive ending",
+            "18. Personal pronoun",
+            "19. Possessive pronoun",
+            "20. Adverb",
+            "21. Adverb, comparative",
+            "22. Adverb, superlative",
+            "23. Particle",
+            "24. Symbol",
+            "25. To",
+            "26. Interjection",
+            "27. Verb, base form",
+            "28. Verb, past tense",
+            "29. Verb, gerund or present participle",
+            "30. Verb, past participle",
+            "31. Verb, non-3rd person singular present",
+            "32. Verb, 3rd person singular present",
+            "33. Wh-determiner",
+            "34. Wh-pronoun",
+            "35. Possessive wh-pronoun",
+            "36. Wh-adverb"
+    };
+
+    // POStag
+    final static DefaultComboBoxModel modelSetPOStag = new DefaultComboBoxModel(POSlist);
+
     // LGC
     final static DefaultComboBoxModel modelSetLGC = new DefaultComboBoxModel(LGClist);
 

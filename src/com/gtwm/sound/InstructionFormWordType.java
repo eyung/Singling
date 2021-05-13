@@ -54,6 +54,7 @@ public class InstructionFormWordType extends JDialog {
         incrementFrequency.setModel(InstructionFormModels.modelIncrementFrequency);
         incrementVolume.setModel(InstructionFormModels.modelIncrementVolume);
         incrementPitchbend.setModel(InstructionFormModels.modelIncrementPitchbend);
+        setType.setModel(InstructionFormModels.modelSetPOStag);
 
         setContentPane(contentPane);
         setModal(true);
@@ -64,7 +65,8 @@ public class InstructionFormWordType extends JDialog {
 
                 TransformationManager.Instruction instruction = new TransformationManager.Instruction();
                 instruction.setMod(TransformationManager.Instruction.Mods.WORDTYPE);
-                instruction.setModValue(String.valueOf(setType.getSelectedItem()));
+                //instruction.setModValue(String.valueOf(setType.getSelectedItem()));
+                instruction.setModValue(String.valueOf(setType.getSelectedIndex()));
                 instruction.setChangeMode(TransformationManager.Instruction.ChangeModes.valueOf(String.valueOf(setChangeMode.getSelectedItem())));
 
                 if (instruction.changeMode == TransformationManager.Instruction.ChangeModes.SET) {

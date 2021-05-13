@@ -111,6 +111,10 @@ public class Composer {
     private String path;
     private URL url;
 
+    private enum POStags {
+        CC, CD, DT, EX, FW, IN, JJ, JJR, JJS, LS, MD, NN, NNS, NNP, NNPS, PDT, POS, PRP, PRP$, RB, RBR, RBS, RP, SYM, TO, UH, VB, VBD, VBG, VBN, VBP, VBZ, WDT, WP, WP$, WRB;
+    }
+
     /**
      * TODO
      * @param builder
@@ -396,7 +400,8 @@ public class Composer {
                     // Give pos tag of "S" if punctuation is found
                     if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
                         //sonifyWord(word, sent.lemma(wordPosition), 'S', pattern);
-                        sonifyWord(word, sent.lemma(wordPosition), "SYM", pattern);
+                        //sonifyWord(word, sent.lemma(wordPosition), "SYM", pattern);
+                        sonifyWord(word, sent.lemma(wordPosition), POStags.SYM, pattern);
 
                     // PassingWord is found
                     } else if (passingWords.contains(word)) {
@@ -426,7 +431,8 @@ public class Composer {
                     // Sonify word using WordNet
                     } else {
                         //sonifyWord(word, sent.lemma(wordPosition), posletter, pattern);
-                        sonifyWord(word, sent.lemma(wordPosition), postag, pattern);
+                        //sonifyWord(word, sent.lemma(wordPosition), postag, pattern);
+                        sonifyWord(word, sent.lemma(wordPosition), POStags.valueOf(postag), pattern);
                     }
                     //System.out.println("Sentiment Analysis (" + word + ") : " + analyse(word));
 
@@ -475,13 +481,14 @@ public class Composer {
      * @param
      * @param pattern
      */
-    public void sonifyWord(String originalWord, String wordLemma, String posTag, Pattern pattern) {
+    //public void sonifyWord(String originalWord, String wordLemma, String posTag, Pattern pattern) {
+    public void sonifyWord(String originalWord, String wordLemma, POStags posTag, Pattern pattern) {
 
         // LGCs to use for sonification
         Set<Integer> wordTypes = new HashSet<>();
 
         int posNumber = 0;
-        char posLetter = posTag.charAt(0);
+        char posLetter = posTag.toString().charAt(0);
 
         // Map first letter of PennTree Bank postag to WordNet value
         if ("JNRV".contains(String.valueOf(posLetter))) {
@@ -502,7 +509,7 @@ public class Composer {
                 int x = idxWord.getWordIDs().size();
                 //System.out.println("Number of wordIDs : " + idxWord.getWordIDs().size());
 
-                // Loop to add all LGCs
+                // Loop to add all LGCs for querying WordNet
                 for (int i = 0; i < x; i++) {
                     IWordID wordID = idxWord.getWordIDs().get(i);
                     IWord word = dict.getWord(wordID);
@@ -591,35 +598,10 @@ public class Composer {
 
                 // Make changes based on user instructions
                 if (i.mod == TransformationManager.Instruction.Mods.WORDTYPE) {
-                    switch (posLetter) {
-                        case 'J':
-                            if (i.modValue.equals("adjective")) { applyMod(i, pattern); }
-                            break;
-                        case 'N':
-                            if (i.modValue.equals("noun")) { applyMod(i, pattern); }
-                            break;
-                        case 'R':
-                            if (i.modValue.equals("adverb")) { applyMod(i, pattern); }
-                            break;
-                        case 'V':
-                            if (i.modValue.equals("verb")) { applyMod(i, pattern); }
-                            break;
-                        case 'M':
-                            if (i.modValue.equals("modal")) { applyMod(i, pattern); }
-                            break;
-                        case 'S':
-                            if (i.modValue.equals("symbol")) { applyMod(i, pattern); }
-                            break;
-                        case 'D':
-                            if (i.modValue.equals("determiner")) { applyMod(i, pattern); }
-                            break;
-                        case 'I':
-                            if (i.modValue.equals("preposition")) { applyMod(i, pattern); }
-                            break;
-                        case 'P':
-                            if (i.modValue.equals("pronoun")) { applyMod(i, pattern); }
-                            break;
-                    }
+                    //if (i.modValue.equals("2. Cardinal number")) { applyMod(i, pattern); }
+                    //System.out.println(originalWord + " posTag index : " + posTag.ordinal());
+                    //System.out.println(originalWord + " modvalue : " + i.modValue);
+                    if (posTag.ordinal() == Integer.parseInt(i.modValue)) { applyMod(i, pattern); }
 
                 } else if (i.mod == TransformationManager.Instruction.Mods.WORDLENGTH) {
                     switch (i.getModOperator()) {
