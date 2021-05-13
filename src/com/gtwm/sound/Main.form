@@ -169,7 +169,7 @@
                 <item value="0.015625"/>
                 <item value="0.0078125"/>
               </model>
-              <selectedIndex value="0"/>
+              <selectedIndex value="1"/>
             </properties>
           </component>
           <component id="c24ed" class="javax.swing.JSlider" binding="setOctaves">
@@ -374,7 +374,7 @@
                 <item value="0.015625"/>
                 <item value="0.0078125"/>
               </model>
-              <selectedIndex value="1"/>
+              <selectedIndex value="2"/>
             </properties>
           </component>
           <component id="97e41" class="javax.swing.JLabel">
