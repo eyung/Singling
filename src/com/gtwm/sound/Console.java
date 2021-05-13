@@ -1,6 +1,7 @@
 package com.gtwm.sound;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
 public class Console extends javax.swing.JFrame {
@@ -50,6 +51,9 @@ public class Console extends javax.swing.JFrame {
 
         // set the jframe height and width
         this.setPreferredSize(new Dimension(width, height));
+
+        DefaultCaret caret = (DefaultCaret)consoleTextArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     public void setConsoleTextModel(JTextArea consoleTextModel) {
