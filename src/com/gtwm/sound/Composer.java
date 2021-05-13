@@ -13,8 +13,6 @@ import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 import org.jfugue.pattern.Pattern;
-import org.jfugue.theory.Chord;
-import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Note;
 
 import java.io.File;
@@ -369,8 +367,9 @@ public class Composer {
 
         // Part-of-speech variable
         char posletter;
+        String postag;
 
-        // Doing per word operation
+        // Sonifying words
         if (isWord) {
 
             // Iterate sentences in input text
@@ -388,16 +387,19 @@ public class Composer {
                     // Get position of word
                     wordPosition = words.indexOf(word);
 
+                    // Penntree Bank tag
+                    postag = sent.posTag(wordPosition);
+
                     // First letter of pos tag per Penntree Bank notation is used to query WordNet
-                    posletter = sent.posTag(wordPosition).charAt(0);
+                    //posletter = sent.posTag(wordPosition).charAt(0);
 
                     // Give pos tag of "S" if punctuation is found
                     if (java.util.regex.Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", word)) {
-                        sonifyWord(word, sent.lemma(wordPosition), 'S', pattern);
+                        //sonifyWord(word, sent.lemma(wordPosition), 'S', pattern);
+                        sonifyWord(word, sent.lemma(wordPosition), "SYM", pattern);
 
                     // PassingWord is found
                     } else if (passingWords.contains(word)) {
-
                         pattern.add(" '(" + word + ")");
                         pattern.add(" #(SA[" + getSentimentAnalysis(word) + "])");
 
@@ -423,7 +425,8 @@ public class Composer {
 
                     // Sonify word using WordNet
                     } else {
-                        sonifyWord(word, sent.lemma(wordPosition), posletter, pattern);
+                        //sonifyWord(word, sent.lemma(wordPosition), posletter, pattern);
+                        sonifyWord(word, sent.lemma(wordPosition), postag, pattern);
                     }
                     //System.out.println("Sentiment Analysis (" + word + ") : " + analyse(word));
 
@@ -469,15 +472,16 @@ public class Composer {
      *
      * @param originalWord
      * @param wordLemma
-     * @param posLetter
+     * @param
      * @param pattern
      */
-    public void sonifyWord(String originalWord, String wordLemma, char posLetter, Pattern pattern) {
+    public void sonifyWord(String originalWord, String wordLemma, String posTag, Pattern pattern) {
 
         // LGCs to use for sonification
         Set<Integer> wordTypes = new HashSet<>();
 
         int posNumber = 0;
+        char posLetter = posTag.charAt(0);
 
         // Map first letter of PennTree Bank postag to WordNet value
         if ("JNRV".contains(String.valueOf(posLetter))) {
@@ -539,7 +543,7 @@ public class Composer {
         if (lexCount == 0) {
             //pattern.add(" '(" + originalWord + ")");
             pattern.add(" '" + originalWord);
-            pattern.add(" #(SA[" + getSentimentAnalysis(originalWord) + "], " + "LGC" + wordTypes + ", POS[" + posLetter + "]" +  ")");
+            pattern.add(" #(SA[" + getSentimentAnalysis(originalWord) + "], " + "LGC" + wordTypes + ", POS[" + posTag + "]" +  ")");
         }
 
         // Iterate through list of LGC
