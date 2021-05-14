@@ -52,6 +52,7 @@ public class Console extends javax.swing.JFrame {
         // set the jframe height and width
         this.setPreferredSize(new Dimension(width, height));
 
+        // auto scroll to bottom when text is appended
         DefaultCaret caret = (DefaultCaret)consoleTextArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }

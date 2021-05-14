@@ -524,7 +524,7 @@ public class Composer {
                 }
             }
 
-        // Other POStags
+        // POS tags other than J, N, R, V
         } else {
             switch (posLetter) {
                 // Modal
@@ -543,6 +543,8 @@ public class Composer {
                 case 'T' : wordTypes.add(52); break;
                 // Wh-determiner / Wh-pronoun / Wh-adverb
                 case 'W' : wordTypes.add(53); break;
+                // Interjection
+                case 'U' : wordTypes.add(54); break;
             }
         }
 
