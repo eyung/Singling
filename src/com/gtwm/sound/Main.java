@@ -407,6 +407,7 @@ public class Main extends JFrame {
                 // Create Producer using pattern created by Composer
                 //Producer producer = new Producer();
                 producer.doPause();
+                //producer.doTest();
             }
         });
 

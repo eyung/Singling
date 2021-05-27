@@ -1,9 +1,14 @@
 package com.gtwm.sound;
 
+import org.jfugue.devices.MusicReceiver;
+import org.jfugue.devtools.MidiDevicePrompt;
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Sequence;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -66,6 +71,7 @@ public class Producer {
      */
     public void doStartPlayer(double baseNoteLength) {
         singlingPlayer.setPattern(pattern, player, baseNoteLength);
+        System.out.println("MIDI Sequence: " + player.getSequence(pattern));
 
         System.out.println("Start player:" + threadPlayer.getId());
         if (threadPlayer.getState() == Thread.State.NEW) {
@@ -86,6 +92,19 @@ public class Producer {
                 singlingPlayer.resume();
             }
         } catch (Exception e) {
+        }
+    }
+
+    public void doTest() {
+        try {
+            MidiDevice device = MidiDevicePrompt.askForMidiDevice();
+            MusicReceiver r = new MusicReceiver(device);
+            File file = new File("test.mid");
+            Sequence sequence = MidiSystem.getSequence(file);
+            r.sendSequence(sequence);
+            System.out.println(sequence);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
